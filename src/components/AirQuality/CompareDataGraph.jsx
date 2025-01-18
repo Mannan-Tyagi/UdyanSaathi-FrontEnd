@@ -56,7 +56,7 @@ const Component6 = () => {
     const apiUrl = `${baseurl}get-GraphData/?pol_City=${
       city.value
     }&to_date=${toDate}`;
-
+    console.log(apiUrl);
     try {
       const response = await fetch(apiUrl);
       const data = await response.json();
