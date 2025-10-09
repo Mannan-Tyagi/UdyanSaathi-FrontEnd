@@ -195,17 +195,268 @@ const Component6 = () => {
 
   // D3 chart rendering logic (unchanged)
   useEffect(() => {
-    console.log("D3 chart rendering with rawdata:", rawdata);
-    console.log("D3 chart rendering with compareRawdata:", compareRawdata);
+    const svgElement = chartRef.current;
+    const tooltipElement = tooltipRef.current;
 
-    if (!rawdata.length && !compareRawdata.length) {
-      d3.select(chartRef.current).selectAll("*").remove();
+    if (!svgElement) {
       return;
     }
 
-    // Rest of your existing D3 chart code...
-    // [Previous D3 chart code remains exactly the same]
+    const svg = d3.select(svgElement);
+    svg.selectAll("*").remove();
 
+    const hasPrimaryData = rawdata && rawdata.length > 0;
+    const hasCompareData = compareRawdata && compareRawdata.length > 0;
+
+    if (!hasPrimaryData && !hasCompareData) {
+      return;
+    }
+
+    const safeNumber = (value) => {
+      const num = Number(value);
+      return Number.isFinite(num) ? num : NaN;
+    };
+
+    const toDate = (value) => {
+      if (!value) return null;
+      const parsed = new Date(value);
+      return Number.isNaN(parsed.getTime()) ? null : parsed;
+    };
+
+    const formatDataset = (dataset, fallbackLabel) =>
+      (dataset || [])
+        .map((d) => ({
+          date: toDate(d?.Pol_Date),
+          value: safeNumber(d?.[selectedOption]),
+          label: d?.City || fallbackLabel,
+        }))
+        .filter((d) => d.date && Number.isFinite(d.value));
+
+    const primaryData = formatDataset(rawdata, city?.label || "Primary City");
+    const secondaryData = formatDataset(
+      compareRawdata,
+      compareCity?.label || "Comparison City"
+    );
+
+    const combinedData = [...primaryData, ...secondaryData];
+
+    if (!combinedData.length) {
+      return;
+    }
+
+    const containerWidth = svgElement.parentElement?.clientWidth || 800;
+    const height = 360;
+    const margin = { top: 40, right: 32, bottom: 60, left: 72 };
+    const width = Math.max(containerWidth, 320);
+    const innerWidth = width - margin.left - margin.right;
+    const innerHeight = height - margin.top - margin.bottom;
+
+    svg
+      .attr("viewBox", `0 0 ${width} ${height}`)
+      .attr("preserveAspectRatio", "xMidYMid meet")
+      .style("width", "100%")
+      .style("height", "auto");
+
+    const chartGroup = svg
+      .append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    const xScale = d3
+      .scaleTime()
+      .domain(d3.extent(combinedData, (d) => d.date))
+      .range([0, innerWidth]);
+
+    const minValue = d3.min(combinedData, (d) => d.value);
+    const maxValue = d3.max(combinedData, (d) => d.value);
+    const yPadding = (maxValue - minValue || 1) * 0.1;
+    const yScale = d3
+      .scaleLinear()
+      .domain([
+        Math.min(0, minValue - yPadding),
+        Math.max(0, maxValue + yPadding),
+      ])
+      .nice()
+      .range([innerHeight, 0]);
+
+    const xAxis = d3
+      .axisBottom(xScale)
+      .ticks(width < 640 ? 5 : 8)
+      .tickFormat(d3.timeFormat("%b %d"));
+
+    const yAxis = d3
+      .axisLeft(yScale)
+      .ticks(6)
+      .tickFormat((d) => d3.format(",.0f")(d));
+
+    chartGroup
+      .append("g")
+      .attr("transform", `translate(0, ${innerHeight})`)
+      .call(xAxis)
+      .call((g) =>
+        g
+          .selectAll("text")
+          .style("font-size", "12px")
+          .style("fill", "#4b5563")
+      )
+      .call((g) =>
+        g
+          .selectAll("line")
+          .style("stroke", "#e5e7eb")
+      )
+      .append("text")
+      .attr("x", innerWidth / 2)
+      .attr("y", 48)
+      .attr("fill", "#6b7280")
+      .attr("text-anchor", "middle")
+      .style("font-size", "12px")
+      .text("Date");
+
+    chartGroup
+      .append("g")
+      .call(yAxis)
+      .call((g) =>
+        g
+          .selectAll("text")
+          .style("font-size", "12px")
+          .style("fill", "#4b5563")
+      )
+      .call((g) =>
+        g
+          .selectAll("line")
+          .style("stroke", "#e5e7eb")
+          .style("stroke-dasharray", "2,2")
+      )
+      .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("x", -innerHeight / 2)
+      .attr("y", -52)
+      .attr("fill", "#6b7280")
+      .attr("text-anchor", "middle")
+      .style("font-size", "12px")
+      .text(`${selectedOption} concentration`);
+
+    chartGroup
+      .append("line")
+      .attr("x1", 0)
+      .attr("x2", innerWidth)
+      .attr("y1", yScale(0))
+      .attr("y2", yScale(0))
+      .attr("stroke", "#d1d5db")
+      .attr("stroke-dasharray", "4,4");
+
+    const lineGenerator = d3
+      .line()
+      .defined((d) => Number.isFinite(d.value))
+      .x((d) => xScale(d.date))
+      .y((d) => yScale(d.value))
+      .curve(d3.curveMonotoneX);
+
+    const formatValue = d3.format(".2f");
+    const formatDate = d3.timeFormat("%b %d, %Y");
+    const colors = {
+      primary: "#2563eb",
+      secondary: "#f97316",
+    };
+
+    const showTooltip = (event, d, label) => {
+      if (!tooltipElement) return;
+      tooltipElement.style.display = "block";
+      tooltipElement.style.pointerEvents = "none";
+      tooltipElement.innerHTML = `
+        <div class="text-xs">
+          <div class="font-semibold text-gray-800">${label}</div>
+          <div class="text-gray-600">${formatDate(d.date)}</div>
+          <div class="mt-1 text-gray-900">${selectedOption}: <span class="font-semibold">${formatValue(d.value)}</span></div>
+        </div>
+      `;
+
+      const { pageX, pageY } = event;
+      tooltipElement.style.left = `${pageX + 12}px`;
+      tooltipElement.style.top = `${pageY - 28}px`;
+    };
+
+    const hideTooltip = () => {
+      if (!tooltipElement) return;
+      tooltipElement.style.display = "none";
+    };
+
+    const drawSeries = (dataSeries, key) => {
+      if (!dataSeries.length) return;
+
+      chartGroup
+        .append("path")
+        .datum(dataSeries)
+        .attr("fill", "none")
+        .attr("stroke", colors[key])
+        .attr("stroke-width", 2.5)
+        .attr("d", lineGenerator);
+
+      chartGroup
+        .selectAll(`.dot-${key}`)
+        .data(dataSeries)
+        .join("circle")
+        .attr("class", `dot-${key}`)
+        .attr("cx", (d) => xScale(d.date))
+        .attr("cy", (d) => yScale(d.value))
+        .attr("r", 4)
+        .attr("fill", colors[key])
+        .attr("stroke", "white")
+        .attr("stroke-width", 1.5)
+        .on("mouseenter", function (event, d) {
+          d3.select(this).transition().duration(150).attr("r", 6);
+          showTooltip(event, d, d.label);
+        })
+        .on("mousemove", function (event, d) {
+          showTooltip(event, d, d.label);
+        })
+        .on("mouseleave", function () {
+          d3.select(this).transition().duration(150).attr("r", 4);
+          hideTooltip();
+        });
+    };
+
+    drawSeries(primaryData, "primary");
+    drawSeries(secondaryData, "secondary");
+
+    const legendItems = [];
+    if (primaryData.length) {
+      legendItems.push({ label: primaryData[0].label, color: colors.primary });
+    }
+    if (secondaryData.length) {
+      legendItems.push({ label: secondaryData[0].label, color: colors.secondary });
+    }
+
+    if (legendItems.length) {
+      const legend = svg
+        .append("g")
+        .attr("transform", `translate(${margin.left}, ${margin.top / 1.5})`)
+        .selectAll("g")
+        .data(legendItems)
+        .join("g")
+        .attr("transform", (_, i) => `translate(${i * 220}, 0)`);
+
+      legend
+        .append("rect")
+        .attr("width", 14)
+        .attr("height", 14)
+        .attr("rx", 3)
+        .attr("fill", (d) => d.color);
+
+      legend
+        .append("text")
+        .attr("x", 20)
+        .attr("y", 11)
+        .attr("fill", "#374151")
+        .style("font-size", "12px")
+        .text((d) => d.label);
+    }
+
+    return () => {
+      svg.selectAll("*").remove();
+      if (tooltipElement) {
+        tooltipElement.style.display = "none";
+      }
+    };
   }, [rawdata, compareRawdata, selectedOption, city, compareCity]);
 
   // Handlers for form elements
