@@ -38,19 +38,20 @@ const AqiDetails = ({selectedSearch}) => {
     }
   };
 
+  // EPA/CPCB Standard AQI Color Scale (synchronized with ward comparison)
   const getColorForValue = (value) => {
     if (value <= 50) {
-      return '#24c45c';
+      return '#00e400';  // Good (Green)
     } else if (value <= 100) {
-      return '#ecb40c';
+      return '#ffff00';  // Satisfactory (Yellow)
+    } else if (value <= 150) {
+      return '#ff7e00';  // Moderate (Orange)
     } else if (value <= 200) {
-      return '#fc7414';
+      return '#ff0000';  // Poor (Red)
     } else if (value <= 300) {
-      return '#ec4444';
-    } else if (value <= 400) {
-      return '#7c1c1c';
+      return '#8f3f97';  // Very Poor (Purple)
     } else {
-      return '#5c1c84';
+      return '#7e0023';  // Severe (Maroon)
     }
   };
 

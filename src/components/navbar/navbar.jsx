@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import { getBaseUrl, setStationName, setUrl } from "../Connectivity/storageHelper";
 
 function Navbar({ onSearchSelected }) {
@@ -7,9 +8,16 @@ function Navbar({ onSearchSelected }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [defaultSuggestions, setDefaultSuggestions] = useState([]);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     fetchStationsData();
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   var stationdata = [];
@@ -131,10 +139,24 @@ function Navbar({ onSearchSelected }) {
   };
 
   return (
-    <nav className="sticky top-0 z-10 bg-white backdrop-filter backdrop-blur-2xl bg-opacity-10 shadow-2xl border-slate-800">
+    <motion.nav 
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      className={`sticky top-0 z-10 transition-all duration-300 ${
+        isScrolled 
+          ? 'bg-white/90 backdrop-blur-lg shadow-2xl' 
+          : 'bg-white backdrop-filter backdrop-blur-2xl bg-opacity-10'
+      } border-slate-800`}
+    >
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <a href="/" className="flex items-center gap-3">
-          <img src="/logo.jpeg" className="lg:h-12 h-10 bg-transparent rounded-full" alt="Udyan Sathi Logo" />
+          <motion.img 
+            whileHover={{ rotate: 360 }}
+            transition={{ duration: 0.5 }}
+            src="/logo.jpeg" 
+            className="lg:h-12 h-10 bg-transparent rounded-full" 
+            alt="Udyan Sathi Logo" 
+          />
           <span className="lg:text-3xl text-xl text-black font-semibold"> Udyan Sathi </span>
         </a>
         <div className="md:hidden">
@@ -161,6 +183,33 @@ function Navbar({ onSearchSelected }) {
               </Link>
               <Link to="/weather" className="hover:text-slate-600 transition ease-in-out delay-100">
                 Weather
+              </Link>
+              <Link to="/wards">
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-gradient-to-r from-purple-500 to-blue-600 text-white px-4 py-2 rounded-lg hover:shadow-lg transition font-bold flex items-center gap-2"
+                >
+                  🏙️ Wards
+                </motion.div>
+              </Link>
+              <Link to="/policy-simulator">
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-gradient-to-r from-green-500 to-teal-600 text-white px-4 py-2 rounded-lg hover:shadow-lg transition font-bold flex items-center gap-2"
+                >
+                  🎛️ Policy Sim
+                </motion.div>
+              </Link>
+              <Link to="/dispatch">
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-gradient-to-r from-orange-500 to-red-600 text-white px-4 py-2 rounded-lg hover:shadow-lg transition font-bold flex items-center gap-2"
+                >
+                  🚨 Dispatch
+                </motion.div>
               </Link>
             </div>
             <div className="relative hidden md:block">
@@ -228,7 +277,7 @@ function Navbar({ onSearchSelected }) {
           </div>
         )}
       </div>
-    </nav>
+    </motion.nav>
   );
 }
 

@@ -2,20 +2,21 @@ import React, { useRef, useEffect, forwardRef } from 'react';
 import { Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 
+// EPA/CPCB Standard AQI Color Scale (synchronized with AqiDetails and WardComparison)
 const createMarkerIcon = (aqi, highlight) => {
-    let color = '#24c45c'; // Default color for "Good" AQI
+    let color = '#00e400'; // Default color for "Good" AQI
     if (aqi <= 50) {
-        color = '#24c45c'; // Good
+        color = '#00e400'; // Good (Green)
     } else if (aqi <= 100) {
-        color = '#ecb40c'; // Satisfactory
+        color = '#ffff00'; // Satisfactory (Yellow)
+    } else if (aqi <= 150) {
+        color = '#ff7e00'; // Moderate (Orange)
     } else if (aqi <= 200) {
-        color = '#fc7414'; // Moderate
+        color = '#ff0000'; // Poor (Red)
     } else if (aqi <= 300) {
-        color = '#ec4444'; // Poor
-    } else if (aqi <= 400) {
-        color = '#7c1c1c'; // Very Poor
+        color = '#8f3f97'; // Very Poor (Purple)
     } else {
-        color = '#5c1c84'; // Severe
+        color = '#7e0023'; // Severe (Maroon)
     }
 
     const size = highlight ? 50 : 35;
