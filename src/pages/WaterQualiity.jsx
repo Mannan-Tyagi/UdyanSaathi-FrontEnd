@@ -1,3 +1,18 @@
+/*
+ * ============================================
+ * WATER QUALITY FEATURE - CURRENTLY DISABLED
+ * ============================================
+ * This component and all related Water Quality features are currently commented out
+ * and not being displayed in the frontend. No changes should be made to this file
+ * or any WaterQuality components until the feature is re-enabled.
+ * 
+ * Related files (all disabled):
+ * - src/components/WaterQuality/WaterComponent1.jsx through WaterComponent8.jsx
+ * - src/components/navbar/navbar(WQI).jsx
+ * - Route: /water-quality-index (commented out in src/index.jsx)
+ * ============================================
+ */
+
 import React from "react";
 import Navbar from "../components/navbar/navbar(WQI)";
 import WaterComponent1 from "../components/WaterQuality/WaterComponent1";

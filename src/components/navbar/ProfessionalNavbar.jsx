@@ -120,7 +120,7 @@ function ProfessionalNavbar({ onSearchSelected }) {
 
   const navItems = [
     { path: "/", label: "Air Quality", icon: "🌬️" },
-    { path: "/water-quality-index", label: "Water Quality", icon: "💧" },
+    // { path: "/water-quality-index", label: "Water Quality", icon: "💧" }, // COMMENTED OUT: Water Quality feature disabled
     { path: "/weather", label: "Weather", icon: "☀️" },
   ];
 
@@ -140,8 +140,8 @@ function ProfessionalNavbar({ onSearchSelected }) {
         transition={{ duration: 0.5, ease: "easeOut" }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           isScrolled
-            ? 'bg-white/80 backdrop-blur-xl shadow-lg border-b border-gray-200/50'
-            : 'bg-white/60 backdrop-blur-md'
+            ? 'bg-surface/95 backdrop-blur-xl shadow-card border-b border-mist'
+            : 'bg-surface/80 backdrop-blur-md'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -151,15 +151,15 @@ function ProfessionalNavbar({ onSearchSelected }) {
               <motion.div
                 whileHover={{ rotate: 360, scale: 1.1 }}
                 transition={{ duration: 0.5 }}
-                className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg"
+                className="w-10 h-10 bg-primary rounded-card flex items-center justify-center shadow-card"
               >
                 <span className="text-white text-lg">🌿</span>
               </motion.div>
               <div className="hidden sm:block">
-                <span className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-cyan-600 bg-clip-text text-transparent">
+                <span className="text-xl font-bold text-primary">
                   UdyanSaathi
                 </span>
-                <span className="block text-[10px] text-gray-500 font-medium -mt-1">Environmental Intelligence</span>
+                <span className="block text-[10px] text-metal font-medium -mt-1">Environmental Intelligence</span>
               </div>
             </Link>
 
@@ -170,10 +170,10 @@ function ProfessionalNavbar({ onSearchSelected }) {
                   <motion.div
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className={`px-4 py-2 rounded-xl font-medium text-sm transition-all duration-300 flex items-center gap-2 ${
+                    className={`px-4 py-2 rounded-card font-medium text-sm transition-all duration-300 flex items-center gap-2 ${
                       isActive(item.path)
-                        ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-md'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                        ? 'bg-primary text-white shadow-card'
+                        : 'text-metal hover:text-ink hover:bg-canvas'
                     }`}
                   >
                     <span>{item.icon}</span>
@@ -182,17 +182,17 @@ function ProfessionalNavbar({ onSearchSelected }) {
                 </Link>
               ))}
 
-              <div className="w-px h-6 bg-gray-300 mx-2" />
+              <div className="w-px h-6 bg-mist mx-2" />
 
               {featureItems.map((item) => (
                 <Link key={item.path} to={item.path}>
                   <motion.div
                     whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.95 }}
-                    className={`px-4 py-2 rounded-xl font-semibold text-sm transition-all duration-300 flex items-center gap-2 ${
+                    className={`px-4 py-2 rounded-card font-semibold text-sm transition-all duration-300 flex items-center gap-2 ${
                       isActive(item.path)
-                        ? `bg-gradient-to-r ${item.gradient} text-white shadow-lg`
-                        : `bg-gradient-to-r ${item.gradient} text-white opacity-80 hover:opacity-100 shadow-md hover:shadow-lg`
+                        ? 'bg-primary text-white shadow-elevation-2'
+                        : 'bg-primary/10 text-primary hover:bg-primary/20 shadow-card'
                     }`}
                   >
                     <span>{item.icon}</span>
@@ -209,7 +209,7 @@ function ProfessionalNavbar({ onSearchSelected }) {
                 className="relative"
               >
                 <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 text-metal" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
                 </div>
@@ -220,7 +220,7 @@ function ProfessionalNavbar({ onSearchSelected }) {
                   onChange={(e) => updateSuggestions(e.target.value)}
                   onFocus={() => { setIsSearchFocused(true); setSearchTerm(''); }}
                   onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
-                  className="w-full pl-10 pr-4 py-2 bg-gray-100/80 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all duration-300"
+                  className="w-full pl-10 pr-4 py-2 bg-canvas border border-mist rounded-card text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-300"
                 />
               </motion.div>
 
@@ -230,7 +230,7 @@ function ProfessionalNavbar({ onSearchSelected }) {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="absolute top-full mt-2 w-full bg-white rounded-xl shadow-xl border border-gray-100 max-h-64 overflow-y-auto z-50"
+                    className="absolute top-full mt-2 w-full bg-surface rounded-card shadow-elevation-2 border border-mist max-h-64 overflow-y-auto z-50"
                   >
                     {suggestions.map((suggestion, index) => (
                       <motion.div
@@ -239,9 +239,9 @@ function ProfessionalNavbar({ onSearchSelected }) {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.05 }}
                         onClick={() => selectSuggestion(suggestion)}
-                        className="px-4 py-3 hover:bg-blue-50 cursor-pointer text-sm text-gray-700 border-b border-gray-50 last:border-0 flex items-center gap-2"
+                        className="px-4 py-3 hover:bg-primary/10 cursor-pointer text-sm text-ink border-b border-mist last:border-0 flex items-center gap-2"
                       >
-                        <span className="text-blue-500">📍</span>
+                        <span className="text-primary">📍</span>
                         {suggestion}
                       </motion.div>
                     ))}
@@ -254,9 +254,9 @@ function ProfessionalNavbar({ onSearchSelected }) {
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 rounded-xl hover:bg-gray-100 transition-colors"
+              className="lg:hidden p-2 rounded-card hover:bg-canvas transition-colors"
             >
-              <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 text-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {isMobileMenuOpen ? (
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 ) : (
@@ -274,7 +274,7 @@ function ProfessionalNavbar({ onSearchSelected }) {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="lg:hidden bg-white/95 backdrop-blur-xl border-t border-gray-200"
+              className="lg:hidden bg-surface/98 backdrop-blur-xl border-t border-mist"
             >
               <div className="px-4 py-4 space-y-2">
                 {/* Mobile Search */}
@@ -284,19 +284,19 @@ function ProfessionalNavbar({ onSearchSelected }) {
                     placeholder="Search station..."
                     value={searchTerm}
                     onChange={(e) => updateSuggestions(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full pl-10 pr-4 py-3 bg-canvas border border-mist rounded-card text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary"
                   />
-                  <svg className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 text-metal absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
                 </div>
 
                 {navItems.map((item) => (
                   <Link key={item.path} to={item.path} onClick={() => setIsMobileMenuOpen(false)}>
-                    <div className={`px-4 py-3 rounded-xl font-medium flex items-center gap-3 ${
+                    <div className={`px-4 py-3 rounded-card font-medium flex items-center gap-3 ${
                       isActive(item.path)
-                        ? 'bg-blue-500 text-white'
-                        : 'text-gray-700 hover:bg-gray-100'
+                        ? 'bg-primary text-white'
+                        : 'text-ink hover:bg-canvas'
                     }`}>
                       <span className="text-lg">{item.icon}</span>
                       <span>{item.label}</span>
@@ -304,10 +304,14 @@ function ProfessionalNavbar({ onSearchSelected }) {
                   </Link>
                 ))}
 
-                <div className="border-t border-gray-200 my-3 pt-3">
+                <div className="border-t border-mist my-3 pt-3">
                   {featureItems.map((item) => (
                     <Link key={item.path} to={item.path} onClick={() => setIsMobileMenuOpen(false)}>
-                      <div className={`px-4 py-3 rounded-xl font-semibold flex items-center gap-3 mb-2 bg-gradient-to-r ${item.gradient} text-white shadow-md`}>
+                      <div className={`px-4 py-3 rounded-card font-semibold flex items-center gap-3 mb-2 ${
+                        isActive(item.path)
+                          ? 'bg-primary text-white shadow-card'
+                          : 'bg-primary/10 text-primary'
+                      }`}>
                         <span className="text-lg">{item.icon}</span>
                         <span>{item.label}</span>
                       </div>

@@ -33,7 +33,14 @@ const WeatherComponent3 = () => {
   };
 
   if (!weatherData || !weatherData.list || weatherData.list.length === 0) {
-    return <div>Loading...</div>;
+    return (
+      <div className="bento-card p-6 flex items-center justify-center">
+        <div className="flex items-center gap-3">
+          <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+          <span className="text-metal">Loading...</span>
+        </div>
+      </div>
+    );
   }
 
   const weatherItem = weatherData.list[0];
@@ -44,54 +51,55 @@ const WeatherComponent3 = () => {
 
   return (
     <>
-      <div className="w-1/3  ">
-        <div className="flex flex-col">
-          <div className="flex flex-row">
-            <div className="wind-component w-1/2 shb flex flex-col m-3 rounded-2xl p-4 bg-white">
-              <h1 className="text-3xl font-bold flex flex-row gap-3 mb-5">
-                Wind{" "}
+      <div className="w-full">
+        <div className="flex flex-col gap-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bento-card p-5">
+              <h2 className="text-lg font-semibold text-ink flex items-center gap-3 mb-4">
+                Wind
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="40"
-                  height="40"
+                  width="24"
+                  height="24"
                   viewBox="0 0 416 416"
                   fill="none"
+                  className="text-primary"
                 >
                   <path
                     d="M208 0C93.31 0 0 93.31 0 208C0 322.69 93.31 416 208 416C322.69 416 416 322.69 416 208C416 93.31 322.69 0 208 0ZM313.07 113.33L266.19 230.53C262.971 238.579 258.15 245.891 252.02 252.02C245.891 258.15 238.579 262.971 230.53 266.19L113.33 313.07C111.876 313.652 110.284 313.794 108.75 313.48C107.215 313.165 105.808 312.407 104.7 311.3C103.593 310.192 102.835 308.785 102.52 307.25C102.206 305.716 102.348 304.124 102.93 302.67L149.81 185.47C153.029 177.421 157.85 170.109 163.98 163.98C170.109 157.85 177.421 153.029 185.47 149.81L302.67 102.93C304.124 102.348 305.716 102.206 307.25 102.52C308.785 102.835 310.192 103.593 311.3 104.7C312.407 105.808 313.165 107.215 313.48 108.75C313.794 110.284 313.652 111.876 313.07 113.33Z"
-                    fill="#545454"
+                    fill="currentColor"
                   />
                 </svg>
-              </h1>
-              <div className="wind-content flex flex-col gap-1">
-                <div className="flex gap-3">
-                  <span className="text-s">Deg : </span>
-                  <span className="text-xl font-bold">
-                    {weatherItem.wind.deg}
+              </h2>
+              <div className="flex flex-col gap-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-metal">Direction</span>
+                  <span className="text-lg font-semibold text-ink">
+                    {weatherItem.wind.deg}°
                   </span>
                 </div>
-                <div className="flex gap-3">
-                  <span className="text-s">gust : </span>
-                  <span className="text-xl font-bold">
-                    {weatherItem.wind.gust}
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-metal">Gust</span>
+                  <span className="text-lg font-semibold text-ink">
+                    {weatherItem.wind.gust || 'N/A'}
                   </span>
                 </div>
-                <div className="flex gap-3">
-                  <span className="text-s">speed : </span>
-                  <span className="text-xl font-bold">
-                    {weatherItem.wind.speed}
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-metal">Speed</span>
+                  <span className="text-lg font-semibold text-ink">
+                    {weatherItem.wind.speed} m/s
                   </span>
                 </div>
               </div>
             </div>
-            <div className="w-1/2 shb flex flex-col m-3 rounded-2xl p-4 bg-white">
-              <h1 className="text-3xl font-bold flex flex-row gap-3 mb-2">
+            <div className="bento-card p-5 flex flex-col justify-between">
+              <h2 className="text-lg font-semibold text-ink mb-2">
                 Feels Like
-              </h1>
-              <span className="text-xl">
+              </h2>
+              <span className="text-3xl font-bold text-primary">
                 {convertToCelsius(weatherItem.main.feels_like).toFixed(2)}°C
               </span>
-              <span className="text-sm text-slate-700 mt-12">
+              <span className="text-sm text-metal mt-4">
                 Wind is making it feel cooler.
               </span>
             </div>

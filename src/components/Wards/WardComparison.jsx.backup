@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
-import Navbar from '../navbar/navbar';
+import Navbar from '../navbar/UnifiedNavbar';
 import { debounce } from '../../utils/performance';
 import WardCardSkeleton from '../skeletons/WardCardSkeleton';
 
@@ -878,12 +878,12 @@ const WardComparison = () => {
   // Loading State
   if (loading) {
     return (
-      <div className="min-h-screen bg-canvas page-gradient">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
         <Navbar />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="mb-8">
-            <div className="h-10 w-64 bg-mist rounded-card animate-pulse mb-4"></div>
-            <div className="h-6 w-96 bg-mist rounded-card animate-pulse"></div>
+            <div className="h-10 w-64 bg-white/10 rounded animate-pulse mb-4"></div>
+            <div className="h-6 w-96 bg-white/10 rounded animate-pulse"></div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {[...Array(6)].map((_, i) => (
@@ -898,20 +898,20 @@ const WardComparison = () => {
   // Error State
   if (error) {
     return (
-      <div className="min-h-screen bg-canvas page-gradient">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
         <Navbar />
         <div className="flex items-center justify-center min-h-[80vh]">
-          <div className="text-center bento-card p-8 max-w-md border-status-danger/30">
-            <div className="w-16 h-16 mx-auto mb-4 bg-status-danger/20 rounded-full flex items-center justify-center">
-              <svg className="w-8 h-8 text-status-danger" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="text-center bg-red-500/10 border border-red-500/30 rounded-2xl p-8 max-w-md">
+            <div className="w-16 h-16 mx-auto mb-4 bg-red-500/20 rounded-full flex items-center justify-center">
+              <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
             </div>
-            <h2 className="text-xl font-bold text-ink mb-2">Failed to Load Data</h2>
-            <p className="text-metal mb-4">{error}</p>
+            <h2 className="text-xl font-bold text-white mb-2">Failed to Load Data</h2>
+            <p className="text-gray-400 mb-4">{error}</p>
             <button 
               onClick={fetchRealTimeData}
-              className="btn-primary"
+              className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
             >
               Try Again
             </button>
@@ -922,39 +922,40 @@ const WardComparison = () => {
   }
 
   return (
-    <div className="min-h-screen bg-canvas page-gradient">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       <Navbar />
       
       {/* Hero Header */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-primary/5 via-teal-50 to-emerald-50/50 border-b border-mist">
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-cyan-600/20"></div>
         <div className="absolute inset-0 bg-[url('data:image/svg+xml,...')] opacity-5"></div>
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <div className="flex items-center gap-4 mb-2">
-                <h1 className="text-3xl md:text-4xl font-bold text-ink">Delhi Ward Air Quality</h1>
-                <span className="px-3 py-1 bg-status-safe/10 border border-status-safe/30 rounded-full text-status-safe text-sm font-medium flex items-center gap-1">
-                  <span className="w-2 h-2 bg-status-safe rounded-full animate-pulse"></span>
+              <div className="flex items-center gap-3 mb-2">
+                <h1 className="text-3xl md:text-4xl font-bold text-white">Delhi Ward Air Quality</h1>
+                <span className="px-3 py-1 bg-green-500/20 border border-green-500/30 rounded-full text-green-400 text-sm font-medium flex items-center gap-1">
+                  <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
                   Live
                 </span>
               </div>
-              <p className="text-metal">Real-time monitoring across {summary.totalWards} wards with health impact analysis</p>
+              <p className="text-gray-400">Real-time monitoring across {summary.totalWards} wards with health impact analysis</p>
             </div>
             
             <div className="flex items-center gap-4">
               <div className="text-right">
-                <p className="text-metal text-sm">Last Updated</p>
-                <p className="text-ink font-medium">
+                <p className="text-gray-400 text-sm">Last Updated</p>
+                <p className="text-white font-medium">
                   {summary.lastUpdated ? summary.lastUpdated.toLocaleTimeString() : 'Just now'}
                 </p>
               </div>
               <button 
                 onClick={fetchRealTimeData}
-                className="p-2 bg-primary/10 hover:bg-primary/20 rounded-lg transition-colors"
+                className="p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors"
                 title="Refresh Data"
               >
-                <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
               </button>
@@ -963,24 +964,24 @@ const WardComparison = () => {
           
           {/* Stats Row */}
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-6">
-            <div className="bento-card p-4">
-              <p className="text-metal text-sm">Total Wards</p>
-              <p className="text-2xl font-bold text-ink">{summary.totalWards}</p>
+            <div className="bg-white/5 backdrop-blur rounded-xl p-4 border border-white/10">
+              <p className="text-gray-400 text-sm">Total Wards</p>
+              <p className="text-2xl font-bold text-white">{summary.totalWards}</p>
             </div>
-            <div className="bento-card p-4">
-              <p className="text-metal text-sm">Live Stations</p>
-              <p className="text-2xl font-bold text-status-safe">{summary.realtimeWards}</p>
+            <div className="bg-white/5 backdrop-blur rounded-xl p-4 border border-white/10">
+              <p className="text-gray-400 text-sm">Live Stations</p>
+              <p className="text-2xl font-bold text-green-400">{summary.realtimeWards}</p>
             </div>
-            <div className="bento-card p-4">
-              <p className="text-metal text-sm">Estimated</p>
-              <p className="text-2xl font-bold text-primary">{summary.estimatedWards}</p>
+            <div className="bg-white/5 backdrop-blur rounded-xl p-4 border border-white/10">
+              <p className="text-gray-400 text-sm">Estimated</p>
+              <p className="text-2xl font-bold text-blue-400">{summary.estimatedWards}</p>
             </div>
-            <div className="bento-card p-4">
-              <p className="text-metal text-sm">Severe AQI</p>
-              <p className="text-2xl font-bold text-status-danger">{summary.severeCount}</p>
+            <div className="bg-white/5 backdrop-blur rounded-xl p-4 border border-white/10">
+              <p className="text-gray-400 text-sm">Severe AQI</p>
+              <p className="text-2xl font-bold text-red-400">{summary.severeCount}</p>
             </div>
-            <div className="bento-card p-4">
-              <p className="text-metal text-sm">City Avg AQI</p>
+            <div className="bg-white/5 backdrop-blur rounded-xl p-4 border border-white/10">
+              <p className="text-gray-400 text-sm">City Avg AQI</p>
               <p className="text-2xl font-bold" style={{ color: getAqiColor(summary.avgAqi) }}>{summary.avgAqi}</p>
             </div>
           </div>
@@ -989,23 +990,23 @@ const WardComparison = () => {
 
       {/* Zone Summary Cards */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <h2 className="text-xl font-bold text-ink mb-4">Zone Overview</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        <h2 className="text-xl font-bold text-white mb-4">Zone Overview</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
           {Object.entries(zoneSummary).map(([zone, data]) => (
             <button
               key={zone}
               onClick={() => setSelectedZone(selectedZone === zone ? null : zone)}
-              className={`p-4 rounded-card border transition-all ${
+              className={`p-4 rounded-xl border transition-all ${
                 selectedZone === zone 
-                  ? 'bg-primary/10 border-primary shadow-md' 
-                  : 'bg-surface border-mist hover:border-primary/50 hover:shadow-card'
+                  ? 'bg-blue-600/20 border-blue-500' 
+                  : 'bg-white/5 border-white/10 hover:bg-white/10'
               }`}
             >
-              <p className="text-sm text-metal truncate">{zone}</p>
+              <p className="text-sm text-gray-400 truncate">{zone}</p>
               <p className="text-xl font-bold" style={{ color: getAqiColor(data.avgAqi) }}>{data.avgAqi}</p>
-              <p className="text-xs text-metal">{data.count} wards</p>
+              <p className="text-xs text-gray-500">{data.count} wards</p>
               {data.realtimeCount > 0 && (
-                <span className="inline-block mt-1 px-2 py-0.5 bg-status-safe/10 text-status-safe text-xs rounded-full">
+                <span className="inline-block mt-1 px-2 py-0.5 bg-green-500/20 text-green-400 text-xs rounded-full">
                   {data.realtimeCount} live
                 </span>
               )}
@@ -1016,19 +1017,19 @@ const WardComparison = () => {
 
       {/* Filter Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div className="bento-card p-4">
+        <div className="bg-white/5 backdrop-blur rounded-xl p-4 border border-white/10">
           <div className="flex flex-col md:flex-row gap-4">
             {/* Search */}
             <div className="flex-1">
               <div className="relative">
-                <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-metal" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 <input
                   type="text"
                   placeholder="Search wards, zones..."
                   onChange={(e) => debouncedSetSearchQuery(e.target.value)}
-                  className="input-field pl-10"
+                  className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
                 />
               </div>
             </div>
@@ -1039,12 +1040,12 @@ const WardComparison = () => {
                 <button
                   key={type}
                   onClick={() => setDataTypeFilter(type)}
-                  className={`px-4 py-2 rounded-button text-sm font-medium transition-colors ${
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                     dataTypeFilter === type
-                      ? type === 'realtime' ? 'bg-status-safe text-white' :
-                        type === 'estimated' ? 'bg-primary text-white' :
-                        'bg-primary text-white'
-                      : 'bg-canvas text-metal hover:bg-mist border border-mist'
+                      ? type === 'realtime' ? 'bg-green-600 text-white' :
+                        type === 'estimated' ? 'bg-blue-600 text-white' :
+                        'bg-purple-600 text-white'
+                      : 'bg-white/10 text-gray-300 hover:bg-white/20'
                   }`}
                 >
                   {type === 'all' ? 'All' : type === 'realtime' ? '🟢 Live' : '🔵 Estimated'}
@@ -1056,7 +1057,7 @@ const WardComparison = () => {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="select-field"
+              className="px-4 py-2 bg-white/10 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
             >
               <option value="aqi_desc">AQI: High to Low</option>
               <option value="aqi_asc">AQI: Low to High</option>
@@ -1069,20 +1070,20 @@ const WardComparison = () => {
           {(selectedZone || searchQuery) && (
             <div className="flex gap-2 mt-3">
               {selectedZone && (
-                <span className="inline-flex items-center gap-1 px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">
+                <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-sm">
                   Zone: {selectedZone}
-                  <button onClick={() => setSelectedZone(null)} className="hover:text-primary-700">×</button>
+                  <button onClick={() => setSelectedZone(null)} className="hover:text-white">×</button>
                 </span>
               )}
               {searchQuery && (
-                <span className="inline-flex items-center gap-1 px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">
+                <span className="inline-flex items-center gap-1 px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-sm">
                   Search: {searchQuery}
-                  <button onClick={() => setSearchQuery('')} className="hover:text-primary-700">×</button>
+                  <button onClick={() => setSearchQuery('')} className="hover:text-white">×</button>
                 </span>
               )}
               <button 
                 onClick={() => { setSelectedZone(null); setSearchQuery(''); setDataTypeFilter('all'); }}
-                className="text-metal hover:text-ink text-sm"
+                className="text-gray-400 hover:text-white text-sm"
               >
                 Clear all
               </button>
@@ -1090,7 +1091,7 @@ const WardComparison = () => {
           )}
         </div>
         
-        <p className="text-metal text-sm mt-3">
+        <p className="text-gray-400 text-sm mt-3">
           Showing {filteredWards.length} of {summary.totalWards} wards
         </p>
       </div>
@@ -1114,10 +1115,10 @@ const WardComparison = () => {
                       exit={{ opacity: 0, y: -20 }}
                       transition={{ delay: index * 0.02 }}
                       onClick={() => fetchWardDetails(ward)}
-                      className={`relative overflow-hidden rounded-card border cursor-pointer transition-all hover:shadow-card-hover bg-surface ${
+                      className={`relative overflow-hidden rounded-xl border cursor-pointer transition-all hover:scale-[1.01] ${
                         selectedWard?.id === ward.id 
-                          ? 'border-primary ring-2 ring-primary/20' 
-                          : 'border-mist hover:border-primary/30'
+                          ? 'border-blue-500 bg-blue-500/10' 
+                          : `${getAqiBgClass(aqi)} hover:border-white/30`
                       }`}
                     >
                       {/* Gradient accent */}
@@ -1127,55 +1128,55 @@ const WardComparison = () => {
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1">
-                              <h3 className="font-semibold text-ink truncate">{ward.name}</h3>
+                              <h3 className="font-semibold text-white truncate">{ward.name}</h3>
                               {ward.type === 'realtime' ? (
-                                <span className="px-2 py-0.5 bg-status-safe/10 text-status-safe text-xs rounded-full flex items-center gap-1">
-                                  <span className="w-1.5 h-1.5 bg-status-safe rounded-full animate-pulse"></span>
+                                <span className="px-2 py-0.5 bg-green-500/20 text-green-400 text-xs rounded-full flex items-center gap-1">
+                                  <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
                                   Live
                                 </span>
                               ) : (
-                                <span className="px-2 py-0.5 bg-primary/10 text-primary text-xs rounded-full">
+                                <span className="px-2 py-0.5 bg-blue-500/20 text-blue-400 text-xs rounded-full">
                                   Estimated
                                 </span>
                               )}
                               {ward.is_hotspot && (
-                                <span className="px-2 py-0.5 bg-status-danger/10 text-status-danger text-xs rounded-full">🔥 Hotspot</span>
+                                <span className="px-2 py-0.5 bg-red-500/20 text-red-400 text-xs rounded-full">🔥 Hotspot</span>
                               )}
                             </div>
-                            <p className="text-sm text-metal">{ward.zone} Zone</p>
+                            <p className="text-sm text-gray-400">{ward.zone} Zone</p>
                           </div>
                           
                           <div className="text-right">
                             <div className="text-3xl font-bold" style={{ color: getAqiColor(aqi) }}>{aqi}</div>
-                            <div className="text-sm text-metal">{category.icon} {category.label}</div>
+                            <div className="text-sm text-gray-400">{category.icon} {category.label}</div>
                           </div>
                         </div>
                         
                         {/* Pollutant Grid */}
                         <div className="grid grid-cols-4 sm:grid-cols-7 gap-2 mt-4">
-                          <div className="bg-canvas rounded-lg p-2 text-center">
-                            <p className="text-xs text-metal">PM2.5</p>
-                            <p className="font-semibold text-ink">{ward.avg_pm25 || ward.pm25 || '--'}</p>
+                          <div className="bg-black/20 rounded-lg p-2 text-center">
+                            <p className="text-xs text-gray-500">PM2.5</p>
+                            <p className="font-semibold text-white">{ward.avg_pm25 || ward.pm25 || '--'}</p>
                           </div>
-                          <div className="bg-canvas rounded-lg p-2 text-center">
-                            <p className="text-xs text-metal">PM10</p>
-                            <p className="font-semibold text-ink">{ward.avg_pm10 || ward.pm10 || '--'}</p>
+                          <div className="bg-black/20 rounded-lg p-2 text-center">
+                            <p className="text-xs text-gray-500">PM10</p>
+                            <p className="font-semibold text-white">{ward.avg_pm10 || ward.pm10 || '--'}</p>
                           </div>
-                          <div className="bg-canvas rounded-lg p-2 text-center">
-                            <p className="text-xs text-metal">NO₂</p>
-                            <p className="font-semibold text-ink">{ward.no2 || '--'}</p>
+                          <div className="bg-black/20 rounded-lg p-2 text-center">
+                            <p className="text-xs text-gray-500">NO₂</p>
+                            <p className="font-semibold text-white">{ward.no2 || '--'}</p>
                           </div>
-                          <div className="bg-canvas rounded-lg p-2 text-center">
-                            <p className="text-xs text-metal">SO₂</p>
-                            <p className="font-semibold text-ink">{ward.so2 || '--'}</p>
+                          <div className="bg-black/20 rounded-lg p-2 text-center">
+                            <p className="text-xs text-gray-500">SO₂</p>
+                            <p className="font-semibold text-white">{ward.so2 || '--'}</p>
                           </div>
-                          <div className="bg-canvas rounded-lg p-2 text-center hidden sm:block">
-                            <p className="text-xs text-metal">CO</p>
-                            <p className="font-semibold text-ink">{ward.co || '--'}</p>
+                          <div className="bg-black/20 rounded-lg p-2 text-center hidden sm:block">
+                            <p className="text-xs text-gray-500">CO</p>
+                            <p className="font-semibold text-white">{ward.co || '--'}</p>
                           </div>
-                          <div className="bg-canvas rounded-lg p-2 text-center hidden sm:block">
-                            <p className="text-xs text-metal">O₃</p>
-                            <p className="font-semibold text-ink">{ward.o3 || '--'}</p>
+                          <div className="bg-black/20 rounded-lg p-2 text-center hidden sm:block">
+                            <p className="text-xs text-gray-500">O₃</p>
+                            <p className="font-semibold text-white">{ward.o3 || '--'}</p>
                           </div>
                           <div className={`rounded-lg p-2 text-center ${getUrgencyColor(ward.urgency)}`}>
                             <p className="text-xs opacity-80">Urgency</p>
@@ -1189,11 +1190,11 @@ const WardComparison = () => {
               </AnimatePresence>
               
               {filteredWards.length === 0 && (
-                <div className="text-center py-12 bento-card">
-                  <svg className="w-12 h-12 mx-auto text-metal mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="text-center py-12 bg-white/5 rounded-xl border border-white/10">
+                  <svg className="w-12 h-12 mx-auto text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <p className="text-metal">No wards match your filters</p>
+                  <p className="text-gray-400">No wards match your filters</p>
                 </div>
               )}
             </div>
@@ -1208,7 +1209,7 @@ const WardComparison = () => {
                 exit={{ opacity: 0, x: 100 }}
                 className="hidden md:block w-1/2 sticky top-4 self-start"
               >
-                <div className="bento-card overflow-hidden">
+                <div className="bg-white/5 backdrop-blur rounded-2xl border border-white/10 overflow-hidden">
                   {/* Header */}
                   <div className={`relative p-6 bg-gradient-to-r ${getAqiGradient(selectedWard.avg_aqi || selectedWard.aqi || 150)}`}>
                     <button
@@ -1248,15 +1249,15 @@ const WardComparison = () => {
                   <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
                     {detailsLoading ? (
                       <div className="flex items-center justify-center py-8">
-                        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                        <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
                       </div>
                     ) : wardDetails ? (
                       <>
                         {/* Data Source Badge */}
-                        <div className="flex items-center justify-between p-3 bg-canvas rounded-lg">
-                          <span className="text-metal text-sm">Data Source</span>
+                        <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+                          <span className="text-gray-400 text-sm">Data Source</span>
                           <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                            wardDetails.data_type?.includes('Live') ? 'bg-status-safe/10 text-status-safe' : 'bg-primary/10 text-primary'
+                            wardDetails.data_type?.includes('Live') ? 'bg-green-500/20 text-green-400' : 'bg-blue-500/20 text-blue-400'
                           }`}>
                             {wardDetails.data_type || 'Live Data'}
                           </span>
@@ -1264,60 +1265,60 @@ const WardComparison = () => {
 
                         {/* Health Impact Cards */}
                         <div>
-                          <h3 className="text-lg font-semibold text-ink mb-3">🏥 Health Impact Analysis</h3>
-                          <div className="grid grid-cols-2 gap-4">
-                            <div className="bg-orange-50 border border-orange-200 rounded-card p-4">
+                          <h3 className="text-lg font-semibold text-white mb-3">🏥 Health Impact Analysis</h3>
+                          <div className="grid grid-cols-2 gap-3">
+                            <div className="bg-orange-500/10 border border-orange-500/30 rounded-xl p-4">
                               <div className="flex items-center gap-2 mb-2">
                                 <span className="text-2xl">🚬</span>
-                                <span className="text-orange-600 text-sm">Cigarette Equivalent</span>
+                                <span className="text-orange-400 text-sm">Cigarette Equivalent</span>
                               </div>
-                              <p className="text-2xl font-bold text-ink">{wardDetails.cigarettes_equivalent}</p>
-                              <p className="text-xs text-metal">cigarettes/day breathed</p>
+                              <p className="text-2xl font-bold text-white">{wardDetails.cigarettes_equivalent}</p>
+                              <p className="text-xs text-gray-400">cigarettes/day breathed</p>
                             </div>
                             
-                            <div className="bg-purple-50 border border-purple-200 rounded-card p-4">
+                            <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-4">
                               <div className="flex items-center gap-2 mb-2">
                                 <span className="text-2xl">🫁</span>
-                                <span className="text-purple-600 text-sm">Lung Age Impact</span>
+                                <span className="text-purple-400 text-sm">Lung Age Impact</span>
                               </div>
-                              <p className="text-2xl font-bold text-ink">+{wardDetails.lung_age_increase}</p>
-                              <p className="text-xs text-metal">years added to lung age</p>
+                              <p className="text-2xl font-bold text-white">+{wardDetails.lung_age_increase}</p>
+                              <p className="text-xs text-gray-400">years added to lung age</p>
                             </div>
                             
-                            <div className="bg-red-50 border border-red-200 rounded-card p-4">
+                            <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4">
                               <div className="flex items-center gap-2 mb-2">
                                 <span className="text-2xl">🏥</span>
-                                <span className="text-red-600 text-sm">Hospital Visit Risk</span>
+                                <span className="text-red-400 text-sm">Hospital Visit Risk</span>
                               </div>
-                              <p className="text-2xl font-bold text-ink">{wardDetails.hospital_visit_risk}%</p>
-                              <p className="text-xs text-metal">increased probability</p>
+                              <p className="text-2xl font-bold text-white">{wardDetails.hospital_visit_risk}%</p>
+                              <p className="text-xs text-gray-400">increased probability</p>
                             </div>
                             
-                            <div className="bg-blue-50 border border-blue-200 rounded-card p-4">
+                            <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
                               <div className="flex items-center gap-2 mb-2">
                                 <span className="text-2xl">❤️</span>
-                                <span className="text-blue-600 text-sm">Life Expectancy</span>
+                                <span className="text-blue-400 text-sm">Life Expectancy</span>
                               </div>
-                              <p className="text-2xl font-bold text-ink">-{wardDetails.life_expectancy_impact}</p>
-                              <p className="text-xs text-metal">years reduction</p>
+                              <p className="text-2xl font-bold text-white">-{wardDetails.life_expectancy_impact}</p>
+                              <p className="text-xs text-gray-400">years reduction</p>
                             </div>
 
-                            <div className="bg-pink-50 border border-pink-200 rounded-card p-4">
+                            <div className="bg-pink-500/10 border border-pink-500/30 rounded-xl p-4">
                               <div className="flex items-center gap-2 mb-2">
                                 <span className="text-2xl">💔</span>
-                                <span className="text-pink-600 text-sm">Cardiovascular Risk</span>
+                                <span className="text-pink-400 text-sm">Cardiovascular Risk</span>
                               </div>
-                              <p className="text-2xl font-bold text-ink">{wardDetails.cardiovascular_risk}%</p>
-                              <p className="text-xs text-metal">elevated heart risk</p>
+                              <p className="text-2xl font-bold text-white">{wardDetails.cardiovascular_risk}%</p>
+                              <p className="text-xs text-gray-400">elevated heart risk</p>
                             </div>
 
-                            <div className="bg-cyan-50 border border-cyan-200 rounded-card p-4">
+                            <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-xl p-4">
                               <div className="flex items-center gap-2 mb-2">
                                 <span className="text-2xl">🌬️</span>
-                                <span className="text-cyan-600 text-sm">Respiratory Risk</span>
+                                <span className="text-cyan-400 text-sm">Respiratory Risk</span>
                               </div>
-                              <p className="text-2xl font-bold text-ink">{wardDetails.respiratory_risk}%</p>
-                              <p className="text-xs text-metal">breathing issues risk</p>
+                              <p className="text-2xl font-bold text-white">{wardDetails.respiratory_risk}%</p>
+                              <p className="text-xs text-gray-400">breathing issues risk</p>
                             </div>
                           </div>
                         </div>
@@ -1325,31 +1326,31 @@ const WardComparison = () => {
                         {/* Disease Burden */}
                         {wardDetails.disease_burden && (
                           <div>
-                            <h3 className="text-lg font-semibold text-ink mb-3">📊 Annual Disease Burden (Estimated)</h3>
+                            <h3 className="text-lg font-semibold text-white mb-3">📊 Annual Disease Burden (Estimated)</h3>
                             <div className="grid grid-cols-3 gap-2">
-                              <div className="bg-canvas rounded-lg p-3 text-center">
-                                <p className="text-xs text-metal">Premature Deaths</p>
-                                <p className="text-lg font-bold text-status-danger">{wardDetails.disease_burden.premature_deaths_annual}</p>
+                              <div className="bg-white/5 rounded-lg p-3 text-center">
+                                <p className="text-xs text-gray-500">Premature Deaths</p>
+                                <p className="text-lg font-bold text-red-400">{wardDetails.disease_burden.premature_deaths_annual}</p>
                               </div>
-                              <div className="bg-canvas rounded-lg p-3 text-center">
-                                <p className="text-xs text-metal">Respiratory Cases</p>
-                                <p className="text-lg font-bold text-status-warning">{wardDetails.disease_burden.respiratory_cases}</p>
+                              <div className="bg-white/5 rounded-lg p-3 text-center">
+                                <p className="text-xs text-gray-500">Respiratory Cases</p>
+                                <p className="text-lg font-bold text-orange-400">{wardDetails.disease_burden.respiratory_cases}</p>
                               </div>
-                              <div className="bg-canvas rounded-lg p-3 text-center">
-                                <p className="text-xs text-metal">Heart Cases</p>
-                                <p className="text-lg font-bold text-pink-500">{wardDetails.disease_burden.cardiovascular_cases}</p>
+                              <div className="bg-white/5 rounded-lg p-3 text-center">
+                                <p className="text-xs text-gray-500">Heart Cases</p>
+                                <p className="text-lg font-bold text-pink-400">{wardDetails.disease_burden.cardiovascular_cases}</p>
                               </div>
-                              <div className="bg-canvas rounded-lg p-3 text-center">
-                                <p className="text-xs text-metal">Asthma Attacks</p>
-                                <p className="text-lg font-bold text-yellow-500">{wardDetails.disease_burden.asthma_attacks}</p>
+                              <div className="bg-white/5 rounded-lg p-3 text-center">
+                                <p className="text-xs text-gray-500">Asthma Attacks</p>
+                                <p className="text-lg font-bold text-yellow-400">{wardDetails.disease_burden.asthma_attacks}</p>
                               </div>
-                              <div className="bg-canvas rounded-lg p-3 text-center">
-                                <p className="text-xs text-metal">ICU Admissions</p>
-                                <p className="text-lg font-bold text-purple-500">{wardDetails.disease_burden.icu_admissions}</p>
+                              <div className="bg-white/5 rounded-lg p-3 text-center">
+                                <p className="text-xs text-gray-500">ICU Admissions</p>
+                                <p className="text-lg font-bold text-purple-400">{wardDetails.disease_burden.icu_admissions}</p>
                               </div>
-                              <div className="bg-canvas rounded-lg p-3 text-center">
-                                <p className="text-xs text-metal">Population</p>
-                                <p className="text-lg font-bold text-primary">{(wardDetails.population?.total / 1000).toFixed(0)}K</p>
+                              <div className="bg-white/5 rounded-lg p-3 text-center">
+                                <p className="text-xs text-gray-500">Population</p>
+                                <p className="text-lg font-bold text-blue-400">{(wardDetails.population?.total / 1000).toFixed(0)}K</p>
                               </div>
                             </div>
                           </div>
@@ -1358,33 +1359,33 @@ const WardComparison = () => {
                         {/* Pollutant Analysis */}
                         {wardDetails.pollutants && (
                           <div>
-                            <h3 className="text-lg font-semibold text-ink mb-3">🔬 Pollutant Analysis</h3>
+                            <h3 className="text-lg font-semibold text-white mb-3">🔬 Pollutant Analysis</h3>
                             <div className="space-y-2">
                               {Object.entries(wardDetails.pollutants).map(([key, data]) => (
-                                <div key={key} className="bg-canvas rounded-lg p-3">
+                                <div key={key} className="bg-white/5 rounded-lg p-3">
                                   <div className="flex items-center justify-between mb-1">
-                                    <span className="text-ink font-medium">{data.limit?.name || key.toUpperCase()}</span>
+                                    <span className="text-white font-medium">{data.limit?.name || key.toUpperCase()}</span>
                                     <div className="flex items-center gap-2">
-                                      <span className="text-xl font-bold text-ink">{data.value}</span>
-                                      <span className="text-xs text-metal">{data.limit?.unit}</span>
+                                      <span className="text-xl font-bold text-white">{data.value}</span>
+                                      <span className="text-xs text-gray-500">{data.limit?.unit}</span>
                                     </div>
                                   </div>
                                   <div className="flex items-center justify-between">
                                     <span className={`text-xs px-2 py-0.5 rounded ${
-                                      data.color === 'green' ? 'bg-green-100 text-green-700' :
-                                      data.color === 'yellow' ? 'bg-yellow-100 text-yellow-700' :
-                                      data.color === 'orange' ? 'bg-orange-100 text-orange-700' :
-                                      data.color === 'red' ? 'bg-red-100 text-red-700' :
-                                      'bg-purple-100 text-purple-700'
+                                      data.color === 'green' ? 'bg-green-500/20 text-green-400' :
+                                      data.color === 'yellow' ? 'bg-yellow-500/20 text-yellow-400' :
+                                      data.color === 'orange' ? 'bg-orange-500/20 text-orange-400' :
+                                      data.color === 'red' ? 'bg-red-500/20 text-red-400' :
+                                      'bg-purple-500/20 text-purple-400'
                                     }`}>
                                       {data.status}
                                     </span>
                                     {data.exceedance > 0 && (
-                                      <span className="text-xs text-status-danger">{data.exceedance}% above safe limit</span>
+                                      <span className="text-xs text-red-400">{data.exceedance}% above safe limit</span>
                                     )}
                                   </div>
                                   {data.limit?.effect && (
-                                    <p className="text-xs text-metal mt-1">{data.limit.effect}</p>
+                                    <p className="text-xs text-gray-500 mt-1">{data.limit.effect}</p>
                                   )}
                                 </div>
                               ))}
@@ -1395,15 +1396,15 @@ const WardComparison = () => {
                         {/* Pollution Sources */}
                         {wardDetails.pollution_sources && (
                           <div>
-                            <h3 className="text-lg font-semibold text-ink mb-3">🏭 Pollution Sources</h3>
+                            <h3 className="text-lg font-semibold text-white mb-3">🏭 Pollution Sources</h3>
                             <div className="space-y-2">
                               {Object.entries(wardDetails.pollution_sources).map(([source, percentage]) => (
-                                <div key={source} className="bg-canvas rounded-lg p-2">
+                                <div key={source} className="bg-white/5 rounded-lg p-2">
                                   <div className="flex items-center justify-between mb-1">
-                                    <span className="text-ink capitalize text-sm">{source.replace('_', ' ')}</span>
-                                    <span className="text-ink font-medium">{percentage}%</span>
+                                    <span className="text-gray-300 capitalize text-sm">{source.replace('_', ' ')}</span>
+                                    <span className="text-white font-medium">{percentage}%</span>
                                   </div>
-                                  <div className="w-full bg-mist rounded-full h-2">
+                                  <div className="w-full bg-gray-700 rounded-full h-2">
                                     <div 
                                       className={`h-2 rounded-full ${
                                         source === 'traffic' ? 'bg-red-500' :
@@ -1424,20 +1425,20 @@ const WardComparison = () => {
                         {/* Economic Impact */}
                         {wardDetails.economic_impact && (
                           <div>
-                            <h3 className="text-lg font-semibold text-ink mb-3">💰 Economic Impact</h3>
+                            <h3 className="text-lg font-semibold text-white mb-3">💰 Economic Impact</h3>
                             <div className="grid grid-cols-2 gap-2">
-                              <div className="bg-canvas rounded-lg p-3 text-center">
-                                <p className="text-xs text-metal">Healthcare Cost</p>
-                                <p className="text-lg font-bold text-status-danger">₹{wardDetails.economic_impact.healthcare_cost_lakhs}L</p>
+                              <div className="bg-white/5 rounded-lg p-3 text-center">
+                                <p className="text-xs text-gray-500">Healthcare Cost</p>
+                                <p className="text-lg font-bold text-red-400">₹{wardDetails.economic_impact.healthcare_cost_lakhs}L</p>
                               </div>
-                              <div className="bg-canvas rounded-lg p-3 text-center">
-                                <p className="text-xs text-metal">Productivity Loss</p>
-                                <p className="text-lg font-bold text-status-warning">₹{wardDetails.economic_impact.productivity_loss_lakhs}L</p>
+                              <div className="bg-white/5 rounded-lg p-3 text-center">
+                                <p className="text-xs text-gray-500">Productivity Loss</p>
+                                <p className="text-lg font-bold text-orange-400">₹{wardDetails.economic_impact.productivity_loss_lakhs}L</p>
                               </div>
-                              <div className="bg-gradient-to-r from-red-50 to-orange-50 border border-orange-200 rounded-lg p-3 text-center col-span-2">
-                                <p className="text-xs text-metal">Total Annual Cost</p>
-                                <p className="text-2xl font-bold text-ink">₹{wardDetails.economic_impact.total_cost_lakhs} Lakhs</p>
-                                <p className="text-xs text-metal">₹{wardDetails.economic_impact.cost_per_person}/person</p>
+                              <div className="bg-gradient-to-r from-red-500/20 to-orange-500/20 rounded-lg p-3 text-center col-span-2">
+                                <p className="text-xs text-gray-400">Total Annual Cost</p>
+                                <p className="text-2xl font-bold text-white">₹{wardDetails.economic_impact.total_cost_lakhs} Lakhs</p>
+                                <p className="text-xs text-gray-500">₹{wardDetails.economic_impact.cost_per_person}/person</p>
                               </div>
                             </div>
                           </div>
@@ -1446,32 +1447,32 @@ const WardComparison = () => {
                         {/* Vulnerable Groups */}
                         {wardDetails.vulnerable_groups && (
                           <div>
-                            <h3 className="text-lg font-semibold text-ink mb-3">👥 Vulnerable Groups at Risk</h3>
+                            <h3 className="text-lg font-semibold text-white mb-3">👥 Vulnerable Groups at Risk</h3>
                             <div className="space-y-3">
                               {wardDetails.vulnerable_groups.map((group, idx) => (
-                                <div key={idx} className="bg-canvas rounded-lg p-3">
+                                <div key={idx} className="bg-white/5 rounded-lg p-3">
                                   <div className="flex items-center justify-between mb-2">
                                     <div className="flex items-center gap-2">
                                       <span className="text-xl">{group.icon}</span>
-                                      <span className="text-ink font-medium">{group.group}</span>
+                                      <span className="text-white font-medium">{group.group}</span>
                                     </div>
                                     <span className={`px-2 py-1 rounded text-xs font-medium ${
-                                      group.risk_level === 'Critical' ? 'bg-red-100 text-red-700' :
-                                      group.risk_level === 'Very High' ? 'bg-red-50 text-red-600' :
-                                      group.risk_level === 'High' ? 'bg-orange-100 text-orange-700' :
-                                      'bg-yellow-100 text-yellow-700'
+                                      group.risk_level === 'Critical' ? 'bg-red-600/30 text-red-400' :
+                                      group.risk_level === 'Very High' ? 'bg-red-500/20 text-red-400' :
+                                      group.risk_level === 'High' ? 'bg-orange-500/20 text-orange-400' :
+                                      'bg-yellow-500/20 text-yellow-400'
                                     }`}>
                                       {group.risk_level}
                                     </span>
                                   </div>
                                   <div className="flex justify-between text-sm mb-1">
-                                    <span className="text-metal">Affected Population:</span>
-                                    <span className="text-ink font-medium">{group.count?.toLocaleString()}</span>
+                                    <span className="text-gray-400">Affected Population:</span>
+                                    <span className="text-white font-medium">{group.count?.toLocaleString()}</span>
                                   </div>
                                   {group.specific_impact && (
-                                    <p className="text-xs text-status-danger mb-1">⚠️ {group.specific_impact}</p>
+                                    <p className="text-xs text-red-400 mb-1">⚠️ {group.specific_impact}</p>
                                   )}
-                                  <p className="text-xs text-status-safe">✅ {group.recommendation}</p>
+                                  <p className="text-xs text-green-400">✅ {group.recommendation}</p>
                                 </div>
                               ))}
                             </div>
@@ -1481,29 +1482,29 @@ const WardComparison = () => {
                         {/* Actionable Insights */}
                         {wardDetails.mask_recommendation && (
                           <div>
-                            <h3 className="text-lg font-semibold text-ink mb-3">🎯 Quick Actions</h3>
+                            <h3 className="text-lg font-semibold text-white mb-3">🎯 Quick Actions</h3>
                             <div className="grid grid-cols-2 gap-2">
-                              <div className="bg-canvas rounded-lg p-3">
-                                <p className="text-xs text-metal mb-1">😷 Mask</p>
-                                <p className="text-sm font-medium text-ink">{wardDetails.mask_recommendation.type}</p>
-                                <p className="text-xs text-metal">{wardDetails.mask_recommendation.rating}</p>
+                              <div className="bg-white/5 rounded-lg p-3">
+                                <p className="text-xs text-gray-500 mb-1">😷 Mask</p>
+                                <p className="text-sm font-medium text-white">{wardDetails.mask_recommendation.type}</p>
+                                <p className="text-xs text-gray-400">{wardDetails.mask_recommendation.rating}</p>
                               </div>
-                              <div className="bg-canvas rounded-lg p-3">
-                                <p className="text-xs text-metal mb-1">🏃 Outdoor Score</p>
-                                <p className="text-sm font-medium text-ink">{wardDetails.outdoor_activity_score}/100</p>
-                                <p className="text-xs text-metal">{wardDetails.outdoor_activity_score > 60 ? 'Safe' : wardDetails.outdoor_activity_score > 30 ? 'Caution' : 'Avoid'}</p>
+                              <div className="bg-white/5 rounded-lg p-3">
+                                <p className="text-xs text-gray-500 mb-1">🏃 Outdoor Score</p>
+                                <p className="text-sm font-medium text-white">{wardDetails.outdoor_activity_score}/100</p>
+                                <p className="text-xs text-gray-400">{wardDetails.outdoor_activity_score > 60 ? 'Safe' : wardDetails.outdoor_activity_score > 30 ? 'Caution' : 'Avoid'}</p>
                               </div>
-                              <div className="bg-canvas rounded-lg p-3 col-span-2">
-                                <p className="text-xs text-metal mb-1">⏰ Best Time for Outdoor</p>
-                                <p className="text-sm font-medium text-ink">{wardDetails.best_outdoor_time}</p>
+                              <div className="bg-white/5 rounded-lg p-3 col-span-2">
+                                <p className="text-xs text-gray-500 mb-1">⏰ Best Time for Outdoor</p>
+                                <p className="text-sm font-medium text-white">{wardDetails.best_outdoor_time}</p>
                               </div>
-                              <div className="bg-canvas rounded-lg p-3">
-                                <p className="text-xs text-metal mb-1">💨 Air Purifier CADR</p>
-                                <p className="text-sm font-medium text-ink">{wardDetails.air_purifier?.cadr}+ m³/h</p>
+                              <div className="bg-white/5 rounded-lg p-3">
+                                <p className="text-xs text-gray-500 mb-1">💨 Air Purifier CADR</p>
+                                <p className="text-sm font-medium text-white">{wardDetails.air_purifier?.cadr}+ m³/h</p>
                               </div>
-                              <div className="bg-canvas rounded-lg p-3">
-                                <p className="text-xs text-metal mb-1">🪟 Ventilation</p>
-                                <p className="text-sm font-medium text-ink">{wardDetails.ventilation_advice}</p>
+                              <div className="bg-white/5 rounded-lg p-3">
+                                <p className="text-xs text-gray-500 mb-1">🪟 Ventilation</p>
+                                <p className="text-sm font-medium text-white">{wardDetails.ventilation_advice}</p>
                               </div>
                             </div>
                           </div>
@@ -1512,24 +1513,24 @@ const WardComparison = () => {
                         {/* Recommendations */}
                         {wardDetails.recommendations && (
                           <div>
-                            <h3 className="text-lg font-semibold text-ink mb-3">📋 Recommendations</h3>
+                            <h3 className="text-lg font-semibold text-white mb-3">📋 Recommendations</h3>
                             <ul className="space-y-2">
                               {wardDetails.recommendations.map((rec, idx) => (
                                 <li key={idx} className={`flex items-start gap-2 p-2 rounded-lg ${
-                                  rec.priority === 'Critical' ? 'bg-red-50' :
-                                  rec.priority === 'High' ? 'bg-orange-50' :
-                                  rec.priority === 'Medium' ? 'bg-yellow-50' :
-                                  'bg-canvas'
+                                  rec.priority === 'Critical' ? 'bg-red-500/10' :
+                                  rec.priority === 'High' ? 'bg-orange-500/10' :
+                                  rec.priority === 'Medium' ? 'bg-yellow-500/10' :
+                                  'bg-white/5'
                                 }`}>
                                   <span className="text-lg">{rec.icon}</span>
                                   <div>
                                     <span className={`text-xs px-1.5 py-0.5 rounded mr-2 ${
-                                      rec.priority === 'Critical' ? 'bg-red-100 text-red-700' :
-                                      rec.priority === 'High' ? 'bg-orange-100 text-orange-700' :
-                                      rec.priority === 'Medium' ? 'bg-yellow-100 text-yellow-700' :
-                                      'bg-blue-100 text-blue-700'
+                                      rec.priority === 'Critical' ? 'bg-red-500/30 text-red-400' :
+                                      rec.priority === 'High' ? 'bg-orange-500/30 text-orange-400' :
+                                      rec.priority === 'Medium' ? 'bg-yellow-500/30 text-yellow-400' :
+                                      'bg-blue-500/30 text-blue-400'
                                     }`}>{rec.priority}</span>
-                                    <span className="text-ink text-sm">{rec.text}</span>
+                                    <span className="text-gray-300 text-sm">{rec.text}</span>
                                   </div>
                                 </li>
                               ))}
@@ -1540,35 +1541,35 @@ const WardComparison = () => {
                         {/* Ranking & Comparison */}
                         {wardDetails.comparison && (
                           <div>
-                            <h3 className="text-lg font-semibold text-ink mb-3">📊 Rankings & Comparison</h3>
+                            <h3 className="text-lg font-semibold text-white mb-3">📊 Rankings & Comparison</h3>
                             <div className="grid grid-cols-2 gap-2">
-                              <div className="bg-canvas rounded-lg p-3 text-center">
-                                <p className="text-xs text-metal">Delhi Rank</p>
-                                <p className="text-lg font-bold text-ink">#{wardDetails.comparison.rank_in_delhi}</p>
-                                <p className="text-xs text-metal">of {summary.totalWards} wards</p>
+                              <div className="bg-white/5 rounded-lg p-3 text-center">
+                                <p className="text-xs text-gray-500">Delhi Rank</p>
+                                <p className="text-lg font-bold text-white">#{wardDetails.comparison.rank_in_delhi}</p>
+                                <p className="text-xs text-gray-400">of {summary.totalWards} wards</p>
                               </div>
-                              <div className="bg-canvas rounded-lg p-3 text-center">
-                                <p className="text-xs text-metal">Zone Rank</p>
-                                <p className="text-lg font-bold text-primary">{wardDetails.comparison.rank_in_zone}</p>
-                                <p className="text-xs text-metal">in {selectedWard.zone}</p>
+                              <div className="bg-white/5 rounded-lg p-3 text-center">
+                                <p className="text-xs text-gray-500">Zone Rank</p>
+                                <p className="text-lg font-bold text-cyan-400">{wardDetails.comparison.rank_in_zone}</p>
+                                <p className="text-xs text-gray-400">in {selectedWard.zone}</p>
                               </div>
-                              <div className="bg-canvas rounded-lg p-3 text-center">
-                                <p className="text-xs text-metal">Percentile</p>
-                                <p className="text-lg font-bold text-status-warning">{wardDetails.comparison.percentile}%</p>
-                                <p className="text-xs text-metal">worse than</p>
+                              <div className="bg-white/5 rounded-lg p-3 text-center">
+                                <p className="text-xs text-gray-500">Percentile</p>
+                                <p className="text-lg font-bold text-orange-400">{wardDetails.comparison.percentile}%</p>
+                                <p className="text-xs text-gray-400">worse than</p>
                               </div>
-                              <div className="bg-canvas rounded-lg p-3 text-center">
-                                <p className="text-xs text-metal">vs Delhi Avg</p>
+                              <div className="bg-white/5 rounded-lg p-3 text-center">
+                                <p className="text-xs text-gray-500">vs Delhi Avg</p>
                                 <p className="text-lg font-bold" style={{ color: (selectedWard.avg_aqi || selectedWard.aqi) > wardDetails.comparison.delhi_average_aqi ? '#ef4444' : '#22c55e' }}>
                                   {(selectedWard.avg_aqi || selectedWard.aqi) > wardDetails.comparison.delhi_average_aqi ? '+' : ''}{Math.round((selectedWard.avg_aqi || selectedWard.aqi) - wardDetails.comparison.delhi_average_aqi)}
                                 </p>
-                                <p className="text-xs text-metal">Avg: {wardDetails.comparison.delhi_average_aqi}</p>
+                                <p className="text-xs text-gray-400">Avg: {wardDetails.comparison.delhi_average_aqi}</p>
                               </div>
                             </div>
                             {wardDetails.comparison.similar_wards?.length > 0 && (
-                              <div className="mt-2 p-2 bg-canvas rounded-lg">
-                                <p className="text-xs text-metal mb-1">Similar AQI Wards:</p>
-                                <p className="text-sm text-ink">{wardDetails.comparison.similar_wards.join(', ')}</p>
+                              <div className="mt-2 p-2 bg-white/5 rounded-lg">
+                                <p className="text-xs text-gray-500 mb-1">Similar AQI Wards:</p>
+                                <p className="text-sm text-gray-300">{wardDetails.comparison.similar_wards.join(', ')}</p>
                               </div>
                             )}
                           </div>
@@ -1577,64 +1578,64 @@ const WardComparison = () => {
                         {/* Temporal/Trend Data */}
                         {wardDetails.temporal_data && (
                           <div>
-                            <h3 className="text-lg font-semibold text-ink mb-3">📈 Trends & Patterns</h3>
+                            <h3 className="text-lg font-semibold text-white mb-3">📈 Trends & Patterns</h3>
                             <div className="grid grid-cols-2 gap-2">
-                              <div className="bg-canvas rounded-lg p-3">
-                                <p className="text-xs text-metal mb-1">24h Trend</p>
+                              <div className="bg-white/5 rounded-lg p-3">
+                                <p className="text-xs text-gray-500 mb-1">24h Trend</p>
                                 <p className={`text-sm font-medium ${
-                                  wardDetails.temporal_data.trend_24h === 'increasing' ? 'text-status-danger' :
-                                  wardDetails.temporal_data.trend_24h === 'decreasing' ? 'text-status-safe' : 'text-status-warning'
+                                  wardDetails.temporal_data.trend_24h === 'increasing' ? 'text-red-400' :
+                                  wardDetails.temporal_data.trend_24h === 'decreasing' ? 'text-green-400' : 'text-yellow-400'
                                 }`}>
                                   {wardDetails.temporal_data.trend_24h === 'increasing' ? '📈 Worsening' :
                                    wardDetails.temporal_data.trend_24h === 'decreasing' ? '📉 Improving' : '➡️ Stable'}
                                 </p>
                               </div>
-                              <div className="bg-canvas rounded-lg p-3">
-                                <p className="text-xs text-metal mb-1">7-Day Avg</p>
-                                <p className="text-sm font-medium text-ink">{wardDetails.temporal_data.avg_7_day} AQI</p>
+                              <div className="bg-white/5 rounded-lg p-3">
+                                <p className="text-xs text-gray-500 mb-1">7-Day Avg</p>
+                                <p className="text-sm font-medium text-white">{wardDetails.temporal_data.avg_7_day} AQI</p>
                               </div>
-                              <div className="bg-canvas rounded-lg p-3">
-                                <p className="text-xs text-metal mb-1">Peak Hours</p>
-                                <p className="text-sm font-medium text-status-danger">{wardDetails.temporal_data.peak_hour}</p>
+                              <div className="bg-white/5 rounded-lg p-3">
+                                <p className="text-xs text-gray-500 mb-1">Peak Hours</p>
+                                <p className="text-sm font-medium text-red-400">{wardDetails.temporal_data.peak_hour}</p>
                               </div>
-                              <div className="bg-canvas rounded-lg p-3">
-                                <p className="text-xs text-metal mb-1">Best Time</p>
-                                <p className="text-sm font-medium text-status-safe">{wardDetails.temporal_data.lowest_hour}</p>
+                              <div className="bg-white/5 rounded-lg p-3">
+                                <p className="text-xs text-gray-500 mb-1">Best Time</p>
+                                <p className="text-sm font-medium text-green-400">{wardDetails.temporal_data.lowest_hour}</p>
                               </div>
                             </div>
-                            <div className="mt-2 p-2 bg-amber-50 border border-amber-200 rounded-lg">
-                              <p className="text-xs text-amber-700">🍂 {wardDetails.temporal_data.seasonal_context}</p>
+                            <div className="mt-2 p-2 bg-amber-500/10 border border-amber-500/30 rounded-lg">
+                              <p className="text-xs text-amber-400">🍂 {wardDetails.temporal_data.seasonal_context}</p>
                             </div>
                           </div>
                         )}
 
                         {/* Station Info */}
                         {wardDetails.station_info && (
-                          <div className="bg-canvas rounded-lg p-3">
-                            <h3 className="text-sm font-semibold text-ink mb-2">📡 Station Information</h3>
+                          <div className="bg-white/5 rounded-lg p-3">
+                            <h3 className="text-sm font-semibold text-white mb-2">📡 Station Information</h3>
                             <div className="grid grid-cols-2 gap-2 text-xs">
                               <div>
-                                <span className="text-metal">Type:</span>
-                                <span className="text-ink ml-2">{wardDetails.station_info.type}</span>
+                                <span className="text-gray-500">Type:</span>
+                                <span className="text-white ml-2">{wardDetails.station_info.type}</span>
                               </div>
                               <div>
-                                <span className="text-metal">Agency:</span>
-                                <span className="text-ink ml-2">{wardDetails.station_info.agency}</span>
+                                <span className="text-gray-500">Agency:</span>
+                                <span className="text-white ml-2">{wardDetails.station_info.agency}</span>
                               </div>
                               <div>
-                                <span className="text-metal">Stations:</span>
-                                <span className="text-ink ml-2">{wardDetails.station_info.station_count}</span>
+                                <span className="text-gray-500">Stations:</span>
+                                <span className="text-white ml-2">{wardDetails.station_info.station_count}</span>
                               </div>
                               <div>
-                                <span className="text-metal">Reliability:</span>
-                                <span className="text-ink ml-2">{wardDetails.station_info.data_reliability}%</span>
+                                <span className="text-gray-500">Reliability:</span>
+                                <span className="text-white ml-2">{wardDetails.station_info.data_reliability}%</span>
                               </div>
                             </div>
                           </div>
                         )}
                       </>
                     ) : (
-                      <p className="text-metal text-center py-4">No details available</p>
+                      <p className="text-gray-400 text-center py-4">No details available</p>
                     )}
                   </div>
                 </div>
@@ -1651,7 +1652,7 @@ const WardComparison = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="md:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end"
+            className="md:hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-end"
             onClick={() => { setSelectedWard(null); setWardDetails(null); }}
           >
             <motion.div
@@ -1659,7 +1660,7 @@ const WardComparison = () => {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25 }}
-              className="w-full max-h-[90vh] bg-surface rounded-t-3xl overflow-hidden"
+              className="w-full max-h-[90vh] bg-slate-900 rounded-t-3xl overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
@@ -1690,48 +1691,48 @@ const WardComparison = () => {
               <div className="p-6 space-y-5 max-h-[65vh] overflow-y-auto">
                 {detailsLoading ? (
                   <div className="flex items-center justify-center py-8">
-                    <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                    <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
                   </div>
                 ) : wardDetails ? (
                   <>
                     {/* Health Impact Cards */}
                     <div>
-                      <h3 className="text-base font-semibold text-ink mb-2">🏥 Health Impact</h3>
+                      <h3 className="text-base font-semibold text-white mb-2">🏥 Health Impact</h3>
                       <div className="grid grid-cols-2 gap-2">
-                        <div className="bg-orange-50 border border-orange-200 rounded-card p-3">
+                        <div className="bg-orange-500/10 border border-orange-500/30 rounded-xl p-3">
                           <div className="flex items-center gap-2 mb-1">
                             <span className="text-xl">🚬</span>
-                            <span className="text-orange-600 text-xs">Cigarettes</span>
+                            <span className="text-orange-400 text-xs">Cigarettes</span>
                           </div>
-                          <p className="text-xl font-bold text-ink">{wardDetails.cigarettes_equivalent}</p>
-                          <p className="text-xs text-metal">/day breathed</p>
+                          <p className="text-xl font-bold text-white">{wardDetails.cigarettes_equivalent}</p>
+                          <p className="text-xs text-gray-400">/day breathed</p>
                         </div>
                         
-                        <div className="bg-purple-50 border border-purple-200 rounded-card p-3">
+                        <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-3">
                           <div className="flex items-center gap-2 mb-1">
                             <span className="text-xl">🫁</span>
-                            <span className="text-purple-600 text-xs">Lung Age</span>
+                            <span className="text-purple-400 text-xs">Lung Age</span>
                           </div>
-                          <p className="text-xl font-bold text-ink">+{wardDetails.lung_age_increase}</p>
-                          <p className="text-xs text-metal">years added</p>
+                          <p className="text-xl font-bold text-white">+{wardDetails.lung_age_increase}</p>
+                          <p className="text-xs text-gray-400">years added</p>
                         </div>
                         
-                        <div className="bg-red-50 border border-red-200 rounded-card p-3">
+                        <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3">
                           <div className="flex items-center gap-2 mb-1">
                             <span className="text-xl">🏥</span>
-                            <span className="text-red-600 text-xs">Hospital Risk</span>
+                            <span className="text-red-400 text-xs">Hospital Risk</span>
                           </div>
-                          <p className="text-xl font-bold text-ink">{wardDetails.hospital_visit_risk}%</p>
-                          <p className="text-xs text-metal">increased</p>
+                          <p className="text-xl font-bold text-white">{wardDetails.hospital_visit_risk}%</p>
+                          <p className="text-xs text-gray-400">increased</p>
                         </div>
                         
-                        <div className="bg-blue-50 border border-blue-200 rounded-card p-3">
+                        <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-3">
                           <div className="flex items-center gap-2 mb-1">
                             <span className="text-xl">❤️</span>
-                            <span className="text-blue-600 text-xs">Life Impact</span>
+                            <span className="text-blue-400 text-xs">Life Impact</span>
                           </div>
-                          <p className="text-xl font-bold text-ink">-{wardDetails.life_expectancy_impact}</p>
-                          <p className="text-xs text-metal">years</p>
+                          <p className="text-xl font-bold text-white">-{wardDetails.life_expectancy_impact}</p>
+                          <p className="text-xs text-gray-400">years</p>
                         </div>
                       </div>
                     </div>
@@ -1739,19 +1740,19 @@ const WardComparison = () => {
                     {/* Disease Burden - Mobile */}
                     {wardDetails.disease_burden && (
                       <div>
-                        <h3 className="text-base font-semibold text-ink mb-2">📊 Annual Disease Burden</h3>
+                        <h3 className="text-base font-semibold text-white mb-2">📊 Annual Disease Burden</h3>
                         <div className="grid grid-cols-3 gap-2">
-                          <div className="bg-canvas rounded-lg p-2 text-center">
-                            <p className="text-[10px] text-metal">Deaths</p>
-                            <p className="text-sm font-bold text-status-danger">{wardDetails.disease_burden.premature_deaths_annual}</p>
+                          <div className="bg-white/5 rounded-lg p-2 text-center">
+                            <p className="text-[10px] text-gray-500">Deaths</p>
+                            <p className="text-sm font-bold text-red-400">{wardDetails.disease_burden.premature_deaths_annual}</p>
                           </div>
-                          <div className="bg-canvas rounded-lg p-2 text-center">
-                            <p className="text-[10px] text-metal">Respiratory</p>
-                            <p className="text-sm font-bold text-status-warning">{wardDetails.disease_burden.respiratory_cases}</p>
+                          <div className="bg-white/5 rounded-lg p-2 text-center">
+                            <p className="text-[10px] text-gray-500">Respiratory</p>
+                            <p className="text-sm font-bold text-orange-400">{wardDetails.disease_burden.respiratory_cases}</p>
                           </div>
-                          <div className="bg-canvas rounded-lg p-2 text-center">
-                            <p className="text-[10px] text-metal">Heart</p>
-                            <p className="text-sm font-bold text-pink-500">{wardDetails.disease_burden.cardiovascular_cases}</p>
+                          <div className="bg-white/5 rounded-lg p-2 text-center">
+                            <p className="text-[10px] text-gray-500">Heart</p>
+                            <p className="text-sm font-bold text-pink-400">{wardDetails.disease_burden.cardiovascular_cases}</p>
                           </div>
                         </div>
                       </div>
@@ -1760,20 +1761,20 @@ const WardComparison = () => {
                     {/* Quick Actions - Mobile */}
                     {wardDetails.mask_recommendation && (
                       <div>
-                        <h3 className="text-base font-semibold text-ink mb-2">🎯 Quick Actions</h3>
+                        <h3 className="text-base font-semibold text-white mb-2">🎯 Quick Actions</h3>
                         <div className="grid grid-cols-2 gap-2">
-                          <div className="bg-canvas rounded-lg p-2">
-                            <p className="text-[10px] text-metal">😷 Mask</p>
-                            <p className="text-xs font-medium text-ink">{wardDetails.mask_recommendation.type}</p>
+                          <div className="bg-white/5 rounded-lg p-2">
+                            <p className="text-[10px] text-gray-500">😷 Mask</p>
+                            <p className="text-xs font-medium text-white">{wardDetails.mask_recommendation.type}</p>
                           </div>
-                          <div className="bg-canvas rounded-lg p-2">
-                            <p className="text-[10px] text-metal">🏃 Outdoor Score</p>
-                            <p className="text-xs font-medium text-ink">{wardDetails.outdoor_activity_score}/100</p>
+                          <div className="bg-white/5 rounded-lg p-2">
+                            <p className="text-[10px] text-gray-500">🏃 Outdoor Score</p>
+                            <p className="text-xs font-medium text-white">{wardDetails.outdoor_activity_score}/100</p>
                           </div>
                         </div>
-                        <div className="bg-canvas rounded-lg p-2 mt-2">
-                          <p className="text-[10px] text-metal">⏰ Best Time Outside</p>
-                          <p className="text-xs font-medium text-ink">{wardDetails.best_outdoor_time}</p>
+                        <div className="bg-white/5 rounded-lg p-2 mt-2">
+                          <p className="text-[10px] text-gray-500">⏰ Best Time Outside</p>
+                          <p className="text-xs font-medium text-white">{wardDetails.best_outdoor_time}</p>
                         </div>
                       </div>
                     )}
@@ -1781,22 +1782,22 @@ const WardComparison = () => {
                     {/* Vulnerable Groups - Mobile */}
                     {wardDetails.vulnerable_groups && (
                       <div>
-                        <h3 className="text-base font-semibold text-ink mb-2">👥 Vulnerable Groups</h3>
+                        <h3 className="text-base font-semibold text-white mb-2">👥 Vulnerable Groups</h3>
                         <div className="space-y-2">
                           {wardDetails.vulnerable_groups.slice(0, 3).map((group, idx) => (
-                            <div key={idx} className="flex items-center justify-between p-2 bg-canvas rounded-lg">
+                            <div key={idx} className="flex items-center justify-between p-2 bg-white/5 rounded-lg">
                               <div className="flex items-center gap-2">
                                 <span>{group.icon}</span>
                                 <div>
-                                  <span className="text-ink text-sm">{group.group}</span>
-                                  <p className="text-[10px] text-metal">{group.count?.toLocaleString()} people</p>
+                                  <span className="text-white text-sm">{group.group}</span>
+                                  <p className="text-[10px] text-gray-500">{group.count?.toLocaleString()} people</p>
                                 </div>
                               </div>
                               <span className={`px-2 py-0.5 rounded text-[10px] font-medium ${
-                                group.risk_level === 'Critical' ? 'bg-red-100 text-red-700' :
-                                group.risk_level === 'Very High' ? 'bg-red-50 text-red-600' :
-                                group.risk_level === 'High' ? 'bg-orange-100 text-orange-700' :
-                                'bg-yellow-100 text-yellow-700'
+                                group.risk_level === 'Critical' ? 'bg-red-600/30 text-red-400' :
+                                group.risk_level === 'Very High' ? 'bg-red-500/20 text-red-400' :
+                                group.risk_level === 'High' ? 'bg-orange-500/20 text-orange-400' :
+                                'bg-yellow-500/20 text-yellow-400'
                               }`}>
                                 {group.risk_level}
                               </span>
@@ -1809,16 +1810,16 @@ const WardComparison = () => {
                     {/* Recommendations - Mobile */}
                     {wardDetails.recommendations && (
                       <div>
-                        <h3 className="text-base font-semibold text-ink mb-2">📋 Top Recommendations</h3>
+                        <h3 className="text-base font-semibold text-white mb-2">📋 Top Recommendations</h3>
                         <ul className="space-y-1.5">
                           {wardDetails.recommendations.slice(0, 4).map((rec, idx) => (
                             <li key={idx} className={`flex items-start gap-2 p-2 rounded-lg text-xs ${
-                              rec.priority === 'Critical' ? 'bg-red-50' :
-                              rec.priority === 'High' ? 'bg-orange-50' :
-                              'bg-canvas'
+                              rec.priority === 'Critical' ? 'bg-red-500/10' :
+                              rec.priority === 'High' ? 'bg-orange-500/10' :
+                              'bg-white/5'
                             }`}>
                               <span>{rec.icon}</span>
-                              <span className="text-ink">{rec.text}</span>
+                              <span className="text-gray-300">{rec.text}</span>
                             </li>
                           ))}
                         </ul>
@@ -1827,15 +1828,15 @@ const WardComparison = () => {
 
                     {/* Economic Impact - Mobile */}
                     {wardDetails.economic_impact && (
-                      <div className="bg-gradient-to-r from-red-50 to-orange-50 border border-orange-200 rounded-lg p-3">
-                        <p className="text-xs text-metal mb-1">💰 Annual Economic Impact</p>
-                        <p className="text-xl font-bold text-ink">₹{wardDetails.economic_impact.total_cost_lakhs} Lakhs</p>
-                        <p className="text-xs text-metal">Healthcare + Productivity Loss</p>
+                      <div className="bg-gradient-to-r from-red-500/10 to-orange-500/10 rounded-lg p-3">
+                        <p className="text-xs text-gray-400 mb-1">💰 Annual Economic Impact</p>
+                        <p className="text-xl font-bold text-white">₹{wardDetails.economic_impact.total_cost_lakhs} Lakhs</p>
+                        <p className="text-xs text-gray-500">Healthcare + Productivity Loss</p>
                       </div>
                     )}
                   </>
                 ) : (
-                  <p className="text-metal text-center py-4">No details available</p>
+                  <p className="text-gray-400 text-center py-4">No details available</p>
                 )}
               </div>
             </motion.div>

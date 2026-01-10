@@ -15,6 +15,10 @@ import Map from "../components/AirQuality/Map";
 import HealthImpact from "../components/AirQuality/HealthImpact";
 import { setStationName } from '../components/Connectivity/storageHelper';
 
+/**
+ * Smart City Glass & Grid Design System - Air Quality Page
+ * Bento Grid Layout with consistent card styling
+ */
 function AirQualityPage() {
   const [selectedSearch, setSelectedSearch] = useState('');
   const [dangerAlert, setDangerAlert] = useState(null);
@@ -27,9 +31,6 @@ function AirQualityPage() {
   const [childData, setChildData] = useState(null);
 
   const handleChildData = (data) => {
-    console.log("Data received from child:", data);
-    console.log("PM25 value:", data[0]?.PM25);
-
     checkPollutionConditions(data);
     setChildData(data);
   };
@@ -39,7 +40,6 @@ function AirQualityPage() {
     const { OZONE, CO, PM10, PM25, NO2, SO2 } = data[0];
     let maxPollutant = null;
 
-    // Ozone: WHO guideline 100 µg/m³ (8-hour), unhealthy >168
     if (OZONE > 168) {
       maxPollutant = {
         level: "Danger",
@@ -48,7 +48,6 @@ function AirQualityPage() {
         amount: OZONE,
       };
     }
-    // CO: WHO guideline 10 mg/m³, unhealthy >10 (likely ppm in data)
     if (CO > 10) {
       maxPollutant = {
         level: "Danger",
@@ -57,8 +56,6 @@ function AirQualityPage() {
         amount: CO,
       };
     }
-    // PM10: WHO 50 µg/m³, CPCB unhealthy >250
-    // PM2.5: WHO 25 µg/m³, CPCB unhealthy >90
     if (PM10 > 250 || PM25 > 90) {
       const maxPM = PM10 > PM25 ? PM10 : PM25;
       maxPollutant = {
@@ -68,7 +65,6 @@ function AirQualityPage() {
         amount: maxPM,
       };
     }
-    // NO2: WHO 40 µg/m³, CPCB unhealthy >180
     if (NO2 > 180) {
       maxPollutant = {
         level: "Danger",
@@ -77,7 +73,6 @@ function AirQualityPage() {
         amount: NO2,
       };
     }
-    // SO2: WHO 40 µg/m³, CPCB unhealthy >380
     if (SO2 > 380) {
       maxPollutant = {
         level: "Danger",
@@ -95,50 +90,73 @@ function AirQualityPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-canvas page-gradient" style={{ position: 'relative' }}>
       <Navbar onSearchSelected={handleSearchSelected} />
 
-      {/* Danger Alert */}
+      {/* Floating Danger Alert - Bottom Toast Style */}
       <AnimatePresence>
         {dangerAlert && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6 mt-6"
+            exit={{ opacity: 0, y: 50 }}
+            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-lg"
           >
-            <div className="bg-gradient-to-r from-red-500 to-rose-600 rounded-2xl p-4 shadow-lg">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                  <span className="text-2xl">⚠️</span>
+            <div className="bg-white rounded-2xl shadow-2xl border border-red-200 overflow-hidden">
+              <div className="flex items-center gap-4 p-4">
+                {/* Alert Icon */}
+                <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-rose-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                  <span className="text-white text-xl">⚠️</span>
                 </div>
-                <div className="flex-1">
-                  <h4 className="text-white font-bold text-lg">{dangerAlert.level} Alert</h4>
-                  <p className="text-white/90 text-sm">{dangerAlert.message}</p>
+                
+                {/* Alert Content */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="text-red-600 font-bold text-sm">{dangerAlert.level} Alert</span>
+                    <span className="text-red-500 font-black text-lg">{dangerAlert.amount}</span>
+                    <span className="text-gray-400 text-xs">{dangerAlert.chemical}</span>
+                  </div>
+                  <p className="text-gray-600 text-xs truncate">{dangerAlert.message}</p>
                 </div>
-                <div className="text-right">
-                  <p className="text-white/80 text-xs">{dangerAlert.chemical}</p>
-                  <p className="text-white font-bold text-2xl">{dangerAlert.amount}</p>
-                </div>
+                
+                {/* Close Button */}
+                <button 
+                  onClick={() => setDangerAlert(null)}
+                  className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors flex-shrink-0"
+                >
+                  <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
               </div>
+              
+              {/* Progress bar animation */}
+              <motion.div 
+                initial={{ width: "100%" }}
+                animate={{ width: "0%" }}
+                transition={{ duration: 10, ease: "linear" }}
+                className="h-1 bg-gradient-to-r from-red-500 to-rose-500"
+              />
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 pt-6">
-        {/* AQI Details & Pollutants */}
+      {/* Main Content - Full Width Bento Grid */}
+      <div className="w-full px-4 sm:px-6 lg:px-8 pb-10 pt-2">
+
+        {/* AQI Details & Pollutants - Two Column Bento Grid */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-6"
+          transition={{ delay: 0.1 }}
+          className="grid grid-cols-1 lg:grid-cols-5 gap-4 mb-4"
         >
-          <div className="lg:col-span-3 bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+          <div className="lg:col-span-3 bento-card">
             <AqiDetails selectedSearch={selectedSearch} />
           </div>
-          <div className="lg:col-span-2 bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+          <div className="lg:col-span-2 bento-card">
             <Component2 selectedSearch={selectedSearch} onData={handleChildData} />
           </div>
         </motion.div>
@@ -148,11 +166,9 @@ function AirQualityPage() {
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-6"
+            className="mb-4"
           >
-            <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
-              <HealthImpact pm25={childData[0].PM25} />
-            </div>
+            <HealthImpact pm25={childData[0].PM25} />
           </motion.div>
         )}
         
@@ -160,10 +176,10 @@ function AirQualityPage() {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="mb-6"
+          transition={{ delay: 0.2 }}
+          className="mb-4"
         >
-          <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+          <div className="bento-card p-0 overflow-hidden">
             <Map selectedSearch={selectedSearch} />
           </div>
         </motion.div>
@@ -172,13 +188,13 @@ function AirQualityPage() {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6"
+          transition={{ delay: 0.3 }}
+          className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4"
         >
-          <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+          <div className="bento-card">
             <Component3 />
           </div>
-          <div className="lg:col-span-2 bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+          <div className="lg:col-span-2 bento-card">
             <Component4 />
           </div>
         </motion.div>
@@ -187,13 +203,13 @@ function AirQualityPage() {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6"
+          transition={{ delay: 0.4 }}
+          className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4"
         >
-          <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+          <div className="bento-card">
             <Component5 />
           </div>
-          <div className="lg:col-span-2 bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+          <div className="lg:col-span-2 bento-card">
             <Component6 />
           </div>
         </motion.div>
@@ -202,10 +218,10 @@ function AirQualityPage() {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7 }}
-          className="mb-6"
+          transition={{ delay: 0.5 }}
+          className="mb-4"
         >
-          <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+          <div className="bento-card">
             <Component7 />
           </div>
         </motion.div>
@@ -214,10 +230,10 @@ function AirQualityPage() {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
-          className="mb-6"
+          transition={{ delay: 0.6 }}
+          className="mb-4"
         >
-          <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+          <div className="bento-card p-0 overflow-hidden">
             <Component8 selectedSearch={selectedSearch} />
           </div>
         </motion.div>
@@ -226,20 +242,20 @@ function AirQualityPage() {
         <motion.footer 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-          className="mt-12 text-center"
+          transition={{ delay: 0.8 }}
+          className="mt-6"
         >
-          <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-100">
-            <div className="flex flex-wrap justify-center items-center gap-6 text-sm text-gray-500">
-              <span className="flex items-center gap-2">
-                <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+          <div className="bento-card text-center py-3">
+            <div className="flex flex-wrap justify-center items-center gap-6 text-sm">
+              <span className="flex items-center gap-2 text-metal">
+                <span className="w-2 h-2 bg-status-safe rounded-full animate-pulse" />
                 Live Data
               </span>
-              <span>🛰️ Sentinel-5P</span>
-              <span>📊 CPCB Data</span>
-              <span>🤖 ML Powered</span>
+              <span className="text-metal">🛰️ Sentinel-5P</span>
+              <span className="text-metal">📊 CPCB Data</span>
+              <span className="text-metal">🤖 ML Powered</span>
             </div>
-            <p className="text-gray-400 text-xs mt-4">
+            <p className="text-metal/60 text-xs mt-2">
               © 2025 UdyanSaathi • Environmental Intelligence Platform
             </p>
           </div>

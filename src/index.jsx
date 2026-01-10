@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import AirQualityPage from "./pages/AirQualityPage";
 import WeatherMoniter from "./pages/WeatherMoniter";
-import WaterQualiity from "./pages/WaterQualiity";
+// import WaterQualiity from "./pages/WaterQualiity"; // COMMENTED OUT: Water Quality feature disabled
 import DispatchDashboard from "./components/Dispatch/DispatchDashboard";
 import WardComparison from "./components/Wards/WardComparison";
 import WardPolicySimulator from "./components/Wards/WardPolicySimulator";
@@ -29,7 +29,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<AirQualityPage />} />
-          <Route path="/water-quality-index" element={<WaterQualiity />} /> 
+          {/* <Route path="/water-quality-index" element={<WaterQualiity />} /> */} {/* COMMENTED OUT: Water Quality feature disabled */}
           <Route path="/weather" element={<WeatherMoniter />} />
           <Route path="/dispatch" element={<DispatchDashboard />} />
           <Route path="/wards" element={<WardComparison />} />

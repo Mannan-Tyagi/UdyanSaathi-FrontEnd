@@ -40,7 +40,14 @@ const WeatherComponent1 = () => {
   };
 
   if (!weatherData || !weatherData.list || weatherData.list.length === 0) {
-    return <div>Loading...</div>;
+    return (
+      <div className="bento-card p-8 flex items-center justify-center">
+        <div className="flex items-center gap-3">
+          <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+          <span className="text-metal">Loading weather data...</span>
+        </div>
+      </div>
+    );
   }
 
   const weatherItem = weatherData.list[0];
@@ -49,31 +56,31 @@ const WeatherComponent1 = () => {
 
   return (
     <>
-      <div className="W1-container p-8 flex flex-col WR-1 m-3 rounded-2xl w-1/3 bg-white justify-between ">
-        <div className="W-top flex flex-col justify-center items-center gap-2">
+      <div className="bento-card p-8 flex flex-col w-full h-full justify-between">
+        <div className="flex flex-col justify-center items-center gap-3">
           <img
             src={iconUrl}
             alt={weatherItem.weather.main}
-            className="weather-icon-main"
+            className="w-20 h-20"
           />
-          <span className="text-5xl font-bold">{tempCelsius.toFixed(2)}°C</span>
-          <span>
+          <span className="text-5xl font-bold text-ink">{tempCelsius.toFixed(2)}°C</span>
+          <span className="text-metal text-lg">
             {weatherData.city.name}, {weatherData.city.country}
           </span>
         </div>
-        <div className="W-bottom ">
-          <div className="w-rows flex flex-row justify-between ">
-            <div className="col1 flex flex-col gap-4 items-center">
-              <span className="w-span-o">
+        <div className="mt-6 pt-6 border-t border-mist">
+          <div className="flex flex-row justify-between">
+            <div className="flex flex-col gap-2 items-center">
+              <span className="text-2xl font-semibold text-ink">
                 {convertToCelsius(weatherItem.main.temp_min).toFixed(2)}°C
               </span>
-              <span className="w-span-i">Min Temp: </span>
+              <span className="text-sm text-metal">Min Temp</span>
             </div>
-            <div className="col2 flex flex-col gap-4 items-center">
-              <span className="w-span-o">
+            <div className="flex flex-col gap-2 items-center">
+              <span className="text-2xl font-semibold text-ink">
                 {convertToCelsius(weatherItem.main.temp_max).toFixed(2)}°C
               </span>
-              <span className="w-span-i">Max Temp: </span>
+              <span className="text-sm text-metal">Max Temp</span>
             </div>
           </div>
         </div>

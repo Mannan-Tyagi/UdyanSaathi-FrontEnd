@@ -209,22 +209,22 @@ const DispatchDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-orange-50 to-red-50">
+      <div className="min-h-screen bg-canvas">
         <ProfessionalNavbar onSearchSelected={() => {}} />
         <div className="flex items-center justify-center h-[80vh]">
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="text-center bg-white/80 backdrop-blur-xl p-12 rounded-3xl shadow-2xl border border-white/50"
+            className="text-center bento-card p-12"
           >
             <div className="relative mx-auto mb-6 w-20 h-20">
-              <div className="absolute inset-0 rounded-full border-4 border-orange-200"></div>
-              <div className="absolute inset-0 rounded-full border-4 border-orange-500 border-t-transparent animate-spin"></div>
+              <div className="absolute inset-0 rounded-full border-4 border-mist"></div>
+              <div className="absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin"></div>
             </div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">
+            <h2 className="text-2xl font-bold text-ink mb-2">
               {demoInitialized ? 'Loading Dispatch Data' : 'Initializing System'}
             </h2>
-            <p className="text-gray-500">
+            <p className="text-metal">
               {demoInitialized ? 'Fetching mission data...' : 'Setting up demo environment...'}
             </p>
           </motion.div>
@@ -234,7 +234,7 @@ const DispatchDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-orange-50 to-red-50">
+    <div className="min-h-screen bg-canvas page-gradient">
       {/* Professional Navbar */}
       <ProfessionalNavbar onSearchSelected={() => {}} />
       
@@ -245,16 +245,16 @@ const DispatchDashboard = () => {
         animate={{ opacity: 1, y: 0 }}
         className="mb-8"
       >
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
+        <h1 className="text-2xl md:text-3xl font-bold text-ink mb-2">
           🚨 Dispatch Command Center
         </h1>
-        <p className="text-gray-500">Pre-emptive pollution intervention system (Demo Mode)</p>
-        <div className="mt-4 inline-flex items-center space-x-2 bg-white/80 backdrop-blur-lg px-4 py-2 rounded-xl border border-orange-200 shadow-sm">
+        <p className="text-metal">Pre-emptive pollution intervention system (Demo Mode)</p>
+        <div className="mt-4 inline-flex items-center space-x-2 bg-surface border border-mist px-4 py-2 rounded-xl shadow-card">
           <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
           </span>
-          <span className="text-sm font-semibold text-orange-700">LIVE TRACKING ACTIVE</span>
+          <span className="text-sm font-semibold text-primary">LIVE TRACKING ACTIVE</span>
         </div>
       </motion.div>
 
@@ -267,29 +267,29 @@ const DispatchDashboard = () => {
             transition={{ delay: 0.1 }}
             className="grid grid-cols-2 md:grid-cols-6 gap-3 mb-6"
           >
-            <motion.div whileHover={{ y: -3 }} className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 shadow-lg border border-gray-200">
-              <div className="text-3xl font-bold text-gray-700">{fleetStatus.total_assets}</div>
-              <div className="text-xs text-gray-500 font-medium">Total Assets</div>
+            <motion.div whileHover={{ y: -3 }} className="bento-card p-4">
+              <div className="text-3xl font-bold text-ink">{fleetStatus.total_assets}</div>
+              <div className="text-xs text-metal font-medium">Total Assets</div>
             </motion.div>
-            <motion.div whileHover={{ y: -3 }} className="bg-emerald-50 rounded-2xl p-4 shadow-lg border border-emerald-200">
-              <div className="text-3xl font-bold text-emerald-600">{fleetStatus.idle}</div>
-              <div className="text-xs text-gray-600 font-medium">Idle</div>
+            <motion.div whileHover={{ y: -3 }} className="bento-card p-4 border-status-safe/30">
+              <div className="text-3xl font-bold text-status-safe">{fleetStatus.idle}</div>
+              <div className="text-xs text-metal font-medium">Idle</div>
             </motion.div>
-            <motion.div whileHover={{ y: -3 }} className="bg-blue-50 rounded-2xl p-4 shadow-lg border border-blue-200">
-              <div className="text-3xl font-bold text-blue-600">{fleetStatus.dispatched}</div>
-              <div className="text-xs text-gray-600 font-medium">Dispatched</div>
+            <motion.div whileHover={{ y: -3 }} className="bento-card p-4 border-primary/30">
+              <div className="text-3xl font-bold text-primary">{fleetStatus.dispatched}</div>
+              <div className="text-xs text-metal font-medium">Dispatched</div>
             </motion.div>
-            <motion.div whileHover={{ y: -3 }} className="bg-orange-50 rounded-2xl p-4 shadow-lg border border-orange-200">
-              <div className="text-3xl font-bold text-orange-600">{fleetStatus.active}</div>
-              <div className="text-xs text-gray-600 font-medium">Active</div>
+            <motion.div whileHover={{ y: -3 }} className="bento-card p-4 border-status-warning/30">
+              <div className="text-3xl font-bold text-status-warning">{fleetStatus.active}</div>
+              <div className="text-xs text-metal font-medium">Active</div>
             </motion.div>
-            <motion.div whileHover={{ y: -3 }} className="bg-violet-50 rounded-2xl p-4 shadow-lg border border-violet-200">
-              <div className="text-3xl font-bold text-violet-600">{fleetStatus.returning}</div>
-              <div className="text-xs text-gray-600 font-medium">Returning</div>
+            <motion.div whileHover={{ y: -3 }} className="bento-card p-4 border-purple-500/30">
+              <div className="text-3xl font-bold text-purple-600">{fleetStatus.returning}</div>
+              <div className="text-xs text-metal font-medium">Returning</div>
             </motion.div>
-            <motion.div whileHover={{ y: -3 }} className="bg-red-50 rounded-2xl p-4 shadow-lg border border-red-200">
-              <div className="text-3xl font-bold text-red-600">{fleetStatus.maintenance}</div>
-              <div className="text-xs text-gray-600 font-medium">Maintenance</div>
+            <motion.div whileHover={{ y: -3 }} className="bento-card p-4 border-status-danger/30">
+              <div className="text-3xl font-bold text-status-danger">{fleetStatus.maintenance}</div>
+              <div className="text-xs text-metal font-medium">Maintenance</div>
             </motion.div>
           </motion.div>
 
@@ -300,15 +300,15 @@ const DispatchDashboard = () => {
             transition={{ delay: 0.2 }}
             className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6"
           >
-            <motion.div whileHover={{ scale: 1.02 }} className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl shadow-xl p-6 text-white">
+            <motion.div whileHover={{ scale: 1.02 }} className="bg-status-safe rounded-card shadow-card p-6 text-white">
               <div className="text-5xl font-bold">{stats.summary.average_reduction_percentage}%</div>
               <div className="text-sm opacity-90 font-medium mt-1">Average PM2.5 Reduction</div>
             </motion.div>
-            <motion.div whileHover={{ scale: 1.02 }} className="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-xl p-6 text-white">
+            <motion.div whileHover={{ scale: 1.02 }} className="bg-primary rounded-card shadow-card p-6 text-white">
               <div className="text-5xl font-bold">{stats.summary.total_interventions}</div>
               <div className="text-sm opacity-90 font-medium mt-1">Total Interventions</div>
             </motion.div>
-            <motion.div whileHover={{ scale: 1.02 }} className="bg-gradient-to-br from-violet-500 to-purple-600 rounded-2xl shadow-xl p-6 text-white">
+            <motion.div whileHover={{ scale: 1.02 }} className="bg-purple-600 rounded-card shadow-card p-6 text-white">
               <div className="text-5xl font-bold">{stats.summary.total_water_used_kl} KL</div>
               <div className="text-sm opacity-90 font-medium mt-1">Water Used</div>
             </motion.div>
@@ -321,19 +321,19 @@ const DispatchDashboard = () => {
         
         {/* Active Missions List */}
         <div className="lg:col-span-1">
-          <div className="bg-white rounded-lg shadow-lg p-6">
+          <div className="bento-card p-6">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">Active Missions</h2>
-              <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+              <h2 className="text-xl font-bold text-ink">Active Missions</h2>
+              <span className="bg-primary text-white px-3 py-1 rounded-full text-sm font-bold">
                 {activeMissions.length}
               </span>
             </div>
 
             <div className="space-y-4 max-h-[700px] overflow-y-auto">
               {activeMissions.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8 text-metal bg-canvas rounded-card">
                   <p className="text-2xl mb-2">✅</p>
-                  <p className="font-semibold">No active missions</p>
+                  <p className="font-semibold text-ink">No active missions</p>
                   <p className="text-sm">All stations secure</p>
                 </div>
               ) : (
@@ -341,10 +341,10 @@ const DispatchDashboard = () => {
                   <div 
                     key={mission.ticket_id}
                     onClick={() => handleMissionClick(mission)}
-                    className={`border-2 rounded-lg p-4 cursor-pointer transition-all duration-300 ${
+                    className={`border-2 rounded-card p-4 cursor-pointer transition-all duration-300 ${
                       selectedMission === mission.ticket_id 
-                        ? 'border-blue-500 bg-blue-50 shadow-xl scale-105' 
-                        : 'border-gray-200 hover:border-blue-300 hover:shadow-lg'
+                        ? 'border-primary bg-primary/5 shadow-card-hover scale-[1.02]' 
+                        : 'border-mist hover:border-primary/50 hover:shadow-card bg-surface'
                     }`}
                   >
                     {/* Urgency Badge */}
@@ -352,36 +352,36 @@ const DispatchDashboard = () => {
                       <span className={`${getUrgencyColor(mission.urgency_level)} text-white px-3 py-1 rounded-full text-xs font-bold`}>
                         {mission.urgency_level}
                       </span>
-                      <span className="text-xs text-gray-500 font-mono">
+                      <span className="text-xs text-metal font-mono">
                         {mission.ticket_id}
                       </span>
                     </div>
 
                     {/* Target Station */}
-                    <h3 className="font-bold text-lg mb-2 flex items-center gap-2">
+                    <h3 className="font-bold text-lg text-ink mb-2 flex items-center gap-2">
                       <span>📍</span> {mission.target_station}
                     </h3>
 
                     {/* Pollution Prediction */}
-                    <div className="bg-red-50 border-2 border-red-200 rounded-lg p-3 mb-3">
-                      <div className="text-sm font-semibold text-red-900 mb-1">Predicted Impact:</div>
+                    <div className="bg-red-50 border border-red-200 rounded-card p-3 mb-3">
+                      <div className="text-sm font-semibold text-red-800 mb-1">Predicted Impact:</div>
                       <div className="grid grid-cols-2 gap-2">
                         <div>
                           <div className="text-xs text-red-600">PM2.5</div>
-                          <div className="text-lg font-bold text-red-800">{mission.predicted_pm25.toFixed(0)}</div>
+                          <div className="text-lg font-bold text-red-700">{mission.predicted_pm25.toFixed(0)}</div>
                         </div>
                         <div>
                           <div className="text-xs text-red-600">AQI</div>
-                          <div className="text-lg font-bold text-red-800">{mission.predicted_aqi}</div>
+                          <div className="text-lg font-bold text-red-700">{mission.predicted_aqi}</div>
                         </div>
                       </div>
                     </div>
 
                     {/* Asset Info */}
-                    <div className="flex items-center justify-between mb-3 p-2 bg-gray-50 rounded">
+                    <div className="flex items-center justify-between mb-3 p-2 bg-canvas rounded-card border border-mist">
                       <div>
-                        <span className="text-xs text-gray-600">Asset:</span>
-                        <div className="font-mono text-sm font-bold">{mission.asset_id}</div>
+                        <span className="text-xs text-metal">Asset:</span>
+                        <div className="font-mono text-sm font-bold text-ink">{mission.asset_id}</div>
                       </div>
                       <div className={`font-semibold text-sm ${getStatusColor(mission.asset_status)}`}>
                         {mission.asset_status}
@@ -389,7 +389,7 @@ const DispatchDashboard = () => {
                     </div>
 
                     {/* Timeline */}
-                    <div className="text-xs text-gray-600 space-y-1 mb-3">
+                    <div className="text-xs text-metal space-y-1 mb-3">
                       <div className="flex items-center gap-2">
                         <span>🕐</span>
                         <span>Dispatched: {new Date(mission.dispatch_time).toLocaleTimeString()}</span>
@@ -401,20 +401,20 @@ const DispatchDashboard = () => {
                     </div>
 
                     {/* Mission Brief */}
-                    <div className="text-xs text-gray-700 bg-blue-50 p-3 rounded-lg border border-blue-200">
-                      <div className="font-semibold mb-1">Mission Brief:</div>
+                    <div className="text-xs text-ink bg-primary/5 p-3 rounded-card border border-primary/20">
+                      <div className="font-semibold mb-1 text-primary">Mission Brief:</div>
                       {mission.mission_brief}
                     </div>
 
                     {/* Click hint */}
                     {selectedMission !== mission.ticket_id && (
-                      <div className="text-xs text-blue-600 font-semibold text-center mt-2 animate-pulse">
+                      <div className="text-xs text-primary font-semibold text-center mt-2 animate-pulse">
                         👆 Click to view on map
                       </div>
                     )}
 
                     {selectedMission === mission.ticket_id && (
-                      <div className="text-xs text-blue-600 font-semibold text-center mt-2">
+                      <div className="text-xs text-primary font-semibold text-center mt-2">
                         🗺️ Viewing on map
                       </div>
                     )}
@@ -426,27 +426,27 @@ const DispatchDashboard = () => {
 
           {/* Recent Interventions */}
           {stats && stats.recent_interventions.length > 0 && (
-            <div className="bg-white rounded-lg shadow-lg p-6 mt-6">
-              <h2 className="text-xl font-bold mb-4">Recent Interventions</h2>
+            <div className="bento-card p-6 mt-6">
+              <h2 className="text-xl font-bold text-ink mb-4">Recent Interventions</h2>
               <div className="space-y-3 max-h-[400px] overflow-y-auto">
                 {stats.recent_interventions.slice(0, 5).map((log, index) => (
-                  <div key={index} className="border border-gray-200 rounded-lg p-3">
-                    <div className="font-semibold text-sm mb-1">{log.station}</div>
+                  <div key={index} className="border border-mist rounded-card p-3 bg-canvas">
+                    <div className="font-semibold text-sm text-ink mb-1">{log.station}</div>
                     <div className="grid grid-cols-3 gap-2 text-xs">
                       <div>
-                        <div className="text-gray-500">Before</div>
-                        <div className="font-bold text-red-600">{log.pre_pm25}</div>
+                        <div className="text-metal">Before</div>
+                        <div className="font-bold text-status-danger">{log.pre_pm25}</div>
                       </div>
                       <div>
-                        <div className="text-gray-500">After</div>
-                        <div className="font-bold text-green-600">{log.post_pm25}</div>
+                        <div className="text-metal">After</div>
+                        <div className="font-bold text-status-safe">{log.post_pm25}</div>
                       </div>
                       <div>
-                        <div className="text-gray-500">Reduced</div>
-                        <div className="font-bold text-blue-600">{log.reduction_percentage.toFixed(1)}%</div>
+                        <div className="text-metal">Reduced</div>
+                        <div className="font-bold text-primary">{log.reduction_percentage.toFixed(1)}%</div>
                       </div>
                     </div>
-                    <div className="text-xs text-gray-500 mt-2">
+                    <div className="text-xs text-metal mt-2">
                       💧 Water used: {(log.water_used_liters / 1000).toFixed(1)} KL
                     </div>
                   </div>
@@ -458,17 +458,17 @@ const DispatchDashboard = () => {
 
         {/* Map View */}
         <div className="lg:col-span-2">
-          <div className="bg-white rounded-lg shadow-lg p-6">
+          <div className="bento-card p-6">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">Live Tracking Map</h2>
+              <h2 className="text-xl font-bold text-ink">Live Tracking Map</h2>
               <div className="flex gap-3">
                 <button
                   onClick={resetMapView}
-                  className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition text-sm font-semibold"
+                  className="bg-metal text-white px-4 py-2 rounded-button hover:bg-ink transition text-sm font-semibold"
                 >
                   🔄 Reset View
                 </button>
-                <div className="flex gap-2 text-xs items-center">
+                <div className="flex gap-2 text-xs items-center text-metal">
                 <span className="flex items-center gap-1">
                   <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
                   Deployed
@@ -485,7 +485,7 @@ const DispatchDashboard = () => {
               </div>
             </div>
             
-            <div className="h-[700px] rounded-lg overflow-hidden border-2 border-gray-200">
+            <div className="map-wrapper h-[700px] rounded-card overflow-hidden border border-mist">
               <MapContainer
                 center={[23.0, 77.0]}
                 zoom={5}
@@ -596,15 +596,15 @@ const DispatchDashboard = () => {
         <button
           onClick={() => setAutoRefresh(!autoRefresh)}
           className={`${
-            autoRefresh ? 'bg-green-500' : 'bg-gray-500'
-          } text-white px-6 py-3 rounded-full shadow-lg hover:opacity-90 transition font-semibold`}
+            autoRefresh ? 'bg-status-safe' : 'bg-metal'
+          } text-white px-6 py-3 rounded-full shadow-card hover:opacity-90 transition font-semibold`}
         >
           {autoRefresh ? '🔄 Auto-refresh ON' : '⏸️ Auto-refresh OFF'}
         </button>
         
         <button
           onClick={initializeDemo}
-          className="bg-blue-500 text-white px-6 py-3 rounded-full shadow-lg hover:bg-blue-600 transition font-semibold"
+          className="bg-primary text-white px-6 py-3 rounded-full shadow-card hover:bg-primary-700 transition font-semibold"
         >
           🔄 Reinitialize Demo
         </button>

@@ -3,18 +3,23 @@ import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { getBaseUrl, setStationName, setUrl } from "../Connectivity/storageHelper";
 
+/**
+ * Smart City Glass & Grid Design System - Navbar
+ * Clean, minimal navigation with Udyan Teal brand color
+ */
 function Navbar({ onSearchSelected }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [defaultSuggestions, setDefaultSuggestions] = useState([]);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
     fetchStationsData();
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      setIsScrolled(window.scrollY > 10);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -42,17 +47,11 @@ function Navbar({ onSearchSelected }) {
           console.error("Error getting user location:", error);
         }
       );
-    } else {
-      console.log("Geolocation is not supported by this browser.");
     }
   };
 
   const findNearestStation = (userLat, userLong) => {
-    if (stationdata.length === 0) {
-      console.error("Stations data is empty or not loaded.");
-      return;
-    }
-
+    if (stationdata.length === 0) return;
     let nearestStation = null;
     let minDistance = Number.MAX_VALUE;
 
@@ -68,27 +67,21 @@ function Navbar({ onSearchSelected }) {
       setSearchTerm(nearestStation);
       onSearchSelected(nearestStation);
       performSearch(nearestStation);
-    } else {
-      console.error("No nearest station found.");
     }
   };
 
   const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
-    const R = 6371; // Radius of the earth in km
+    const R = 6371;
     const dLat = deg2rad(lat2 - lat1);
     const dLon = deg2rad(lon2 - lon1);
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
       Math.sin(dLon / 2) * Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = R * c; // Distance in km
-    return distance;
+    return R * c;
   };
 
-  const deg2rad = (deg) => {
-    return deg * (Math.PI / 180);
-  };
+  const deg2rad = (deg) => deg * (Math.PI / 180);
 
   const updateSuggestions = (input) => {
     setSearchTerm(input);
@@ -103,181 +96,272 @@ function Navbar({ onSearchSelected }) {
     setSuggestions([]);
     performSearch(suggestion);
     onSearchSelected(suggestion);
+    setIsSearchFocused(false);
   };
 
   const performSearch = (selectedSuggestion) => {
     const baseUrl = getBaseUrl();
     const endpoint = 'get-pollution-by-date-station/';
     const queryParams = { pol_Station: selectedSuggestion };
-
     const apiUrl = `${baseUrl}${endpoint}?${new URLSearchParams(queryParams)}`;
     setUrl(apiUrl);
     setStationName(selectedSuggestion);
   };
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
   useEffect(() => {
     if (searchTerm.length >= 3) {
-      const baseUrl = getBaseUrl()
+      const baseUrl = getBaseUrl();
       fetch(`${baseUrl}get-stations/?pol_Station=${searchTerm}`)
         .then(response => response.json())
         .then(data => {
           setDefaultSuggestions(data.map(station => station.Station));
         })
-        .catch(error => {
-          console.error('Error fetching data:', error);
-        });
+        .catch(error => console.error('Error fetching data:', error));
     }
   }, [searchTerm]);
 
-  const showSuggestions = suggestions.length > 0 && searchTerm !== "";
-  const handleFocus = () => {
-    setSearchTerm('');
-  };
+  const showSuggestions = suggestions.length > 0 && searchTerm !== "" && isSearchFocused;
+
+  // Navigation items
+  const navItems = [
+    { path: "/", label: "Air Quality", icon: "🌬️" },
+    { path: "/weather", label: "Weather", icon: "☀️" },
+  ];
+
+  // Feature items
+  const featureItems = [
+    { path: "/wards", label: "Wards", icon: "🏙️" },
+    { path: "/policy-simulator", label: "Policy Sim", icon: "🎛️" },
+    { path: "/dispatch", label: "Dispatch", icon: "🚨" },
+  ];
+
+  const isActive = (path) => location.pathname === path;
 
   return (
-    <motion.nav 
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      className={`sticky top-0 z-10 transition-all duration-300 ${
-        isScrolled 
-          ? 'bg-white/90 backdrop-blur-lg shadow-2xl' 
-          : 'bg-white backdrop-filter backdrop-blur-2xl bg-opacity-10'
-      } border-slate-800`}
-    >
-      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-        <a href="/" className="flex items-center gap-3">
-          <motion.img 
-            whileHover={{ rotate: 360 }}
-            transition={{ duration: 0.5 }}
-            src="/logo.jpeg" 
-            className="lg:h-12 h-10 bg-transparent rounded-full" 
-            alt="Udyan Sathi Logo" 
-          />
-          <span className="lg:text-3xl text-xl text-black font-semibold"> Udyan Sathi </span>
-        </a>
-        <div className="md:hidden">
-          <button
-            type="button"
-            className="bg-transparent hover:bg-transparent focus:ring-4 focus:ring-gray-200 rounded-lg text-gray-500 hover:text-gray-700 text-sm p-2.5 mr-1"
-            onClick={toggleMobileMenu}
-          >
-            <svg className="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-            <span className="sr-only">Toggle Menu</span>
-          </button>
+    <>
+      {/* Main Navbar with Glassmorphic Effect - Always Visible on Scroll */}
+      <nav
+        className={`fixed top-0 left-0 right-0 z-[9999] transition-all duration-500 ${
+          isScrolled
+            ? 'bg-white/85 backdrop-blur-2xl shadow-xl border-b border-white/30'
+            : 'bg-white/75 backdrop-blur-xl border-b border-white/20'
+        }`}
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 9999,
+          backdropFilter: isScrolled ? 'blur(24px) saturate(200%)' : 'blur(20px) saturate(180%)',
+          WebkitBackdropFilter: isScrolled ? 'blur(24px) saturate(200%)' : 'blur(20px) saturate(180%)',
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            
+            {/* Logo */}
+            <Link to="/" className="flex items-center gap-3 group">
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                className="w-10 h-10 bg-gradient-to-br from-primary to-teal-600 rounded-xl flex items-center justify-center shadow-md hover:shadow-lg transition-shadow"
+              >
+                <span className="text-white text-lg">🌿</span>
+              </motion.div>
+              <div className="hidden sm:block">
+                <span className="text-xl font-bold text-gray-900 bg-gradient-to-r from-primary to-teal-600 bg-clip-text text-transparent">
+                  UdyanSaathi
+                </span>
+                <span className="block text-[10px] text-gray-600 font-medium -mt-1">
+                  Environmental Intelligence
+                </span>
+              </div>
+            </Link>
+
+            {/* Desktop Navigation */}
+            <div className="hidden lg:flex items-center gap-1">
+              {/* Main Nav Items */}
+              {navItems.map((item) => (
+                <Link key={item.path} to={item.path}>
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className={`px-4 py-2 rounded-xl font-medium text-sm transition-all duration-200 flex items-center gap-2 ${
+                      isActive(item.path)
+                        ? 'bg-gradient-to-r from-primary to-teal-600 text-white shadow-md'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-white/60 backdrop-blur-sm'
+                    }`}
+                  >
+                    <span>{item.icon}</span>
+                    <span>{item.label}</span>
+                  </motion.div>
+                </Link>
+              ))}
+
+              {/* Divider */}
+              <div className="w-px h-6 bg-gray-300/50 mx-2" />
+
+              {/* Feature Items */}
+              {featureItems.map((item) => (
+                <Link key={item.path} to={item.path}>
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className={`px-4 py-2 rounded-xl font-medium text-sm transition-all duration-200 flex items-center gap-2 ${
+                      isActive(item.path)
+                        ? 'bg-gradient-to-r from-primary to-teal-600 text-white shadow-md'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-white/60 backdrop-blur-sm'
+                    }`}
+                  >
+                    <span>{item.icon}</span>
+                    <span>{item.label}</span>
+                  </motion.div>
+                </Link>
+              ))}
+            </div>
+
+            {/* Search with Glassmorphic Effect */}
+            <div className="hidden md:block relative">
+              <motion.div
+                animate={{ width: isSearchFocused ? 280 : 220 }}
+                className="relative"
+              >
+                <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                  <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search station..."
+                  value={searchTerm}
+                  onChange={(e) => updateSuggestions(e.target.value)}
+                  onFocus={() => { setIsSearchFocused(true); setSearchTerm(''); }}
+                  onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
+                  className="w-full pl-10 pr-4 py-2 bg-white/50 backdrop-blur-md border border-white/50 rounded-xl text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary focus:bg-white/70 transition-all duration-200 shadow-sm"
+                  style={{
+                    backdropFilter: 'blur(12px)',
+                    WebkitBackdropFilter: 'blur(12px)',
+                  }}
+                />
+              </motion.div>
+
+              {/* Search Suggestions with Glassmorphic Effect */}
+              <AnimatePresence>
+                {showSuggestions && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="absolute top-full mt-2 w-full bg-white/95 backdrop-blur-xl rounded-xl shadow-2xl border border-white/50 max-h-64 overflow-y-auto z-50"
+                    style={{
+                      backdropFilter: 'blur(20px) saturate(180%)',
+                      WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+                    }}
+                  >
+                    {suggestions.map((suggestion, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.03 }}
+                        onClick={() => selectSuggestion(suggestion)}
+                        className="px-4 py-3 hover:bg-white/70 cursor-pointer text-sm text-gray-900 border-b border-gray-200/50 last:border-0 flex items-center gap-2 transition-all"
+                      >
+                        <span className="text-primary">📍</span>
+                        {suggestion}
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="lg:hidden p-2 rounded-xl hover:bg-white/60 backdrop-blur-sm transition-colors text-gray-600"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {isMobileMenuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </motion.button>
+          </div>
         </div>
 
-        <div className={`w-full md:w-auto md:order-1 md:flex ${isMobileMenuOpen ? "block" : "hidden"}`}>
-          <ul className="flex flex-col md:flex-row md:space-x-8">
-            <div className="flex space-x-4 text-black items-center">
-              <Link to="/" className="hover:text-slate-600 transition ease-in-out delay-100">
-                Air Quality
-              </Link>
-              <Link to="/water-quality-index" className="hover:text-slate-600 transition ease-in-out delay-100">
-                Water Quality
-              </Link>
-              <Link to="/weather" className="hover:text-slate-600 transition ease-in-out delay-100">
-                Weather
-              </Link>
-              <Link to="/wards">
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="bg-gradient-to-r from-purple-500 to-blue-600 text-white px-4 py-2 rounded-lg hover:shadow-lg transition font-bold flex items-center gap-2"
-                >
-                  🏙️ Wards
-                </motion.div>
-              </Link>
-              <Link to="/policy-simulator">
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="bg-gradient-to-r from-green-500 to-teal-600 text-white px-4 py-2 rounded-lg hover:shadow-lg transition font-bold flex items-center gap-2"
-                >
-                  🎛️ Policy Sim
-                </motion.div>
-              </Link>
-              <Link to="/dispatch">
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="bg-gradient-to-r from-orange-500 to-red-600 text-white px-4 py-2 rounded-lg hover:shadow-lg transition font-bold flex items-center gap-2"
-                >
-                  🚨 Dispatch
-                </motion.div>
-              </Link>
-            </div>
-            <div className="relative hidden md:block">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                <svg
-                  className="w-4 h-4 text-black"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 20 20"
-                >
-                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                </svg>
-                <span className="sr-only">Search icon</span>
-              </div>
-              <input
-                type="text"
-                id="search-navbar"
-                className="block w-full p-2 pl-10 text-sm border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Search..."
-                value={searchTerm}
-                onChange={(e) => updateSuggestions(e.target.value)}
-                onFocus={handleFocus}
-              />
-              {showSuggestions && (
-                <div className="suggestions absolute top-10 left-0 right-0 bg-white border border-gray-200 rounded max-h-80 overflow-y-auto z-10">
-                  {suggestions.map((suggestion, index) => (
-                    <div
-                      key={index}
-                      className="suggestion p-2 cursor-pointer hover:bg-gray-200"
-                      onClick={() => selectSuggestion(suggestion)}
-                    >
-                      {suggestion}
+        {/* Mobile Menu with Glassmorphic Effect */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="lg:hidden bg-white/95 backdrop-blur-xl border-t border-white/30"
+              style={{
+                backdropFilter: 'blur(20px) saturate(180%)',
+                WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+              }}
+            >
+              <div className="px-4 py-4 space-y-2">
+                {/* Mobile Search with Glass Effect */}
+                <div className="relative mb-4">
+                  <input
+                    type="text"
+                    placeholder="Search station..."
+                    value={searchTerm}
+                    onChange={(e) => updateSuggestions(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 bg-white/50 backdrop-blur-md border border-white/50 rounded-xl text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary shadow-sm"
+                    style={{
+                      backdropFilter: 'blur(12px)',
+                      WebkitBackdropFilter: 'blur(12px)',
+                    }}
+                  />
+                  <svg className="w-4 h-4 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+
+                {/* Mobile Nav Items */}
+                {navItems.map((item) => (
+                  <Link key={item.path} to={item.path} onClick={() => setIsMobileMenuOpen(false)}>
+                    <div className={`px-4 py-3 rounded-xl font-medium flex items-center gap-3 transition-all ${
+                      isActive(item.path)
+                        ? 'bg-gradient-to-r from-primary to-teal-600 text-white shadow-md'
+                        : 'text-gray-700 hover:bg-white/70 backdrop-blur-sm'
+                    }`}>
+                      <span className="text-lg">{item.icon}</span>
+                      <span>{item.label}</span>
                     </div>
+                  </Link>
+                ))}
+
+                <div className="border-t border-gray-300/50 my-3 pt-3">
+                  {featureItems.map((item) => (
+                    <Link key={item.path} to={item.path} onClick={() => setIsMobileMenuOpen(false)}>
+                      <div className={`px-4 py-3 rounded-xl font-medium flex items-center gap-3 mb-2 transition-all ${
+                        isActive(item.path)
+                          ? 'bg-gradient-to-r from-primary to-teal-600 text-white shadow-md'
+                          : 'text-gray-700 hover:bg-white/70 backdrop-blur-sm'
+                      }`}>
+                        <span className="text-lg">{item.icon}</span>
+                        <span>{item.label}</span>
+                      </div>
+                    </Link>
                   ))}
                 </div>
-              )}
-            </div>
-          </ul>
-        </div>
-      </div>
-
-      {/* Mobile menu */}
-      <div className={`bg-white border border-gray-100 rounded-lg mt-2 p-4 md:hidden ${isMobileMenuOpen ? "block" : "hidden"}`}>
-        <input
-          type="text"
-          id="search-navbar"
-          className="block w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
-          placeholder="Search..."
-          value={searchTerm}
-          onChange={(e) => updateSuggestions(e.target.value)}
-          onFocus={handleFocus}
-        />
-        {showSuggestions && (
-          <div className="suggestions mt-2 bg-white border border-gray-200 rounded max-h-80 overflow-y-auto">
-            {suggestions.map((suggestion, index) => (
-              <div
-                key={index}
-                className="suggestion p-2 cursor-pointer hover:bg-gray-200"
-                onClick={() => selectSuggestion(suggestion)}
-              >
-                {suggestion}
               </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </motion.nav>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </nav>
+
+      {/* Spacer to prevent content from going under fixed navbar */}
+      <div className="h-16" />
+    </>
   );
 }
 

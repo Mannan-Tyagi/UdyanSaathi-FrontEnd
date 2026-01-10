@@ -482,8 +482,8 @@ const Component6 = () => {
     <div className="mx-4 my-4 flex flex-col">
       <div className="flex flex-col lg:flex-row lg:justify-between">
         <div>
-          <h1 className="text-2xl text-[#33a0d3]">Historic Air Quality Data</h1>
-          <div className="mt-2 text-xs text-slate-500">
+          <h1 className="text-2xl font-semibold text-primary">Historic Air Quality Data</h1>
+          <div className="mt-2 text-xs text-metal">
             <span>Explore insightful air pollution data for:</span>
             <ul className="list-disc mt-1 ml-4">
               <li>Last 7 days</li>
@@ -493,20 +493,20 @@ const Component6 = () => {
           </div>
         </div>
         <div className="flex flex-col lg:flex-row gap-2 mt-2 lg:mt-0">
-          <div className="best bg-green-500 text-white rounded-lg p-2 flex flex-col justify-center items-center min-w-[200px]">
-            <span className="text-xs font-semibold">Best {selectedOption}</span>
+          <div className="bg-status-success text-white rounded-card p-3 flex flex-col justify-center items-center min-w-[200px]">
+            <span className="text-xs font-semibold opacity-90">Best {selectedOption}</span>
             <h3 className="text-lg font-bold">{bestValue || 'No data'}</h3>
             {bestCity && bestDate && (
-              <span className="text-xs">
+              <span className="text-xs opacity-80">
                 {bestCity} - {bestDate}
               </span>
             )}
           </div>
-          <div className="worst bg-red-500 text-white rounded-lg p-2 flex flex-col justify-center items-center min-w-[200px]">
-            <span className="text-xs font-semibold">Worst {selectedOption}</span>
+          <div className="bg-status-danger text-white rounded-card p-3 flex flex-col justify-center items-center min-w-[200px]">
+            <span className="text-xs font-semibold opacity-90">Worst {selectedOption}</span>
             <h3 className="text-lg font-bold">{worstValue || 'No data'}</h3>
             {worstCity && worstDate && (
-              <span className="text-xs">
+              <span className="text-xs opacity-80">
                 {worstCity} - {worstDate}
               </span>
             )}
@@ -515,9 +515,9 @@ const Component6 = () => {
       </div>
 
       <div>
-        <div className="lg:flex lg:flex-row grid grid-cols-2 items-center mb-5">
+        <div className="lg:flex lg:flex-row grid grid-cols-2 items-center mb-5 gap-3">
           <select
-            className="border border-gray-300 p-2 rounded-md mt-3"
+            className="select-input mt-3"
             onChange={handleChange}
             value={selectedOption}
           >
@@ -529,7 +529,7 @@ const Component6 = () => {
           </select>
 
           <select
-            className="border border-gray-300 p-2 rounded-md mt-3 ml-3"
+            className="select-input mt-3"
             value={selectedTimeRange}
             onChange={handleTimeRangeChange}
           >
@@ -541,21 +541,51 @@ const Component6 = () => {
           </select>
 
           <Select
-            className="border border-gray-300 rounded-md mt-3 ml-3"
+            className="mt-3"
+            classNamePrefix="react-select"
             options={cityOptions}
             value={city}
             onChange={handleCityChange}
             isClearable
             placeholder="Select City"
+            styles={{
+              control: (base) => ({
+                ...base,
+                borderColor: '#E2E8F0',
+                borderRadius: '12px',
+                padding: '2px',
+                '&:hover': { borderColor: '#0D9488' },
+              }),
+              option: (base, state) => ({
+                ...base,
+                backgroundColor: state.isSelected ? '#0D9488' : state.isFocused ? '#0D948820' : 'white',
+                color: state.isSelected ? 'white' : '#0F172A',
+              }),
+            }}
           />
 
           <Select
-            className="border border-gray-300 rounded-md mt-3 ml-3"
+            className="mt-3"
+            classNamePrefix="react-select"
             options={compareCityOptions}
             value={compareCity}
             onChange={handleCompareCityChange}
             isClearable
             placeholder="Compare with City"
+            styles={{
+              control: (base) => ({
+                ...base,
+                borderColor: '#E2E8F0',
+                borderRadius: '12px',
+                padding: '2px',
+                '&:hover': { borderColor: '#0D9488' },
+              }),
+              option: (base, state) => ({
+                ...base,
+                backgroundColor: state.isSelected ? '#0D9488' : state.isFocused ? '#0D948820' : 'white',
+                color: state.isSelected ? 'white' : '#0F172A',
+              }),
+            }}
           />
         </div>
 
@@ -567,9 +597,10 @@ const Component6 = () => {
           style={{
             position: "absolute",
             backgroundColor: "white",
-            border: "1px solid #ddd",
-            padding: "5px",
-            borderRadius: "5px",
+            border: "1px solid #E2E8F0",
+            padding: "8px 12px",
+            borderRadius: "12px",
+            boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
             display: "none",
           }}
         ></div>

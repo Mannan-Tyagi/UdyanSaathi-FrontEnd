@@ -53,7 +53,14 @@ const WeatherComponent4 = () => {
   };
 
   if (!weatherData || weatherData.length === 0) {
-    return <div>Loading...</div>;
+    return (
+      <div className="bento-card p-6 flex items-center justify-center w-full">
+        <div className="flex items-center gap-3">
+          <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+          <span className="text-metal">Loading city weather data...</span>
+        </div>
+      </div>
+    );
   }
 
   const tableHeaders = [
@@ -69,49 +76,49 @@ const WeatherComponent4 = () => {
 
   return (
     <>
-      <div className="w-2/3">
-        <div className="shb flex flex-col m-3 rounded-2xl p-4 bg-white">
-          <table className="table-auto">
-            <thead>
-              <tr>
-                {tableHeaders.map((header, index) => (
-                  <th
-                    key={index}
-                    className="border px-4 py-3 bg-[#838181] text-white nln"
-                  >
-                    {header}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {weatherData.map((cityData, index) => {
-                const { city, data } = cityData;
+      <div className="w-full">
+        <div className="bento-card p-6">
+          <h3 className="text-lg font-semibold text-ink mb-4">Weather Across Major Cities</h3>
+          <div className="overflow-x-auto">
+            <table className="data-table w-full">
+              <thead>
+                <tr>
+                  {tableHeaders.map((header, index) => (
+                    <th key={index}>
+                      {header}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {weatherData.map((cityData, index) => {
+                  const { city, data } = cityData;
 
-                if (!data || !data.list || data.list.length === 0) {
-                  return null;
-                }
+                  if (!data || !data.list || data.list.length === 0) {
+                    return null;
+                  }
 
-                const weatherItem = data.list[0];
-                const temperature = convertToCelsius(
-                  weatherItem.main.temp
-                ).toFixed(2);
-                const humidity = weatherItem.main.humidity;
-                const pressure = weatherItem.main.pressure;
-                const windSpeed = weatherItem.wind.speed;
+                  const weatherItem = data.list[0];
+                  const temperature = convertToCelsius(
+                    weatherItem.main.temp
+                  ).toFixed(2);
+                  const humidity = weatherItem.main.humidity;
+                  const pressure = weatherItem.main.pressure;
+                  const windSpeed = weatherItem.wind.speed;
 
-                return (
-                  <tr key={index}>
-                    <td className="border px-4 py-2">{city}</td>
-                    <td className="border px-4 py-2">{temperature}</td>
-                    <td className="border px-4 py-2">{humidity}</td>
-                    <td className="border px-4 py-2">{pressure}</td>
-                    <td className="border px-4 py-2">{windSpeed}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                  return (
+                    <tr key={index}>
+                      <td className="font-medium text-ink">{city}</td>
+                      <td>{temperature}°C</td>
+                      <td>{humidity}%</td>
+                      <td>{pressure} hPa</td>
+                      <td>{windSpeed} m/s</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </>
