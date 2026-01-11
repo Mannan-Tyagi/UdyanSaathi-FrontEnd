@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 const WeatherComponent1 = () => {
   const [weatherData, setWeatherData] = useState(null);
   const [location, setLocation] = useState(null);
-  const api_key = "e3b177641df6073f97de399d1ee1cb35";
+  const api_key = "bd5e378503939ddaee76f12ad7a97608";
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
