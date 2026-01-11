@@ -875,6 +875,51 @@ const WardComparison = () => {
   const filteredWards = useMemo(() => getFilteredWards(), [getFilteredWards]);
   const zoneSummary = useMemo(() => getZoneSummary(), [getZoneSummary]);
 
+  // Circular AQI Indicator Component (Nafas-style)
+  const CircularAqiIndicator = ({ aqi, size = 80 }) => {
+    const strokeWidth = 6;
+    const radius = (size - strokeWidth) / 2;
+    const circumference = 2 * Math.PI * radius;
+    // Normalize AQI to 0-500 scale, map to 0-100%
+    const percentage = Math.min(100, (aqi / 500) * 100);
+    const strokeDashoffset = circumference - (percentage / 100) * circumference;
+    const color = getAqiColor(aqi);
+    
+    return (
+      <div className="relative" style={{ width: size, height: size }}>
+        <svg width={size} height={size} className="transform -rotate-90">
+          {/* Background circle */}
+          <circle
+            cx={size / 2}
+            cy={size / 2}
+            r={radius}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={strokeWidth}
+            className="text-gray-100"
+          />
+          {/* Progress circle */}
+          <circle
+            cx={size / 2}
+            cy={size / 2}
+            r={radius}
+            fill="none"
+            stroke={color}
+            strokeWidth={strokeWidth}
+            strokeDasharray={circumference}
+            strokeDashoffset={strokeDashoffset}
+            strokeLinecap="round"
+            style={{ transition: 'stroke-dashoffset 0.5s ease' }}
+          />
+        </svg>
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <span className="text-2xl font-bold text-ink">{aqi}</span>
+          <span className="text-[10px] text-metal">AQI</span>
+        </div>
+      </div>
+    );
+  };
+
   // Loading State
   if (loading) {
     return (
@@ -925,33 +970,45 @@ const WardComparison = () => {
     <div className="min-h-screen bg-canvas page-gradient">
       <Navbar />
       
-      {/* Hero Header */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-primary/5 via-teal-50 to-emerald-50/50 border-b border-mist">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml,...')] opacity-5"></div>
+      {/* Hero Header - Nafas Style */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 border-b border-mist">
+        {/* Decorative circles */}
+        <div className="absolute -top-24 -right-24 w-48 h-48 bg-emerald-200/30 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-teal-200/30 rounded-full blur-2xl"></div>
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div>
-              <div className="flex items-center gap-4 mb-2">
-                <h1 className="text-3xl md:text-4xl font-bold text-ink">Delhi Ward Air Quality</h1>
-                <span className="px-3 py-1 bg-status-safe/10 border border-status-safe/30 rounded-full text-status-safe text-sm font-medium flex items-center gap-1">
-                  <span className="w-2 h-2 bg-status-safe rounded-full animate-pulse"></span>
-                  Live
-                </span>
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-2xl flex items-center justify-center shadow-lg">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <h1 className="text-2xl md:text-3xl font-bold text-ink">Ward Air Quality</h1>
+                  <p className="text-metal text-sm">Delhi NCR Region</p>
+                </div>
               </div>
-              <p className="text-metal">Real-time monitoring across {summary.totalWards} wards with health impact analysis</p>
+              <div className="flex items-center gap-3">
+                <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-100 border border-emerald-200 rounded-full text-emerald-700 text-sm font-medium">
+                  <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                  Live Monitoring
+                </span>
+                <span className="text-metal text-sm">{summary.totalWards} Wards Tracked</span>
+              </div>
             </div>
             
             <div className="flex items-center gap-4">
               <div className="text-right">
-                <p className="text-metal text-sm">Last Updated</p>
-                <p className="text-ink font-medium">
-                  {summary.lastUpdated ? summary.lastUpdated.toLocaleTimeString() : 'Just now'}
+                <p className="text-metal text-xs uppercase tracking-wide">Last Updated</p>
+                <p className="text-ink font-semibold">
+                  {summary.lastUpdated ? summary.lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Just now'}
                 </p>
               </div>
               <button 
                 onClick={fetchRealTimeData}
-                className="p-2 bg-primary/10 hover:bg-primary/20 rounded-lg transition-colors"
+                className="p-3 bg-white hover:bg-gray-50 rounded-xl border border-mist shadow-sm transition-all hover:shadow-md active:scale-95"
                 title="Refresh Data"
               >
                 <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -961,27 +1018,62 @@ const WardComparison = () => {
             </div>
           </div>
           
-          {/* Stats Row */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-6">
-            <div className="bento-card p-4">
-              <p className="text-metal text-sm">Total Wards</p>
-              <p className="text-2xl font-bold text-ink">{summary.totalWards}</p>
+          {/* Stats Row - Cleaner Design */}
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mt-6">
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-white/50 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
+                  <span className="text-lg">🏘️</span>
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-ink">{summary.totalWards}</p>
+                  <p className="text-xs text-metal">Total Wards</p>
+                </div>
+              </div>
             </div>
-            <div className="bento-card p-4">
-              <p className="text-metal text-sm">Live Stations</p>
-              <p className="text-2xl font-bold text-status-safe">{summary.realtimeWards}</p>
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-white/50 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center">
+                  <span className="text-lg">📡</span>
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-emerald-600">{summary.realtimeWards}</p>
+                  <p className="text-xs text-metal">Live Stations</p>
+                </div>
+              </div>
             </div>
-            <div className="bento-card p-4">
-              <p className="text-metal text-sm">Estimated</p>
-              <p className="text-2xl font-bold text-primary">{summary.estimatedWards}</p>
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-white/50 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
+                  <span className="text-lg">📊</span>
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-blue-600">{summary.estimatedWards}</p>
+                  <p className="text-xs text-metal">Estimated</p>
+                </div>
+              </div>
             </div>
-            <div className="bento-card p-4">
-              <p className="text-metal text-sm">Severe AQI</p>
-              <p className="text-2xl font-bold text-status-danger">{summary.severeCount}</p>
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-white/50 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center">
+                  <span className="text-lg">⚠️</span>
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-red-500">{summary.severeCount}</p>
+                  <p className="text-xs text-metal">Severe AQI</p>
+                </div>
+              </div>
             </div>
-            <div className="bento-card p-4">
-              <p className="text-metal text-sm">City Avg AQI</p>
-              <p className="text-2xl font-bold" style={{ color: getAqiColor(summary.avgAqi) }}>{summary.avgAqi}</p>
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-white/50 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${getAqiColor(summary.avgAqi)}15` }}>
+                  <span className="text-lg">💨</span>
+                </div>
+                <div>
+                  <p className="text-2xl font-bold" style={{ color: getAqiColor(summary.avgAqi) }}>{summary.avgAqi}</p>
+                  <p className="text-xs text-metal">City Avg</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -990,99 +1082,131 @@ const WardComparison = () => {
       {/* Zone Summary Cards */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <h2 className="text-xl font-bold text-ink mb-4">Zone Overview</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
           {Object.entries(zoneSummary).map(([zone, data]) => (
             <button
               key={zone}
               onClick={() => setSelectedZone(selectedZone === zone ? null : zone)}
-              className={`p-4 rounded-card border transition-all ${
+              className={`relative overflow-hidden p-4 rounded-2xl border transition-all duration-300 ${
                 selectedZone === zone 
-                  ? 'bg-primary/10 border-primary shadow-md' 
-                  : 'bg-surface border-mist hover:border-primary/50 hover:shadow-card'
+                  ? 'bg-gradient-to-br from-primary/10 to-teal-50 border-primary shadow-lg scale-[1.02]' 
+                  : 'bg-surface border-mist hover:border-primary/30 hover:shadow-card'
               }`}
             >
-              <p className="text-sm text-metal truncate">{zone}</p>
-              <p className="text-xl font-bold" style={{ color: getAqiColor(data.avgAqi) }}>{data.avgAqi}</p>
-              <p className="text-xs text-metal">{data.count} wards</p>
-              {data.realtimeCount > 0 && (
-                <span className="inline-block mt-1 px-2 py-0.5 bg-status-safe/10 text-status-safe text-xs rounded-full">
-                  {data.realtimeCount} live
-                </span>
-              )}
+              {/* Background decoration */}
+              <div className={`absolute top-0 right-0 w-16 h-16 rounded-bl-full opacity-10 ${
+                data.avgAqi <= 100 ? 'bg-green-500' :
+                data.avgAqi <= 200 ? 'bg-yellow-500' :
+                data.avgAqi <= 300 ? 'bg-orange-500' : 'bg-red-500'
+              }`}></div>
+              
+              <p className="text-sm font-medium text-metal truncate mb-1">{zone}</p>
+              <div className="flex items-end gap-1 mb-2">
+                <p className="text-3xl font-bold" style={{ color: getAqiColor(data.avgAqi) }}>{data.avgAqi}</p>
+                <span className="text-xs text-metal mb-1">AQI</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-metal">{data.count} wards</span>
+                {data.realtimeCount > 0 && (
+                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-emerald-50 text-emerald-600 text-[10px] rounded-full font-medium">
+                    <span className="w-1 h-1 bg-emerald-500 rounded-full animate-pulse"></span>
+                    {data.realtimeCount}
+                  </span>
+                )}
+              </div>
             </button>
           ))}
         </div>
       </div>
 
-      {/* Filter Bar */}
+      {/* Filter Bar - Cleaner Design */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div className="bento-card p-4">
+        <div className="bg-white rounded-2xl border border-mist shadow-sm p-4">
           <div className="flex flex-col md:flex-row gap-4">
             {/* Search */}
             <div className="flex-1">
               <div className="relative">
-                <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-metal" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                  <svg className="w-4 h-4 text-metal" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
                 <input
                   type="text"
                   placeholder="Search wards, zones..."
                   onChange={(e) => debouncedSetSearchQuery(e.target.value)}
-                  className="input-field pl-10"
+                  className="w-full pl-14 pr-4 py-3 bg-gray-50 border-none rounded-xl text-ink placeholder-metal focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all"
                 />
               </div>
             </div>
             
             {/* Data Type Filter */}
-            <div className="flex gap-2">
+            <div className="flex gap-2 bg-gray-50 p-1 rounded-xl">
               {['all', 'realtime', 'estimated'].map((type) => (
                 <button
                   key={type}
                   onClick={() => setDataTypeFilter(type)}
-                  className={`px-4 py-2 rounded-button text-sm font-medium transition-colors ${
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                     dataTypeFilter === type
-                      ? type === 'realtime' ? 'bg-status-safe text-white' :
-                        type === 'estimated' ? 'bg-primary text-white' :
-                        'bg-primary text-white'
-                      : 'bg-canvas text-metal hover:bg-mist border border-mist'
+                      ? 'bg-white text-ink shadow-sm'
+                      : 'text-metal hover:text-ink'
                   }`}
                 >
-                  {type === 'all' ? 'All' : type === 'realtime' ? '🟢 Live' : '🔵 Estimated'}
+                  {type === 'all' ? 'All Wards' : type === 'realtime' ? '📡 Live' : '📊 Estimated'}
                 </button>
               ))}
             </div>
             
             {/* Sort */}
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="select-field"
-            >
-              <option value="aqi_desc">AQI: High to Low</option>
-              <option value="aqi_asc">AQI: Low to High</option>
-              <option value="name">Name: A-Z</option>
-              <option value="zone">Zone</option>
-            </select>
+            <div className="relative">
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="appearance-none w-full md:w-auto px-4 py-3 pr-10 bg-gray-50 border-none rounded-xl text-ink font-medium focus:ring-2 focus:ring-primary/20 cursor-pointer"
+              >
+                <option value="aqi_desc">AQI: High → Low</option>
+                <option value="aqi_asc">AQI: Low → High</option>
+                <option value="name">Name: A → Z</option>
+                <option value="zone">By Zone</option>
+              </select>
+              <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-metal pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
           </div>
           
           {/* Active Filters */}
           {(selectedZone || searchQuery) && (
-            <div className="flex gap-2 mt-3">
+            <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-mist">
               {selectedZone && (
-                <span className="inline-flex items-center gap-1 px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">
-                  Zone: {selectedZone}
-                  <button onClick={() => setSelectedZone(null)} className="hover:text-primary-700">×</button>
+                <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-lg text-sm font-medium">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  </svg>
+                  {selectedZone}
+                  <button onClick={() => setSelectedZone(null)} className="hover:text-emerald-900 ml-1">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
                 </span>
               )}
               {searchQuery && (
-                <span className="inline-flex items-center gap-1 px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">
-                  Search: {searchQuery}
-                  <button onClick={() => setSearchQuery('')} className="hover:text-primary-700">×</button>
+                <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                  "{searchQuery}"
+                  <button onClick={() => setSearchQuery('')} className="hover:text-blue-900 ml-1">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
                 </span>
               )}
               <button 
                 onClick={() => { setSelectedZone(null); setSearchQuery(''); setDataTypeFilter('all'); }}
-                className="text-metal hover:text-ink text-sm"
+                className="text-metal hover:text-ink text-sm font-medium px-2"
               >
                 Clear all
               </button>
@@ -1090,7 +1214,8 @@ const WardComparison = () => {
           )}
         </div>
         
-        <p className="text-metal text-sm mt-3">
+        <p className="text-metal text-sm mt-3 flex items-center gap-2">
+          <span className="w-1.5 h-1.5 bg-primary rounded-full"></span>
           Showing {filteredWards.length} of {summary.totalWards} wards
         </p>
       </div>
@@ -1100,11 +1225,13 @@ const WardComparison = () => {
         <div className="flex gap-6">
           {/* Ward List */}
           <div className={`flex-1 ${selectedWard ? 'hidden md:block md:w-1/2' : 'w-full'}`}>
-            <div className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <AnimatePresence>
                 {filteredWards.map((ward, index) => {
                   const aqi = ward.avg_aqi || ward.aqi || 0;
                   const category = getAqiCategory(aqi);
+                  const pm25 = ward.avg_pm25 || ward.pm25 || 0;
+                  const pm10 = ward.avg_pm10 || ward.pm10 || 0;
                   
                   return (
                     <motion.div
@@ -1114,82 +1241,97 @@ const WardComparison = () => {
                       exit={{ opacity: 0, y: -20 }}
                       transition={{ delay: index * 0.02 }}
                       onClick={() => fetchWardDetails(ward)}
-                      className={`relative overflow-hidden rounded-card border cursor-pointer transition-all hover:shadow-card-hover bg-surface ${
+                      className={`ward-card group ${
                         selectedWard?.id === ward.id 
-                          ? 'border-primary ring-2 ring-primary/20' 
-                          : 'border-mist hover:border-primary/30'
+                          ? 'ring-2 ring-primary/30 border-primary' 
+                          : ''
                       }`}
                     >
-                      {/* Gradient accent */}
-                      <div className={`absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b ${getAqiGradient(aqi)}`}></div>
-                      
-                      <div className="p-4 pl-5">
-                        <div className="flex items-start justify-between gap-4">
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-1">
-                              <h3 className="font-semibold text-ink truncate">{ward.name}</h3>
-                              {ward.type === 'realtime' ? (
-                                <span className="px-2 py-0.5 bg-status-safe/10 text-status-safe text-xs rounded-full flex items-center gap-1">
-                                  <span className="w-1.5 h-1.5 bg-status-safe rounded-full animate-pulse"></span>
-                                  Live
-                                </span>
-                              ) : (
-                                <span className="px-2 py-0.5 bg-primary/10 text-primary text-xs rounded-full">
-                                  Estimated
-                                </span>
-                              )}
-                              {ward.is_hotspot && (
-                                <span className="px-2 py-0.5 bg-status-danger/10 text-status-danger text-xs rounded-full">🔥 Hotspot</span>
-                              )}
-                            </div>
-                            <p className="text-sm text-metal">{ward.zone} Zone</p>
+                      {/* Card Header */}
+                      <div className="ward-card-header">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h3 className="font-semibold text-ink truncate text-base">{ward.name}</h3>
                           </div>
-                          
-                          <div className="text-right">
-                            <div className="text-3xl font-bold" style={{ color: getAqiColor(aqi) }}>{aqi}</div>
-                            <div className="text-sm text-metal">{category.icon} {category.label}</div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm text-metal">{ward.zone}</span>
+                            {ward.type === 'realtime' ? (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-50 text-emerald-600 text-xs rounded-full font-medium">
+                                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+                                Live
+                              </span>
+                            ) : (
+                              <span className="px-2 py-0.5 bg-blue-50 text-blue-600 text-xs rounded-full font-medium">
+                                Est.
+                              </span>
+                            )}
                           </div>
                         </div>
                         
-                        {/* Pollutant Grid */}
-                        <div className="grid grid-cols-4 sm:grid-cols-7 gap-2 mt-4">
-                          <div className="bg-canvas rounded-lg p-2 text-center">
-                            <p className="text-xs text-metal">PM2.5</p>
-                            <p className="font-semibold text-ink">{ward.avg_pm25 || ward.pm25 || '--'}</p>
-                          </div>
-                          <div className="bg-canvas rounded-lg p-2 text-center">
-                            <p className="text-xs text-metal">PM10</p>
-                            <p className="font-semibold text-ink">{ward.avg_pm10 || ward.pm10 || '--'}</p>
-                          </div>
-                          <div className="bg-canvas rounded-lg p-2 text-center">
-                            <p className="text-xs text-metal">NO₂</p>
-                            <p className="font-semibold text-ink">{ward.no2 || '--'}</p>
-                          </div>
-                          <div className="bg-canvas rounded-lg p-2 text-center">
-                            <p className="text-xs text-metal">SO₂</p>
-                            <p className="font-semibold text-ink">{ward.so2 || '--'}</p>
-                          </div>
-                          <div className="bg-canvas rounded-lg p-2 text-center hidden sm:block">
-                            <p className="text-xs text-metal">CO</p>
-                            <p className="font-semibold text-ink">{ward.co || '--'}</p>
-                          </div>
-                          <div className="bg-canvas rounded-lg p-2 text-center hidden sm:block">
-                            <p className="text-xs text-metal">O₃</p>
-                            <p className="font-semibold text-ink">{ward.o3 || '--'}</p>
-                          </div>
-                          <div className={`rounded-lg p-2 text-center ${getUrgencyColor(ward.urgency)}`}>
-                            <p className="text-xs opacity-80">Urgency</p>
-                            <p className="font-semibold capitalize text-sm">{ward.urgency}</p>
-                          </div>
+                        {/* Circular AQI Indicator */}
+                        <CircularAqiIndicator aqi={aqi} size={72} />
+                      </div>
+                      
+                      {/* Status Badge */}
+                      <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium mb-4 ${getAqiBgClass(aqi)}`}>
+                        <span className="text-lg">{category.icon}</span>
+                        <span>{category.label}</span>
+                      </div>
+                      
+                      {/* Pollutant Metrics Grid */}
+                      <div className="ward-metrics">
+                        <div className="ward-metric-item">
+                          <span className="ward-metric-label">PM2.5</span>
+                          <span className="ward-metric-value">{pm25}</span>
+                          <span className="ward-metric-unit">µg/m³</span>
+                        </div>
+                        <div className="ward-metric-item">
+                          <span className="ward-metric-label">PM10</span>
+                          <span className="ward-metric-value">{pm10}</span>
+                          <span className="ward-metric-unit">µg/m³</span>
+                        </div>
+                        <div className="ward-metric-item">
+                          <span className="ward-metric-label">NO₂</span>
+                          <span className="ward-metric-value">{ward.no2 || '--'}</span>
+                          <span className="ward-metric-unit">µg/m³</span>
+                        </div>
+                        <div className="ward-metric-item">
+                          <span className="ward-metric-label">O₃</span>
+                          <span className="ward-metric-value">{ward.o3 || '--'}</span>
+                          <span className="ward-metric-unit">µg/m³</span>
                         </div>
                       </div>
+                      
+                      {/* Footer with Population & Urgency */}
+                      <div className="flex items-center justify-between mt-4 pt-4 border-t border-mist">
+                        <div className="flex items-center gap-2 text-sm text-metal">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                          </svg>
+                          <span>{ward.population ? (ward.population / 1000).toFixed(0) + 'K' : '--'}</span>
+                        </div>
+                        
+                        <div className={`px-3 py-1 rounded-full text-xs font-semibold ${getUrgencyColor(ward.urgency)}`}>
+                          {ward.urgency?.toUpperCase()}
+                        </div>
+                        
+                        {ward.is_hotspot && (
+                          <span className="flex items-center gap-1 text-xs text-orange-600">
+                            <span>🔥</span>
+                            Hotspot
+                          </span>
+                        )}
+                      </div>
+                      
+                      {/* Hover indicator */}
+                      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-teal-400 to-emerald-400 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left rounded-b-card"></div>
                     </motion.div>
                   );
                 })}
               </AnimatePresence>
               
               {filteredWards.length === 0 && (
-                <div className="text-center py-12 bento-card">
+                <div className="col-span-full text-center py-12 bento-card">
                   <svg className="w-12 h-12 mx-auto text-metal mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>

@@ -36,7 +36,7 @@ const ForecastCard = ({ forecastData, unit, onCityChange }) => {
             }
         });
 
-        return Array.from(dailyMap.values()).slice(0, 7);
+        return Array.from(dailyMap.values()).slice(0, 6);
     };
 
     const dailyForecasts = getDailyForecasts();
@@ -55,32 +55,23 @@ const ForecastCard = ({ forecastData, unit, onCityChange }) => {
         <div className="wd-card wd-forecast">
             {/* Header */}
             <div className="wd-forecast-header">
-                <h3 className="wd-card-title">Forecast</h3>
+                <div className="wd-header-left">
+                    <h3 className="wd-card-title">Weekly Forecast</h3>
+                    <span className="wd-forecast-subtitle">Next 6 days</span>
+                </div>
                 <div className="wd-card-actions">
-                    <button className="wd-icon-btn" title="Download">
-                        <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                        >
+                    <button className="wd-icon-btn wd-icon-btn-outline" title="Export">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
                             <polyline points="7,10 12,15 17,10" />
                             <line x1="12" y1="15" x2="12" y2="3" />
                         </svg>
                     </button>
-                    <button className="wd-icon-btn" title="More options">
-                        <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                        >
-                            <circle cx="12" cy="6" r="2" />
-                            <circle cx="12" cy="12" r="2" />
-                            <circle cx="12" cy="18" r="2" />
+                    <button className="wd-icon-btn wd-icon-btn-outline" title="More options">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <circle cx="12" cy="5" r="1.5" />
+                            <circle cx="12" cy="12" r="1.5" />
+                            <circle cx="12" cy="19" r="1.5" />
                         </svg>
                     </button>
                 </div>
@@ -94,45 +85,35 @@ const ForecastCard = ({ forecastData, unit, onCityChange }) => {
                 onAddCity={handleAddCity}
             />
 
-            {/* Day Cards */}
-            <div className="wd-forecast-days">
-                {dailyForecasts.map((forecast, index) => {
-                    const temp =
-                        unit === "C"
-                            ? kelvinToCelsius(forecast.main.temp)
-                            : kelvinToFahrenheit(forecast.main.temp);
+            {/* Day Cards - New Pill Design */}
+            <div className="wd-forecast-days-wrapper">
+                <div className="wd-forecast-days">
+                    {dailyForecasts.map((forecast, index) => {
+                        const temp =
+                            unit === "C"
+                                ? kelvinToCelsius(forecast.main.temp)
+                                : kelvinToFahrenheit(forecast.main.temp);
 
-                    return (
-                        <DayCard
-                            key={forecast.dt}
-                            day={getDayName(forecast.dt)}
-                            date={getDayNumber(forecast.dt)}
-                            icon={forecast.weather[0].icon}
-                            temp={`${temp}°${unit}`}
-                            isActive={index === activeDay}
-                            onClick={() => setActiveDay(index)}
-                        />
-                    );
-                })}
+                        const isToday = index === 0;
+
+                        return (
+                            <DayCard
+                                key={forecast.dt}
+                                day={isToday ? "Today" : getDayName(forecast.dt)}
+                                date={getDayNumber(forecast.dt)}
+                                icon={forecast.weather[0].icon}
+                                temp={`${temp}°`}
+                                condition={forecast.weather[0].main}
+                                isActive={index === activeDay}
+                                onClick={() => setActiveDay(index)}
+                            />
+                        );
+                    })}
+                </div>
 
                 {/* Navigation Arrow */}
-                <button
-                    className="wd-day-card"
-                    style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        minWidth: "48px",
-                    }}
-                >
-                    <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                    >
+                <button className="wd-forecast-nav-btn" aria-label="Next week">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M9 18l6-6-6-6" />
                     </svg>
                 </button>
