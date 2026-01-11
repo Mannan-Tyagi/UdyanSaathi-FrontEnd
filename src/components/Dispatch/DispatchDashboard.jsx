@@ -35,7 +35,7 @@ const DispatchDashboard = () => {
   const [mapZoom, setMapZoom] = useState(5);
   const [selectedMission, setSelectedMission] = useState(null);
 
-  const baseUrl = "http://127.0.0.1:8000/api/";
+  const baseUrl = "https://apiudyansaathi2-fscmg2hxd8euf0bs.eastus-01.azurewebsites.net/api/";
 
   useEffect(() => {
     checkAndInitialize();

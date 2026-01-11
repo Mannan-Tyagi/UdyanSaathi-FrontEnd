@@ -17,7 +17,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 import { useNavigate } from 'react-router-dom';
 import ProfessionalNavbar from '../navbar/ProfessionalNavbar';
 
-const API_BASE = 'http://127.0.0.1:8000/api';
+const API_BASE = 'https://apiudyansaathi2-fscmg2hxd8euf0bs.eastus-01.azurewebsites.net/api';
 
 // Policy icons and colors
 const POLICY_CONFIG = {
