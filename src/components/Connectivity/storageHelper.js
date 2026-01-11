@@ -21,7 +21,8 @@ function setTodayDate(text) {
    window.TodayDate = text;
 }
 function getTodayDate() {
-    return window.TodayDate;
+    // Return stored date or current date as fallback
+    return window.TodayDate || new Date().toISOString().split('T')[0];
 }
 // Function to get the station name
 function getBaseUrl() {

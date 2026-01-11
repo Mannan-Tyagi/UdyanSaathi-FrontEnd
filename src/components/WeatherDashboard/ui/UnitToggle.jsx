@@ -1,21 +1,22 @@
 import React from "react";
 
-const UnitToggle = ({ unit, onToggle }) => {
+const UnitToggle = ({ unit, onToggle, isDark = false }) => {
     return (
-        <div className="wd-unit-toggle" onClick={onToggle}>
-            <span style={{ fontWeight: unit === "C" ? 600 : 400 }}>°C</span>
-            <span style={{ color: "#9CA3AF" }}>/</span>
-            <span style={{ fontWeight: unit === "F" ? 600 : 400 }}>°F</span>
-            <svg
-                width="12"
-                height="12"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
+        <div
+            className={`wd-unit-toggle ${isDark ? "wd-unit-toggle-dark" : ""}`}
+            onClick={onToggle}
+        >
+            <span
+                className={`wd-unit-option ${unit === "C" ? "active" : ""}`}
             >
-                <path d="M6 9l6 6 6-6" />
-            </svg>
+                °C
+            </span>
+            <span className="wd-unit-divider">/</span>
+            <span
+                className={`wd-unit-option ${unit === "F" ? "active" : ""}`}
+            >
+                °F
+            </span>
         </div>
     );
 };

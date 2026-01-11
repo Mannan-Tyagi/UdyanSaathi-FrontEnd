@@ -1,97 +1,122 @@
 import React from "react";
+import {
+    BarChart,
+    Bar,
+    XAxis,
+    YAxis,
+    Tooltip,
+    ResponsiveContainer,
+    Cell,
+    ReferenceLine,
+} from "recharts";
 import ChartCard from "./ChartCard";
-import { generateMockChartData } from "../utils";
+
+// Mock data for demo
+const generateMockData = () => {
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const today = new Date().getDay();
+
+    return Array.from({ length: 7 }, (_, i) => ({
+        name: i === 0 ? "Today" : days[(today + i) % 7],
+        value: Math.floor(Math.random() * 11) + 1,
+        isToday: i === 0,
+    }));
+};
+
+const getUVColor = (value) => {
+    if (value <= 2) return "#22c55e"; // Low - Green
+    if (value <= 5) return "#facc15"; // Moderate - Yellow
+    if (value <= 7) return "#fb923c"; // High - Orange
+    if (value <= 10) return "#ef4444"; // Very High - Red
+    return "#a855f7"; // Extreme - Purple
+};
+
+const getUVLevel = (value) => {
+    if (value <= 2) return "Low";
+    if (value <= 5) return "Moderate";
+    if (value <= 7) return "High";
+    if (value <= 10) return "Very High";
+    return "Extreme";
+};
+
+const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+        const value = payload[0].value;
+        const level = getUVLevel(value);
+        const color = getUVColor(value);
+
+        return (
+            <div className="wd-chart-tooltip">
+                <p className="wd-tooltip-label">{label}</p>
+                <p className="wd-tooltip-value">
+                    UV Index: <strong>{value}</strong>
+                </p>
+                <p className="wd-tooltip-level" style={{ color }}>
+                    {level}
+                </p>
+            </div>
+        );
+    }
+    return null;
+};
 
 const UVIndexChart = ({ data }) => {
-    // Use provided data or generate mock data for UV index (0-12 scale)
-    const chartData = data || generateMockChartData(7, 2, 12);
+    const chartData = data || generateMockData();
 
     const legend = [
-        { color: "#4ade80", label: "Low" },
-        { color: "#facc15", label: "Moderate" },
-        { color: "#fb923c", label: "High" },
-        { color: "#ef4444", label: "Very High" },
+        { color: "#22c55e", label: "Low (0-2)" },
+        { color: "#facc15", label: "Moderate (3-5)" },
+        { color: "#fb923c", label: "High (6-7)" },
+        { color: "#ef4444", label: "Very High (8+)" },
     ];
 
-    const maxValue = 12;
-
-    // Calculate segment heights based on UV value
-    const getSegments = (value) => {
-        const segments = [];
-        const segmentSize = 3; // Each segment represents 3 UV levels
-
-        // Low (0-3)
-        const low = Math.min(value, 3);
-        if (low > 0) {
-            segments.push({
-                height: (low / maxValue) * 100,
-                color: "#4ade80",
-            });
-        }
-
-        // Moderate (3-6)
-        const moderate = Math.min(Math.max(value - 3, 0), 3);
-        if (moderate > 0) {
-            segments.push({
-                height: (moderate / maxValue) * 100,
-                color: "#facc15",
-            });
-        }
-
-        // High (6-9)
-        const high = Math.min(Math.max(value - 6, 0), 3);
-        if (high > 0) {
-            segments.push({
-                height: (high / maxValue) * 100,
-                color: "#fb923c",
-            });
-        }
-
-        // Very High (9-12)
-        const veryHigh = Math.min(Math.max(value - 9, 0), 3);
-        if (veryHigh > 0) {
-            segments.push({
-                height: (veryHigh / maxValue) * 100,
-                color: "#ef4444",
-            });
-        }
-
-        return segments;
-    };
-
     return (
-        <ChartCard title="Ultraviolet Index" legend={legend}>
-            <div className="wd-chart-container">
-                {chartData.map((item, index) => {
-                    const segments = getSegments(item.value);
-                    const isToday = index === 0;
-
-                    return (
-                        <div key={index} className="wd-chart-bar-group">
-                            {isToday && (
-                                <span className="wd-chart-today-marker">Today</span>
-                            )}
-                            <div
-                                className="wd-uv-bar"
-                                style={{ display: "flex", flexDirection: "column-reverse" }}
-                                title={`UV: ${item.value}`}
-                            >
-                                {segments.map((segment, segIndex) => (
-                                    <div
-                                        key={segIndex}
-                                        className="wd-uv-segment"
-                                        style={{
-                                            height: `${segment.height}%`,
-                                            backgroundColor: segment.color,
-                                            minHeight: segment.height > 0 ? "4px" : "0",
-                                        }}
-                                    ></div>
-                                ))}
-                            </div>
-                            <span className="wd-chart-label">{item.day}</span>
-                        </div>
-                    );
-                })}
+        <ChartCard title="UV Index" legend={legend}>
+            <div className="wd-recharts-container">
+                <ResponsiveContainer width="100%" height={160}>
+                    <BarChart
+                        data={chartData}
+                        margin={{ top: 20, right: 10, left: -20, bottom: 5 }}
+                        barCategoryGap="20%"
+                    >
+                        <XAxis
+                            dataKey="name"
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fontSize: 11, fill: "#9ca3af" }}
+                            dy={8}
+                        />
+                        <YAxis
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fontSize: 10, fill: "#9ca3af" }}
+                            domain={[0, 12]}
+                            ticks={[0, 3, 6, 9, 12]}
+                        />
+                        <ReferenceLine
+                            y={6}
+                            stroke="#fb923c"
+                            strokeDasharray="3 3"
+                            strokeOpacity={0.5}
+                        />
+                        <Tooltip
+                            content={<CustomTooltip />}
+                            cursor={{ fill: "rgba(251, 146, 60, 0.1)", radius: 8 }}
+                        />
+                        <Bar
+                            dataKey="value"
+                            radius={[8, 8, 0, 0]}
+                            maxBarSize={24}
+                        >
+                            {chartData.map((entry, index) => (
+                                <Cell
+                                    key={`cell-${index}`}
+                                    fill={getUVColor(entry.value)}
+                                />
+                            ))}
+                        </Bar>
+                    </BarChart>
+                </ResponsiveContainer>
             </div>
         </ChartCard>
     );

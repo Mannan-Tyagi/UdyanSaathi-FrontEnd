@@ -4,8 +4,8 @@ import { motion } from 'framer-motion';
 import { getUrl, setTodayDate } from '../Connectivity/storageHelper';
 
 /**
- * Smart City Glass & Grid Design System - AQI Details Card
- * Premium Dashboard Style
+ * AQI Details Card - Inspired by Purwokerto Design (Image 3)
+ * Features: Status badge, circular gauge, clean typography
  */
 const AqiDetails = ({selectedSearch}) => {
   const [state, setState] = useState({
@@ -46,123 +46,176 @@ const AqiDetails = ({selectedSearch}) => {
   // EPA/CPCB Standard AQI Color Scale with gradients
   const getColorForValue = (value) => {
     if (value <= 50) {
-      return { color: '#10B981', gradient: 'from-emerald-400 to-teal-500', bg: 'bg-emerald-500' };
+      return { color: '#48BB78', gradient: 'from-emerald-400 to-teal-500', bg: 'bg-emerald-500', label: 'Good', emoji: '😊' };
     } else if (value <= 100) {
-      return { color: '#F59E0B', gradient: 'from-amber-400 to-yellow-500', bg: 'bg-amber-500' };
+      return { color: '#ECC94B', gradient: 'from-amber-400 to-yellow-500', bg: 'bg-amber-500', label: 'Satisfactory', emoji: '🙂' };
     } else if (value <= 150) {
-      return { color: '#F97316', gradient: 'from-orange-400 to-amber-500', bg: 'bg-orange-500' };
+      return { color: '#ED8936', gradient: 'from-orange-400 to-amber-500', bg: 'bg-orange-500', label: 'Moderate', emoji: '😐' };
     } else if (value <= 200) {
-      return { color: '#EF4444', gradient: 'from-red-400 to-rose-500', bg: 'bg-red-500' };
+      return { color: '#F56565', gradient: 'from-red-400 to-rose-500', bg: 'bg-red-500', label: 'Poor', emoji: '😷' };
     } else if (value <= 300) {
-      return { color: '#8B5CF6', gradient: 'from-purple-400 to-violet-500', bg: 'bg-purple-500' };
+      return { color: '#9F7AEA', gradient: 'from-purple-400 to-violet-500', bg: 'bg-purple-500', label: 'Very Poor', emoji: '🤢' };
     } else {
-      return { color: '#991B1B', gradient: 'from-red-600 to-rose-700', bg: 'bg-red-800' };
+      return { color: '#C53030', gradient: 'from-red-600 to-rose-700', bg: 'bg-red-800', label: 'Severe', emoji: '☠️' };
     }
   };
 
-  // Get quality badge style
-  const getQualityBadgeClass = (aqi) => {
-    if (aqi <= 50) return 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white';
-    if (aqi <= 100) return 'bg-gradient-to-r from-amber-500 to-yellow-500 text-white';
-    if (aqi <= 150) return 'bg-gradient-to-r from-orange-500 to-amber-500 text-white';
-    if (aqi <= 200) return 'bg-gradient-to-r from-red-500 to-rose-500 text-white';
-    if (aqi <= 300) return 'bg-gradient-to-r from-purple-500 to-violet-500 text-white';
-    return 'bg-gradient-to-r from-red-700 to-rose-800 text-white';
+  // Get badge class based on AQI
+  const getBadgeClass = (aqi) => {
+    if (aqi <= 50) return 'aqi-badge-good';
+    if (aqi <= 100) return 'aqi-badge-satisfactory';
+    if (aqi <= 150) return 'aqi-badge-moderate';
+    if (aqi <= 200) return 'aqi-badge-poor';
+    if (aqi <= 300) return 'aqi-badge-very-poor';
+    return 'aqi-badge-severe';
   };
 
-  const getQualityDescription = (aqi) => {
-    if (aqi <= 50) return 'Air quality is satisfactory';
-    if (aqi <= 100) return 'Acceptable air quality';
-    if (aqi <= 150) return 'Sensitive groups may be affected';
-    if (aqi <= 200) return 'Health effects for everyone';
-    if (aqi <= 300) return 'Health alert: serious effects';
-    return 'Emergency conditions';
+  // Calculate gauge rotation based on AQI (0-500 scale to 0-180 degrees)
+  const getGaugeRotation = (aqi) => {
+    const clampedAqi = Math.min(Math.max(aqi, 0), 500);
+    return (clampedAqi / 500) * 180;
   };
 
   return (
     <div className="relative h-full min-h-[320px] overflow-hidden">
-      {pollution.map((pol) => (
-        <div key={pol.id} className="p-6 lg:p-8 flex flex-col h-full">
-          
-          {/* Top Section - Station Info */}
-          <div className="mb-4">
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <h1 className="text-2xl lg:text-3xl font-black text-gray-900 leading-tight mb-1">
-                  {pol.Station}
-                </h1>
-                <p className="text-gray-500 text-sm font-medium">
-                  {pol.City}, {pol.State}
-                </p>
-              </div>
-              <div className="flex items-center gap-2 bg-gray-100 px-3 py-1.5 rounded-full">
-                <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-                <span className="text-xs font-semibold text-gray-600">LIVE</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Main AQI Display */}
-          <div className="flex-1 flex items-center justify-between gap-6">
+      {pollution.map((pol) => {
+        const colorData = getColorForValue(pol.AQI);
+        
+        return (
+          <div key={pol.id} className="p-6 lg:p-8 flex flex-col h-full">
             
-            {/* Left - Status Info */}
-            <div className="flex flex-col gap-4">
-              {/* Quality Badge */}
+            {/* Top Section - Status Badge */}
+            <div className="flex items-start justify-between mb-6">
               <motion.div
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.2 }}
+                transition={{ delay: 0.1 }}
               >
-                <span className={`px-5 py-2.5 rounded-xl text-sm font-bold inline-block shadow-lg ${getQualityBadgeClass(pol.AQI)}`}>
-                  {pol.AQI_Quality}
+                <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold ${getBadgeClass(pol.AQI)}`}>
+                  <span>{colorData.emoji}</span>
+                  <span>{colorData.label}</span>
                 </span>
               </motion.div>
               
-              {/* Quality Description */}
-              <p className="text-gray-600 text-sm font-medium max-w-[200px]">
-                {getQualityDescription(pol.AQI)}
-              </p>
-              
-              {/* Last Update */}
-              <div className="flex items-center gap-2 text-gray-500 text-xs">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span className="font-medium">{pol.Pol_Date}</span>
+              {/* Live Indicator */}
+              <div className="flex items-center gap-2 text-xs text-metal">
+                <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                <span className="font-medium">LIVE</span>
               </div>
             </div>
 
-            {/* Right - AQI Circle */}
-            <motion.div 
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ type: "spring", stiffness: 200, damping: 15 }}
-              className="relative"
-            >
-              {/* Glow Effect */}
-              <div 
-                className={`absolute inset-0 bg-gradient-to-br ${state.gradient} rounded-full blur-2xl opacity-30 scale-110`}
-              ></div>
+            {/* Location Info */}
+            <div className="mb-6">
+              <h1 className="text-2xl lg:text-3xl font-extrabold text-ink leading-tight mb-1">
+                {pol.Station}
+              </h1>
+              <p className="text-metal text-sm flex items-center gap-2">
+                <span className="text-lg">📍</span>
+                {pol.City}, {pol.State}
+              </p>
+            </div>
+
+            {/* Main Content - AQI Display */}
+            <div className="flex items-center justify-between flex-1">
               
-              {/* Main Circle */}
-              <div 
-                className={`relative w-36 h-36 lg:w-44 lg:h-44 rounded-full bg-gradient-to-br ${state.gradient} flex flex-col items-center justify-center shadow-2xl`}
-              >
-                {/* Inner Ring */}
-                <div className="absolute inset-2 rounded-full bg-white/20 backdrop-blur-sm"></div>
+              {/* Left - Description */}
+              <div className="flex flex-col gap-4 max-w-[200px]">
+                <p className="text-metal text-sm leading-relaxed">
+                  {pol.AQI <= 50 && "Air quality is satisfactory with minimal pollution risk."}
+                  {pol.AQI > 50 && pol.AQI <= 100 && "Acceptable air quality for most individuals."}
+                  {pol.AQI > 100 && pol.AQI <= 150 && "Sensitive groups may experience mild effects."}
+                  {pol.AQI > 150 && pol.AQI <= 200 && "Health effects possible for everyone."}
+                  {pol.AQI > 200 && pol.AQI <= 300 && "Health alert: serious effects possible."}
+                  {pol.AQI > 300 && "Emergency conditions - avoid outdoor activities."}
+                </p>
                 
-                {/* AQI Value */}
-                <span className="relative text-5xl lg:text-6xl font-black text-white drop-shadow-lg">
-                  {pol.AQI}
-                </span>
-                <span className="relative text-white/90 text-sm font-bold uppercase tracking-wider mt-1">
-                  AQI
-                </span>
+                {/* Last Update */}
+                <div className="flex items-center gap-2 text-muted text-xs">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>{pol.Pol_Date}</span>
+                </div>
+              </div>
+
+              {/* Right - Circular AQI Gauge */}
+              <motion.div 
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.2 }}
+                className="relative"
+              >
+                {/* Gauge Container */}
+                <div className="relative w-32 h-32 lg:w-40 lg:h-40">
+                  {/* Background Ring with gradient */}
+                  <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
+                    <defs>
+                      <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#48BB78" />
+                        <stop offset="25%" stopColor="#ECC94B" />
+                        <stop offset="50%" stopColor="#ED8936" />
+                        <stop offset="75%" stopColor="#F56565" />
+                        <stop offset="100%" stopColor="#C53030" />
+                      </linearGradient>
+                    </defs>
+                    {/* Background track */}
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="42"
+                      fill="none"
+                      stroke="#E2E8F0"
+                      strokeWidth="8"
+                      strokeLinecap="round"
+                      strokeDasharray="198"
+                      strokeDashoffset="66"
+                    />
+                    {/* Progress arc */}
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="42"
+                      fill="none"
+                      stroke="url(#gaugeGradient)"
+                      strokeWidth="8"
+                      strokeLinecap="round"
+                      strokeDasharray="198"
+                      strokeDashoffset={198 - (pol.AQI / 500) * 132}
+                      style={{ transition: 'stroke-dashoffset 1s ease' }}
+                    />
+                  </svg>
+                  
+                  {/* Center Content */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span 
+                      className="text-4xl lg:text-5xl font-extrabold"
+                      style={{ color: colorData.color }}
+                    >
+                      {pol.AQI}
+                    </span>
+                    <span className="text-xs font-semibold text-metal uppercase tracking-wider">
+                      AQI
+                    </span>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Quality Label at bottom */}
+            <motion.div 
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="mt-4 pt-4 border-t border-mist"
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-semibold text-ink">{pol.AQI_Quality}</span>
+                <span className="text-xs text-metal">India AQI Scale</span>
               </div>
             </motion.div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };

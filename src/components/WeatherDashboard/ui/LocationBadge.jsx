@@ -1,8 +1,8 @@
 import React from "react";
 
-const LocationBadge = ({ city, country }) => {
+const LocationBadge = ({ city, country, isDark = false }) => {
     return (
-        <div className="wd-location-badge">
+        <div className={`wd-location-badge ${isDark ? "wd-location-badge-dark" : ""}`}>
             <svg
                 width="16"
                 height="16"
@@ -18,6 +18,7 @@ const LocationBadge = ({ city, country }) => {
                 {city}
                 {country && `, ${country}`}
             </span>
+            <span className="wd-location-pulse" />
         </div>
     );
 };
