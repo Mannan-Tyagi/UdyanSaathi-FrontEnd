@@ -5,6 +5,16 @@ export default {
     extend: {
       // Smart City Glass & Grid Design System Colors
       colors: {
+        // shadcn/ui compatible CSS variable colors
+        background: 'hsl(var(--background, 210 40% 96.1%))',
+        foreground: 'hsl(var(--foreground, 222.2 84% 4.9%))',
+        'muted-foreground': 'hsl(var(--muted-foreground, 215.4 16.3% 46.9%))',
+        'primary-foreground': 'hsl(var(--primary-foreground, 210 40% 98%))',
+        'secondary-foreground': 'hsl(var(--secondary-foreground, 222.2 84% 4.9%))',
+        secondary: {
+          DEFAULT: 'hsl(var(--secondary, 210 40% 96.1%))',
+        },
+        
         // Canvas - Main page background
         canvas: '#F1F5F9',
         // Surface - Card backgrounds  
