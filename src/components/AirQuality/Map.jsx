@@ -48,8 +48,15 @@ const Map = ({ selectedSearch }) => {
     }, [selectedSearch]);
 
     return (
-        <div>
-            <MapContainer key={key} center={mapCenter} animate={true} zoom={level} style={{ height: '50vh', width: '100%' }}>
+        <div className="map-wrapper rounded-card overflow-hidden shadow-card border border-mist">
+            <MapContainer 
+                key={key} 
+                center={mapCenter} 
+                animate={true} 
+                zoom={level} 
+                style={{ height: '50vh', width: '100%' }} 
+                className="rounded-card"
+            >
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

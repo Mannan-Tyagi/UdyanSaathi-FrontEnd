@@ -59,33 +59,33 @@ const Component8 = (selectedSearch) => {
   return (
     <div className="m-4 sm:m-8">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between">
-        <h1 className="text-xl sm:text-2xl text-black font-bold text-start mb-2 sm:mb-0">
+        <h1 className="text-xl sm:text-2xl text-ink font-bold text-start mb-2 sm:mb-0">
           AQI Heat Map
         </h1>
         <div className="lg:flex grid grid-cols-3 lg:flex-row">
-          <div className="w-20 sm:w-24 h-7 bg-[#34a12b] flex justify-center items-center m-1">
+          <div className="w-20 sm:w-24 h-7 bg-aqi-good flex justify-center items-center m-1 rounded">
             <span className="text-white text-sm">0 - 50</span>
           </div>
-          <div className="w-20 sm:w-24 h-7 bg-[#d4cc0f] flex justify-center items-center m-1">
+          <div className="w-20 sm:w-24 h-7 bg-aqi-satisfactory flex justify-center items-center m-1 rounded">
             <span className="text-white text-sm">51 - 100</span>
           </div>
-          <div className="w-20 sm:w-24 h-7 bg-[#e9572a] flex justify-center items-center m-1">
+          <div className="w-20 sm:w-24 h-7 bg-aqi-moderate flex justify-center items-center m-1 rounded">
             <span className="text-white text-sm">101 - 200</span>
           </div>
-          <div className="w-20 sm:w-24 h-7 bg-[#ec4d9f] flex justify-center items-center m-1">
+          <div className="w-20 sm:w-24 h-7 bg-aqi-poor flex justify-center items-center m-1 rounded">
             <span className="text-white text-sm">201 - 300</span>
           </div>
-          <div className="w-20 sm:w-24 h-7 bg-[#9858a2] flex justify-center items-center m-1">
+          <div className="w-20 sm:w-24 h-7 bg-aqi-veryPoor flex justify-center items-center m-1 rounded">
             <span className="text-white text-sm">301 - 400</span>
           </div>
-          <div className="w-20 sm:w-24 h-7 bg-[#c11e2f] flex justify-center items-center m-1">
+          <div className="w-20 sm:w-24 h-7 bg-aqi-severe flex justify-center items-center m-1 rounded">
             <span className="text-white text-sm">401 - 500</span>
           </div>
         </div>
       </div>
-      <div className="flex flex-row gap-2 mt-4 sm:mt-2">
-        <label className="text-lg font-semibold">Select Year: </label>
-        <select value={selectedYear} onChange={handleYearChange} className="border p-2">
+      <div className="flex flex-row gap-2 mt-4 sm:mt-2 items-center">
+        <label className="text-sm font-medium text-metal">Select Year: </label>
+        <select value={selectedYear} onChange={handleYearChange} className="select-input">
           {uniqueYears.map((year, index) => (
             <option key={index} value={year}>
               {year}

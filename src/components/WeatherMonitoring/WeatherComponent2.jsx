@@ -42,35 +42,52 @@ const WeatherComponent2 = () => {
     return (temp - 273.15).toFixed(2);
   };
 
+  if (!weatherData) {
+    return (
+      <div className="bento-card p-8 flex items-center justify-center w-full">
+        <div className="flex items-center gap-3">
+          <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+          <span className="text-metal">Loading forecast...</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
-      <div className="w-2/3 p-8 flex flex-row WR-1 m-3 rounded-2xl bg-white justify-evenly weather2-top">
-        {weatherData &&
-          weatherData.list.slice(0, 4).map((day, index) => (
-            <div key={index} className="forcast mx-5">
-              <div className="flex flex-col gap-20">
-                <div className=" flex flex-col justify-center items-center gap-3">
-                  {day && (
-                    <img
-                      src={`https://openweathermap.org/img/wn/${day.weather[0].icon}.png`}
-                      alt=""
-                      className="weather-icon-main w-10"
-                    />
-                  )}
-                  <span>{convertToFahrenheit(day && day.main.temp)}°C</span>
-                  <span>{day && day.weather[0].description}</span>
-                </div>
-                <div className="flex flex-col bg-[#838181] p-2 text-white rounded-xl px-2">
-                  <span>
-                    Feels like:{" "}
-                    {convertToFahrenheit(day && day.main.feels_like)}°C
-                  </span>
-                  <span>Pressure: {day && day.main.pressure}</span>
-                  <span>Humidity: {day && day.main.humidity}</span>
-                </div>
+      <div className="bento-card p-8 w-full">
+        <h3 className="text-lg font-semibold text-ink mb-6">Weather Forecast</h3>
+        <div className="grid grid-cols-4 gap-4">
+          {weatherData.list.slice(0, 4).map((day, index) => (
+            <div key={index} className="flex flex-col items-center">
+              <div className="flex flex-col justify-center items-center gap-2 mb-4">
+                {day && (
+                  <img
+                    src={`https://openweathermap.org/img/wn/${day.weather[0].icon}.png`}
+                    alt=""
+                    className="w-12 h-12"
+                  />
+                )}
+                <span className="text-xl font-semibold text-ink">{convertToFahrenheit(day && day.main.temp)}°C</span>
+                <span className="text-sm text-metal capitalize">{day && day.weather[0].description}</span>
+              </div>
+              <div className="flex flex-col bg-primary/10 p-3 rounded-card w-full text-sm">
+                <span className="text-ink">
+                  <span className="text-metal">Feels like:</span>{" "}
+                  <span className="font-medium">{convertToFahrenheit(day && day.main.feels_like)}°C</span>
+                </span>
+                <span className="text-ink">
+                  <span className="text-metal">Pressure:</span>{" "}
+                  <span className="font-medium">{day && day.main.pressure}</span>
+                </span>
+                <span className="text-ink">
+                  <span className="text-metal">Humidity:</span>{" "}
+                  <span className="font-medium">{day && day.main.humidity}%</span>
+                </span>
               </div>
             </div>
           ))}
+        </div>
       </div>
     </>
   );

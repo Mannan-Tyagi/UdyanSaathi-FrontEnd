@@ -53,12 +53,13 @@ function Navbar() {
               >
                 Air Quality
               </Link>
-              <Link
+              {/* COMMENTED OUT: Water Quality feature disabled */}
+              {/* <Link
                 to="/water-quality-index"
                 className="hover:text-slate-600 transition ease-in-out delay-100"
               >
                 Water Quality
-              </Link>
+              </Link> */}
               <Link
                 to="/weather"
                 className="hover:text-slate-600 transition ease-in-out delay-100"

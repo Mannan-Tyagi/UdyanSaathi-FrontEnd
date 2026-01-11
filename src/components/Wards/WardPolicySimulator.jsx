@@ -366,16 +366,16 @@ const AIRecommendation = ({ data }) => {
     <div className="space-y-4">
       {/* Current Situation */}
       <div 
-        className="p-4 rounded-lg"
-        style={{ backgroundColor: `${getSeverityColor(current_situation.severity)}20` }}
+        className="p-4 rounded-card border"
+        style={{ backgroundColor: `${getSeverityColor(current_situation.severity)}15`, borderColor: `${getSeverityColor(current_situation.severity)}40` }}
       >
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="font-bold text-white text-lg">Current Situation</h3>
-            <p className="text-gray-400">PM2.5: {current_situation.pm25} µg/m³</p>
+            <h3 className="font-bold text-ink text-lg">Current Situation</h3>
+            <p className="text-metal">PM2.5: {current_situation.pm25} µg/m³</p>
           </div>
           <div 
-            className="px-4 py-2 rounded-full font-bold"
+            className="px-4 py-2 rounded-full font-bold text-white"
             style={{ backgroundColor: getSeverityColor(current_situation.severity) }}
           >
             {current_situation.severity}
@@ -384,7 +384,7 @@ const AIRecommendation = ({ data }) => {
         
         <div className="mt-3 flex flex-wrap gap-2">
           {current_situation.top_pollution_sources?.map((src, idx) => (
-            <span key={idx} className="px-3 py-1 bg-gray-700/50 rounded-full text-sm">
+            <span key={idx} className="px-3 py-1 bg-canvas border border-mist rounded-full text-sm text-ink">
               {src.source}: {src.contribution}
             </span>
           ))}
@@ -392,30 +392,33 @@ const AIRecommendation = ({ data }) => {
       </div>
       
       {/* AI Reasoning */}
-      <div className="bg-purple-900/30 rounded-xl p-4 border border-purple-600/30">
-        <h3 className="font-bold text-purple-400 mb-3">🤖 AI Analysis</h3>
+      <div className="bg-purple-50 rounded-card p-4 border border-purple-200">
+        <h3 className="font-bold text-purple-700 mb-3">🤖 AI Analysis</h3>
         <ul className="space-y-2">
           {ai_recommendation.reasoning?.map((reason, idx) => (
-            <li key={idx} className="text-gray-300 text-sm">{reason}</li>
+            <li key={idx} className="text-ink text-sm flex items-start gap-2">
+              <span className="text-purple-500 mt-0.5">•</span>
+              {reason}
+            </li>
           ))}
         </ul>
       </div>
       
       {/* Recommended Policies */}
-      <div className="bg-gray-800/50 rounded-xl p-4">
-        <h3 className="font-bold text-blue-400 mb-3">📋 Recommended Policies</h3>
+      <div className="bg-canvas rounded-card p-4 border border-mist">
+        <h3 className="font-bold text-primary mb-3">📋 Recommended Policies</h3>
         <div className="space-y-2">
           {ai_recommendation.recommended_policies?.map((policy, idx) => {
             const config = POLICY_CONFIG[policy.type] || { icon: '📋', name: policy.type };
             return (
-              <div key={idx} className="flex items-center justify-between p-2 bg-gray-700/50 rounded">
+              <div key={idx} className="flex items-center justify-between p-3 bg-surface rounded-card border border-mist">
                 <div className="flex items-center gap-2">
                   <span>{config.icon}</span>
-                  <span className="text-white">{config.name}</span>
+                  <span className="text-ink font-medium">{config.name}</span>
                 </div>
-                <span className={`px-2 py-1 rounded text-xs font-bold ${
-                  policy.priority === 'CRITICAL' ? 'bg-red-600' :
-                  policy.priority === 'HIGH' ? 'bg-orange-600' : 'bg-yellow-600'
+                <span className={`px-2 py-1 rounded text-xs font-bold text-white ${
+                  policy.priority === 'CRITICAL' ? 'bg-red-500' :
+                  policy.priority === 'HIGH' ? 'bg-orange-500' : 'bg-yellow-500'
                 }`}>
                   {policy.priority}
                 </span>
@@ -594,7 +597,7 @@ const WardPolicySimulator = () => {
   };
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-pink-50">
+    <div className="min-h-screen bg-canvas page-gradient">
       {/* Professional Navbar */}
       <ProfessionalNavbar onSearchSelected={() => {}} />
       
@@ -605,10 +608,10 @@ const WardPolicySimulator = () => {
         animate={{ opacity: 1, y: 0 }}
         className="mb-8"
       >
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
+        <h1 className="text-3xl md:text-4xl font-bold text-ink">
           🎛️ Policy Simulator
         </h1>
-        <p className="text-gray-500 mt-2">
+        <p className="text-metal mt-2">
           "What-if" analysis for Delhi ward councilors • Simulate policy impacts before implementation
         </p>
       </motion.div>
@@ -620,11 +623,11 @@ const WardPolicySimulator = () => {
         transition={{ delay: 0.1 }}
         className="mb-6"
       >
-        <label className="block text-sm font-semibold text-gray-600 mb-2">Select Ward</label>
+        <label className="block text-sm font-semibold text-metal mb-2">Select Ward</label>
         <select 
           value={selectedWardId || ''}
           onChange={(e) => setSelectedWardId(parseInt(e.target.value) || null)}
-          className="w-full md:w-96 px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-700 focus:ring-2 focus:ring-purple-500 focus:border-transparent shadow-sm transition-all font-medium"
+          className="select-input w-full md:w-96"
         >
           <option value="">-- Select a Ward --</option>
           {wards.map(ward => (
@@ -641,25 +644,25 @@ const WardPolicySimulator = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="mb-6 p-6 rounded-2xl bg-white/80 backdrop-blur-sm border border-gray-200/50 shadow-lg"
+          className="mb-6 bento-card p-6"
         >
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <h2 className="text-2xl font-bold text-gray-800">{wardData.ward_name}</h2>
-              <p className="text-gray-500">{wardData.zone} Zone • {wardData.ward_type}</p>
+              <h2 className="text-2xl font-bold text-ink">{wardData.ward_name}</h2>
+              <p className="text-metal">{wardData.zone} Zone • {wardData.ward_type}</p>
             </div>
             
             <div className="flex items-center gap-6">
-              <div className="text-center bg-red-50 rounded-xl px-4 py-3 border border-red-200">
-                <div className="text-4xl font-bold text-red-500">{wardData.current_pollution.pm25}</div>
-                <div className="text-sm text-gray-500 font-medium">PM2.5 µg/m³</div>
+              <div className="text-center bg-status-danger/10 rounded-card px-4 py-3 border border-status-danger/20">
+                <div className="text-4xl font-bold text-status-danger">{wardData.current_pollution.pm25}</div>
+                <div className="text-sm text-metal font-medium">PM2.5 µg/m³</div>
               </div>
-              <div className="text-center bg-orange-50 rounded-xl px-4 py-3 border border-orange-200">
-                <div className="text-4xl font-bold text-orange-500">{wardData.current_pollution.aqi}</div>
-                <div className="text-sm text-gray-500 font-medium">AQI</div>
+              <div className="text-center bg-status-warning/10 rounded-card px-4 py-3 border border-status-warning/20">
+                <div className="text-4xl font-bold text-status-warning">{wardData.current_pollution.aqi}</div>
+                <div className="text-sm text-metal font-medium">AQI</div>
               </div>
               <div 
-                className="px-5 py-3 rounded-xl font-bold text-white shadow-lg"
+                className="px-5 py-3 rounded-card font-bold text-white shadow-card"
                 style={{ backgroundColor: getSeverityColor(wardData.current_pollution.urgency?.replace('CRITICAL', 'EMERGENCY')) }}
               >
                 {wardData.current_pollution.urgency}
@@ -669,9 +672,9 @@ const WardPolicySimulator = () => {
           
           {/* Top Sources */}
           <div className="mt-4 flex flex-wrap gap-2 items-center">
-            <span className="text-sm text-gray-500 mr-2 font-medium">Top Sources:</span>
+            <span className="text-sm text-metal mr-2 font-medium">Top Sources:</span>
             {wardData.pollution_analysis?.top_sources?.slice(0, 3).map((src, idx) => (
-              <span key={idx} className="px-4 py-1.5 bg-gray-100 rounded-xl text-sm font-medium text-gray-700 border border-gray-200">
+              <span key={idx} className="px-4 py-1.5 bg-canvas rounded-card text-sm font-medium text-ink border border-mist">
                 {src.source}: {src.percentage}%
               </span>
             ))}
@@ -685,24 +688,24 @@ const WardPolicySimulator = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="mb-6 flex gap-2 bg-white/60 backdrop-blur-sm p-2 rounded-2xl border border-gray-200/50 w-fit"
+          className="mb-6 flex gap-2 bg-surface p-2 rounded-card border border-mist w-fit shadow-card"
         >
           <button
             onClick={() => setActiveTab('manual')}
-            className={`px-6 py-3 rounded-xl font-semibold transition-all ${
+            className={`px-6 py-3 rounded-button font-semibold transition-all ${
               activeTab === 'manual' 
-                ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/25' 
-                : 'text-gray-600 hover:bg-gray-100'
+                ? 'bg-primary text-white shadow-card' 
+                : 'text-metal hover:bg-canvas'
             }`}
           >
             🎛️ Manual Selection
           </button>
           <button
             onClick={() => { setActiveTab('ai'); getAIRecommendation(); }}
-            className={`px-6 py-3 rounded-xl font-semibold transition-all ${
+            className={`px-6 py-3 rounded-button font-semibold transition-all ${
               activeTab === 'ai' 
-                ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/25' 
-                : 'text-gray-600 hover:bg-gray-100'
+                ? 'bg-primary text-white shadow-card' 
+                : 'text-metal hover:bg-canvas'
             }`}
           >
             🤖 AI Recommendation
@@ -721,7 +724,7 @@ const WardPolicySimulator = () => {
           >
             {activeTab === 'manual' ? (
               <>
-                <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <h3 className="text-xl font-bold text-ink mb-4 flex items-center gap-2">
                   <span className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center text-sm">📋</span>
                   Select Policies to Simulate
                 </h3>
@@ -743,29 +746,29 @@ const WardPolicySimulator = () => {
                   whileTap={{ scale: 0.98 }}
                   onClick={runSimulation}
                   disabled={loading || Object.values(selectedPolicies).filter(Boolean).length === 0}
-                  className="mt-6 w-full py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-2xl shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="mt-6 w-full py-4 bg-primary hover:bg-primary-700 text-white font-bold rounded-card shadow-card transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? '⏳ Simulating...' : '🚀 Run Simulation'}
                 </motion.button>
               </>
             ) : (
               <>
-                <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <h3 className="text-xl font-bold text-ink mb-4 flex items-center gap-2">
                   <span className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center text-sm">🤖</span>
                   AI-Powered Recommendation
                 </h3>
                 {loading ? (
-                  <div className="text-center py-16 bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-200/50">
+                  <div className="text-center py-16 bento-card">
                     <div className="relative mx-auto mb-6 w-16 h-16">
-                      <div className="absolute inset-0 rounded-full border-4 border-purple-200"></div>
-                      <div className="absolute inset-0 rounded-full border-4 border-purple-500 border-t-transparent animate-spin"></div>
+                      <div className="absolute inset-0 rounded-full border-4 border-primary/20"></div>
+                      <div className="absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin"></div>
                     </div>
-                    <p className="text-gray-500 font-medium">Analyzing ward conditions...</p>
+                    <p className="text-metal font-medium">Analyzing ward conditions...</p>
                   </div>
                 ) : aiRecommendation ? (
                   <AIRecommendation data={aiRecommendation} />
                 ) : (
-                  <div className="text-center py-16 text-gray-500 bg-white/60 backdrop-blur-sm rounded-2xl border border-gray-200/50">
+                  <div className="text-center py-16 text-metal bento-card">
                     Click the tab to get AI recommendation
                   </div>
                 )}
@@ -779,7 +782,7 @@ const WardPolicySimulator = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5 }}
           >
-            <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <h3 className="text-xl font-bold text-ink mb-4 flex items-center gap-2">
               <span className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center text-sm">📊</span>
               Simulation Results
             </h3>
@@ -789,8 +792,8 @@ const WardPolicySimulator = () => {
                 isMultiple={simulationResults.isMultiple} 
               />
             ) : (
-              <div className="text-center py-16 text-gray-500 bg-white/60 backdrop-blur-sm rounded-2xl border border-gray-200/50">
-                <div className="w-20 h-20 mx-auto mb-4 bg-gray-100 rounded-2xl flex items-center justify-center">
+              <div className="text-center py-16 text-metal bento-card">
+                <div className="w-20 h-20 mx-auto mb-4 bg-canvas rounded-card flex items-center justify-center">
                   <span className="text-4xl">📊</span>
                 </div>
                 <p className="font-medium">Select policies and run simulation to see predicted impact</p>
@@ -805,13 +808,13 @@ const WardPolicySimulator = () => {
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="text-center py-20 bg-white/60 backdrop-blur-sm rounded-3xl border border-gray-200/50"
+          className="text-center py-20 bento-card"
         >
-          <div className="w-24 h-24 mx-auto mb-6 bg-purple-100 rounded-3xl flex items-center justify-center">
+          <div className="w-24 h-24 mx-auto mb-6 bg-primary/10 rounded-card flex items-center justify-center">
             <span className="text-5xl">🏛️</span>
           </div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">Select a Ward to Begin</h2>
-          <p className="text-gray-500">
+          <h2 className="text-2xl font-bold text-ink mb-2">Select a Ward to Begin</h2>
+          <p className="text-metal">
             Choose a Delhi ward from the dropdown above to analyze its pollution and simulate policy impacts
           </p>
         </motion.div>
@@ -824,9 +827,9 @@ const WardPolicySimulator = () => {
         transition={{ delay: 0.8 }}
         className="mt-12"
       >
-        <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 text-center">
-          <p className="text-gray-500 text-sm">Evidence Sources: CPCB Studies, TERI Research, IIT Delhi Studies, Delhi Traffic Police Reports</p>
-          <p className="text-gray-400 text-xs mt-2">
+        <div className="bento-card p-6 text-center">
+          <p className="text-metal text-sm">Evidence Sources: CPCB Studies, TERI Research, IIT Delhi Studies, Delhi Traffic Police Reports</p>
+          <p className="text-metal/60 text-xs mt-2">
             Disclaimer: Predictions based on historical data and research. Actual results may vary.
           </p>
         </div>

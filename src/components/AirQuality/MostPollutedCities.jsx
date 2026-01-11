@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { getBaseUrl } from "../Connectivity/storageHelper";
 
+/**
+ * Smart City Glass & Grid Design System - Most Polluted Cities
+ */
 const Component3 = () => {
   const [citiesData, setCitiesData] = useState([]);
   const [selectedOption, setSelectedOption] = useState("last-day");
@@ -10,33 +13,26 @@ const Component3 = () => {
   const AqiOptions = ["CO", "NH3", "NO2", "OZONE", "PM25", "PM10", "SO2", "AQI"];
 
   useEffect(() => {
-    fetchData(); // Initial data fetch on component mount
-  }, [selectedOption, selectedParameter]); // Fetch data whenever these dependencies change
+    fetchData();
+  }, [selectedOption, selectedParameter]);
 
   const fetchData = async () => {
     try {
       const to_date = getDateRange(selectedOption);
       const airQualityData = await fetchAirQualityData(to_date, selectedParameter);
-      // console.log(airQualityData);
       setCitiesData(airQualityData);
-      setError(null); // Reset error state if successful
+      setError(null);
     } catch (error) {
       console.error("Error fetching data:", error);
-      setError("Failed to fetch data. Please try again."); // Set an error message
+      setError("Failed to fetch data. Please try again.");
     }
   };
 
   const getDateRange = (interval) => {
-    let to_date = 1; // Default to_date value
-
-    if (interval === "last-day") {
-      to_date = 1;
-    } else if (interval === "last-7-days") {
-      to_date = 6;
-    } else if (interval === "last-month") {
-      to_date = 30;
-    }
-
+    let to_date = 1;
+    if (interval === "last-day") to_date = 1;
+    else if (interval === "last-7-days") to_date = 6;
+    else if (interval === "last-month") to_date = 30;
     return String(to_date);
   };
 
@@ -45,107 +41,97 @@ const Component3 = () => {
       const baseurl = getBaseUrl();
       const url = `${baseurl}get-Top10Cities/?to_date=${to_date}`;
       const response = await fetch(url);
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch data: ${response.statusText}`);
-      }
-
+      if (!response.ok) throw new Error(`Failed to fetch data: ${response.statusText}`);
       return await response.json();
     } catch (error) {
       throw new Error(`Error fetching data: ${error.message}`);
     }
   };
 
+  // Get badge color based on AQI value
+  const getAqiBadgeClass = (value) => {
+    if (value <= 50) return 'bg-status-safe/10 text-status-safe';
+    if (value <= 100) return 'bg-yellow-100 text-yellow-700';
+    if (value <= 150) return 'bg-status-warning/10 text-status-warning';
+    if (value <= 200) return 'bg-status-danger/10 text-status-danger';
+    return 'bg-red-100 text-red-800';
+  };
+
   return (
-    <>
-      <div className="flex flex-col gap-3 m-6 rounded-2xl">
-        <div>
-          <div className="flex flex-row items-center gap-2">
-            <h3 className="text-xl text-[#33a0d3]">
-              Most polluted cities in India
-            </h3>
-          </div>
-          <p className="text-sm text-slate-500 my-1 mb-2">
-            Real Time worst city rankings
-          </p>
-          <div className="select flex flex-row gap-4">
-            <select
-              className="border border-gray-300 p-2 rounded-md mt-3"
-              onChange={(e) => setSelectedOption(e.target.value)}
-              value={selectedOption}
-            >
-              {options.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
-            <select
-              className="border border-gray-300 p-2 rounded-md mt-3"
-              onChange={(e) => setSelectedParameter(e.target.value)}
-              value={selectedParameter}
-            >
-              {AqiOptions.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-        <div>
-          {error ? (
-            <p className="text-red-500">{error}</p>
-          ) : (
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th
-                    scope="col"
-                    className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Rank
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    City
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    AQI
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-  {citiesData.map((city, index) => (
-    <tr key={index}>
-      <td className="px-4 py-4 whitespace-nowrap">
-        <div className="text-sm text-gray-900">{index + 1}</div>
-      </td>
-      <td className="px-4 py-4 whitespace-nowrap">
-        <div className="text-sm text-gray-900">{city.City}</div>
-      </td>
-      <td className="px-4 py-4 whitespace-nowrap">
-        <span
-          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800`}
-        >
-          {city[selectedParameter] !== 0 ? city[selectedParameter] : 'N/A'}
-        </span>
-      </td>
-    </tr>
-  ))}
-</tbody>
-
-
-            </table>
-          )}
-        </div>
+    <div className="p-6">
+      {/* Header */}
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold text-primary">
+          Most Polluted Cities
+        </h3>
+        <p className="text-sm text-metal mt-1">
+          Real-time worst city rankings in India
+        </p>
       </div>
-    </>
+
+      {/* Filters */}
+      <div className="flex flex-wrap gap-3 mb-6">
+        <select
+          className="input-field text-sm py-2 px-3"
+          onChange={(e) => setSelectedOption(e.target.value)}
+          value={selectedOption}
+        >
+          {options.map((option) => (
+            <option key={option} value={option}>
+              {option.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+            </option>
+          ))}
+        </select>
+        <select
+          className="input-field text-sm py-2 px-3"
+          onChange={(e) => setSelectedParameter(e.target.value)}
+          value={selectedParameter}
+        >
+          {AqiOptions.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Table */}
+      {error ? (
+        <div className="alert-danger">
+          <span>⚠️</span>
+          <span>{error}</span>
+        </div>
+      ) : (
+        <div className="overflow-hidden rounded-xl border border-mist">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th className="w-16">#</th>
+                <th>City</th>
+                <th className="text-right">{selectedParameter}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {citiesData.map((city, index) => (
+                <tr key={index}>
+                  <td>
+                    <span className="text-metal font-medium">{index + 1}</span>
+                  </td>
+                  <td>
+                    <span className="text-ink font-medium">{city.City}</span>
+                  </td>
+                  <td className="text-right">
+                    <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold ${getAqiBadgeClass(city[selectedParameter])}`}>
+                      {city[selectedParameter] !== 0 ? city[selectedParameter] : 'N/A'}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
   );
 };
 
