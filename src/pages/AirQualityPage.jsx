@@ -84,7 +84,7 @@ function AirQualityPage() {
               <div className="w-10 h-10 bg-orange-500/10 rounded-xl flex items-center justify-center">
                 <svg className="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
               </div>
-              <div className="text-left"><p className="text-xs text-metal">Updates</p><p className="text-base font-bold text-ink">Every 15 min</p></div>
+              <div className="text-left"><p className="text-xs text-metal">Updates</p><p className="text-base font-bold text-ink">Every Hour</p></div>
             </div>
             <div className="flex items-center gap-3 px-5 py-3 bg-white/70 backdrop-blur-sm border border-white/50 rounded-2xl shadow-sm">
               <div className="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center">
@@ -184,13 +184,13 @@ function AirQualityPage() {
             <p className="text-metal ml-4">Comparative analysis and ML-powered predictions</p>
           </motion.div>
 
-          {/* Two-column layout: Cities on left, Health & ML on right */}
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="grid grid-cols-1 lg:grid-cols-12 gap-5 mb-6">
+          {/* Three-column layout for better space utilization */}
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="grid grid-cols-1 lg:grid-cols-12 gap-5">
             
             {/* Left Column - Polluted Cities (stacked) */}
-            <div className="lg:col-span-4 flex flex-col gap-5">
+            <div className="lg:col-span-3 flex flex-col gap-5">
               {/* Most Polluted */}
-              <div className="flex-1 bg-white/70 backdrop-blur-sm rounded-2xl border border-white/60 shadow-sm hover:shadow-lg transition-all duration-300 p-5">
+              <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-white/60 shadow-sm hover:shadow-lg transition-all duration-300 p-5">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-9 h-9 bg-status-critical/10 rounded-xl flex items-center justify-center">
                     <svg className="w-4 h-4 text-status-critical" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" /></svg>
@@ -204,7 +204,7 @@ function AirQualityPage() {
               </div>
               
               {/* Least Polluted */}
-              <div className="flex-1 bg-white/70 backdrop-blur-sm rounded-2xl border border-white/60 shadow-sm hover:shadow-lg transition-all duration-300 p-5">
+              <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-white/60 shadow-sm hover:shadow-lg transition-all duration-300 p-5">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-9 h-9 bg-status-good/10 rounded-xl flex items-center justify-center">
                     <svg className="w-4 h-4 text-status-good" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
@@ -218,35 +218,39 @@ function AirQualityPage() {
               </div>
             </div>
 
-            {/* Right Column - Health & ML Predictions (larger) */}
-            <div className="lg:col-span-8">
+            {/* Right Column - Historical Comparison (takes remaining space) */}
+            <div className="lg:col-span-9">
               <div className="h-full bg-white/70 backdrop-blur-sm rounded-2xl border border-white/60 shadow-sm hover:shadow-lg transition-all duration-300 p-5">
-                <div className="flex items-center justify-between mb-5">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 bg-primary/10 rounded-xl flex items-center justify-center">
-                      <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
-                    </div>
-                    <div>
-                      <span className="font-semibold text-ink text-sm block">Health & ML Predictions</span>
-                      <span className="text-[10px] text-metal">AI-powered insights & forecasts</span>
-                    </div>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-9 h-9 bg-blue-500/10 rounded-xl flex items-center justify-center">
+                    <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
                   </div>
-                  <span className="text-[10px] text-primary bg-primary/10 px-2.5 py-1 rounded-full font-medium">Live</span>
+                  <div>
+                    <span className="font-semibold text-ink block">Historical Comparison</span>
+                    <span className="text-xs text-metal">Trend analysis over time</span>
+                  </div>
                 </div>
-                <Component4 />
+                <Component6 />
               </div>
             </div>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+          {/* Health & ML Predictions - Full width below */}
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-5">
             <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-white/60 shadow-sm hover:shadow-lg transition-all duration-300 p-5">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-9 h-9 bg-blue-500/10 rounded-xl flex items-center justify-center">
-                  <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 bg-primary/10 rounded-xl flex items-center justify-center">
+                    <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                  </div>
+                  <div>
+                    <span className="font-semibold text-ink text-sm block">Health & ML Predictions</span>
+                    <span className="text-[10px] text-metal">AI-powered insights & forecasts</span>
+                  </div>
                 </div>
-                <div><span className="font-semibold text-ink block">Historical Comparison</span><span className="text-xs text-metal">Trend analysis over time</span></div>
+                <span className="text-[10px] text-primary bg-primary/10 px-2.5 py-1 rounded-full font-medium">Live</span>
               </div>
-              <Component6 />
+              <Component4 />
             </div>
           </motion.div>
         </section>

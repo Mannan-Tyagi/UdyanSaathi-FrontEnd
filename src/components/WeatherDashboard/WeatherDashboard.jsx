@@ -2,9 +2,6 @@ import React from "react";
 import { motion } from "framer-motion";
 import "./WeatherDashboard.css";
 
-// Layout components
-import { Sidebar } from "./layout";
-
 // Card components
 import {
     MainWeatherCard,
@@ -40,7 +37,6 @@ const WeatherDashboard = () => {
     if (error) {
         return (
             <div className="wd-dashboard-wrapper">
-                <Sidebar />
                 <div className="wd-main-content">
                     <div className="wd-error-container">
                         <div className="wd-error-card">
@@ -59,7 +55,6 @@ const WeatherDashboard = () => {
 
     return (
         <div className="wd-dashboard-wrapper">
-            <Sidebar />
             <main className="wd-main-content">
                 <div className="wd-content">
             {/* Row 1: Main Weather + Forecast */}
