@@ -6,6 +6,7 @@ import "leaflet/dist/leaflet.css";
 const WindSpeedCard = ({ weatherData, location }) => {
     const mapRef = useRef(null);
     const mapInstanceRef = useRef(null);
+    const [mapLoaded, setMapLoaded] = React.useState(false);
 
     useEffect(() => {
         if (!mapRef.current || mapInstanceRef.current) return;
@@ -14,46 +15,61 @@ const WindSpeedCard = ({ weatherData, location }) => {
         const lat = location?.lat || 28.6139;
         const lon = location?.lon || 77.209;
 
-        // Initialize map with dark theme
-        const map = L.map(mapRef.current, {
-            center: [lat, lon],
-            zoom: 10,
-            zoomControl: false,
-            attributionControl: false,
-        });
+        console.log('Initializing map at:', { lat, lon });
 
-        // Dark/Satellite tile layer - CartoDB Dark Matter (free, no API key needed)
-        L.tileLayer(
-            "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-            {
-                subdomains: "abcd",
+        try {
+            // Initialize map with dark theme
+            const map = L.map(mapRef.current, {
+                center: [lat, lon],
+                zoom: 10,
+                zoomControl: false,
+                attributionControl: false,
+            });
+
+            // Use OpenStreetMap tiles (free, no API key needed)
+            // The dark theme is achieved through CSS filter in WeatherDashboard.css
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
                 maxZoom: 19,
-            }
-        ).addTo(map);
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
 
-        // Add a custom marker for user location
-        const pulseIcon = L.divIcon({
-            className: "wd-pulse-marker",
-            html: `
-                <div class="wd-marker-outer">
-                    <div class="wd-marker-inner"></div>
-                    <div class="wd-marker-pulse"></div>
-                </div>
-            `,
-            iconSize: [20, 20],
-            iconAnchor: [10, 10],
-        });
+            // Set map as loaded when tiles start loading
+            map.on('load', () => {
+                console.log('Map loaded successfully');
+                setMapLoaded(true);
+            });
 
-        L.marker([lat, lon], { icon: pulseIcon }).addTo(map);
+            // Trigger the load event manually after a short delay
+            setTimeout(() => setMapLoaded(true), 500);
 
-        // Add minimal zoom control
-        L.control
-            .zoom({
-                position: "bottomright",
-            })
-            .addTo(map);
+            console.log('Map tiles loaded successfully');
 
-        mapInstanceRef.current = map;
+            // Add a custom marker for user location
+            const pulseIcon = L.divIcon({
+                className: "wd-pulse-marker",
+                html: `
+                    <div class="wd-marker-outer">
+                        <div class="wd-marker-inner"></div>
+                        <div class="wd-marker-pulse"></div>
+                    </div>
+                `,
+                iconSize: [20, 20],
+                iconAnchor: [10, 10],
+            });
+
+            L.marker([lat, lon], { icon: pulseIcon }).addTo(map);
+
+            // Add minimal zoom control
+            L.control
+                .zoom({
+                    position: "bottomright",
+                })
+                .addTo(map);
+
+            mapInstanceRef.current = map;
+        } catch (error) {
+            console.error('Error initializing map:', error);
+        }
 
         return () => {
             if (mapInstanceRef.current) {
@@ -195,6 +211,22 @@ const WindSpeedCard = ({ weatherData, location }) => {
                 <div className="wd-wind-map-section">
                     <div className="wd-map-container" ref={mapRef}>
                         {/* Leaflet map renders here */}
+                        {!mapLoaded && (
+                            <div style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                background: '#1a1a2e',
+                                zIndex: 999
+                            }}>
+                                <div className="wd-spinner"></div>
+                            </div>
+                        )}
                     </div>
                     <div className="wd-map-overlay">
                         <span className="wd-map-label">
