@@ -6,8 +6,8 @@ import 'leaflet/dist/leaflet.css';
 import { getBaseUrl } from '../Connectivity/storageHelper';
 
 /**
- * Enhanced AQI Map Component - Inspired by OCEMS Design
- * Features: Clean map tiles, styled markers, header with controls
+ * Production-Ready AQI Map Component
+ * Clean, minimal design with professional aesthetics
  */
 const Map = ({ selectedSearch }) => {
     const [data, setData] = useState([]);
@@ -16,9 +16,8 @@ const Map = ({ selectedSearch }) => {
     const [key, setKey] = useState(0);
     const [popupStation, setPopupStation] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
-    const [viewMode, setViewMode] = useState('city'); // 'city' or 'district'
 
-    // Stats for the progress cards
+    // Stats for the indicator bar
     const [stats, setStats] = useState({
         totalStations: 0,
         goodCount: 0,
@@ -76,71 +75,35 @@ const Map = ({ selectedSearch }) => {
         }
     }, [selectedSearch]);
 
-    return (
-        <div className="map-section">
-            {/* Map Header */}
-            <div className="map-header">
-                <div className="map-header-left">
-                    <button className="map-menu-btn">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <line x1="3" y1="6" x2="21" y2="6"/>
-                            <line x1="3" y1="12" x2="21" y2="12"/>
-                            <line x1="3" y1="18" x2="21" y2="18"/>
-                        </svg>
-                    </button>
-                    <div className="map-title-group">
-                        <h2 className="map-title">Air Quality Monitoring</h2>
-                        <p className="map-subtitle">Real-time AQI Data</p>
-                    </div>
-                </div>
-                
-                <div className="map-header-right">
-                    <div className="map-search">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <circle cx="11" cy="11" r="8"/>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                        </svg>
-                    </div>
-                    
-                    <div className="map-view-toggle">
-                        <button 
-                            className={`toggle-btn ${viewMode === 'district' ? 'active' : ''}`}
-                            onClick={() => setViewMode('district')}
-                        >
-                            District
-                        </button>
-                        <button 
-                            className={`toggle-btn ${viewMode === 'city' ? 'active' : ''}`}
-                            onClick={() => setViewMode('city')}
-                        >
-                            City
-                        </button>
-                    </div>
-                </div>
-            </div>
+    const getPercentage = (count) => stats.totalStations > 0 ? ((count / stats.totalStations) * 100).toFixed(0) : 0;
 
+    return (
+        <div className="relative">
             {/* Map Container */}
-            <div className="map-container-wrapper">
+            <div className="relative bg-canvas rounded-xl overflow-hidden">
+                {/* Loading Overlay */}
                 {isLoading && (
-                    <div className="map-loading">
-                        <div className="map-loading-spinner"></div>
-                        <p>Loading stations...</p>
+                    <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-20 flex items-center justify-center">
+                        <div className="flex flex-col items-center gap-3">
+                            <div className="w-8 h-8 border-2 border-mist border-t-primary rounded-full animate-spin"></div>
+                            <span className="text-sm text-metal">Loading stations...</span>
+                        </div>
                     </div>
                 )}
                 
+                {/* Map */}
                 <MapContainer 
                     key={key} 
                     center={mapCenter} 
                     animate={true} 
                     zoom={level} 
-                    style={{ height: '450px', width: '100%' }} 
-                    className="aqi-map"
+                    style={{ height: '420px', width: '100%' }} 
+                    className="aqi-map z-10"
                     zoomControl={false}
                 >
-                    {/* Clean, light map tiles */}
                     <TileLayer
-                        url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>'
+                        url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>'
                     />
                     <ZoomControl position="bottomright" />
                     
@@ -158,63 +121,97 @@ const Map = ({ selectedSearch }) => {
                         />
                     ))}
                 </MapContainer>
+
+                {/* Floating Stats Overlay - Top Left */}
+                <div className="absolute top-4 left-4 z-20">
+                    <div className="bg-white/95 backdrop-blur-md rounded-xl shadow-soft border border-mist px-4 py-3">
+                        <div className="flex items-center gap-2 mb-2">
+                            <div className="w-2 h-2 bg-status-good rounded-full animate-pulse"></div>
+                            <span className="text-xs font-semibold text-ink">{stats.totalStations} Active Stations</span>
+                        </div>
+                        <div className="flex items-center gap-3 text-xs text-metal">
+                            <span className="flex items-center gap-1.5">
+                                <span className="w-2 h-2 bg-status-good rounded-full"></span>
+                                {stats.goodCount} Good
+                            </span>
+                            <span className="flex items-center gap-1.5">
+                                <span className="w-2 h-2 bg-status-moderate rounded-full"></span>
+                                {stats.moderateCount + stats.poorCount} Moderate
+                            </span>
+                            <span className="flex items-center gap-1.5">
+                                <span className="w-2 h-2 bg-status-critical rounded-full"></span>
+                                {stats.severeCount} Severe
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* AQI Legend - Bottom Left */}
+                <div className="absolute bottom-4 left-4 z-20">
+                    <div className="bg-white/95 backdrop-blur-md rounded-lg shadow-soft border border-mist p-3">
+                        <p className="text-[10px] font-medium text-metal uppercase tracking-wider mb-2">AQI Scale</p>
+                        <div className="flex gap-1">
+                            <div className="flex flex-col items-center">
+                                <div className="w-6 h-2 rounded-sm bg-status-good"></div>
+                                <span className="text-[9px] text-metal mt-1">0-50</span>
+                            </div>
+                            <div className="flex flex-col items-center">
+                                <div className="w-6 h-2 rounded-sm bg-aqi-satisfactory"></div>
+                                <span className="text-[9px] text-metal mt-1">51-100</span>
+                            </div>
+                            <div className="flex flex-col items-center">
+                                <div className="w-6 h-2 rounded-sm bg-aqi-moderate"></div>
+                                <span className="text-[9px] text-metal mt-1">101-200</span>
+                            </div>
+                            <div className="flex flex-col items-center">
+                                <div className="w-6 h-2 rounded-sm bg-aqi-poor"></div>
+                                <span className="text-[9px] text-metal mt-1">201-300</span>
+                            </div>
+                            <div className="flex flex-col items-center">
+                                <div className="w-6 h-2 rounded-sm bg-status-critical"></div>
+                                <span className="text-[9px] text-metal mt-1">300+</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            {/* Stats Progress Cards */}
-            <div className="map-stats-row">
-                <div className="stat-card">
-                    <div className="stat-info">
-                        <p className="stat-label">Active Monitoring Stations</p>
-                        <p className="stat-sublabel">Real-time data</p>
+            {/* Compact Stats Bar - Below Map */}
+            <div className="mt-4 grid grid-cols-4 gap-3">
+                <div className="bg-canvas rounded-xl p-3 border border-mist">
+                    <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs text-metal">Total</span>
+                        <span className="text-sm font-bold text-ink">{stats.totalStations}</span>
                     </div>
-                    <div className="stat-value-group">
-                        <span className="stat-value">{stats.totalStations}</span>
-                        <span className="stat-total">/{stats.totalStations}</span>
-                    </div>
-                    <div className="stat-progress">
-                        <div className="progress-bar progress-primary" style={{ width: '100%' }}></div>
+                    <div className="h-1.5 bg-mist rounded-full overflow-hidden">
+                        <div className="h-full bg-primary rounded-full" style={{ width: '100%' }}></div>
                     </div>
                 </div>
-
-                <div className="stat-card">
-                    <div className="stat-info">
-                        <p className="stat-label">Good Air Quality</p>
-                        <p className="stat-sublabel">AQI ≤ 50</p>
+                <div className="bg-canvas rounded-xl p-3 border border-mist">
+                    <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs text-metal">Good</span>
+                        <span className="text-sm font-bold text-status-good">{stats.goodCount}</span>
                     </div>
-                    <div className="stat-value-group">
-                        <span className="stat-value">{stats.goodCount}</span>
-                        <span className="stat-total">/{stats.totalStations}</span>
-                    </div>
-                    <div className="stat-progress">
-                        <div className="progress-bar progress-good" style={{ width: `${(stats.goodCount / stats.totalStations) * 100}%` }}></div>
+                    <div className="h-1.5 bg-mist rounded-full overflow-hidden">
+                        <div className="h-full bg-status-good rounded-full transition-all duration-500" style={{ width: `${getPercentage(stats.goodCount)}%` }}></div>
                     </div>
                 </div>
-
-                <div className="stat-card">
-                    <div className="stat-info">
-                        <p className="stat-label">Moderate Quality</p>
-                        <p className="stat-sublabel">AQI 51-100</p>
+                <div className="bg-canvas rounded-xl p-3 border border-mist">
+                    <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs text-metal">Moderate</span>
+                        <span className="text-sm font-bold text-status-moderate">{stats.moderateCount + stats.poorCount}</span>
                     </div>
-                    <div className="stat-value-group">
-                        <span className="stat-value">{stats.moderateCount}</span>
-                        <span className="stat-total">/{stats.totalStations}</span>
-                    </div>
-                    <div className="stat-progress">
-                        <div className="progress-bar progress-moderate" style={{ width: `${(stats.moderateCount / stats.totalStations) * 100}%` }}></div>
+                    <div className="h-1.5 bg-mist rounded-full overflow-hidden">
+                        <div className="h-full bg-status-moderate rounded-full transition-all duration-500" style={{ width: `${getPercentage(stats.moderateCount + stats.poorCount)}%` }}></div>
                     </div>
                 </div>
-
-                <div className="stat-card">
-                    <div className="stat-info">
-                        <p className="stat-label">Poor/Severe</p>
-                        <p className="stat-sublabel">AQI &gt; 100</p>
+                <div className="bg-canvas rounded-xl p-3 border border-mist">
+                    <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs text-metal">Severe</span>
+                        <span className="text-sm font-bold text-status-critical">{stats.severeCount}</span>
                     </div>
-                    <div className="stat-value-group">
-                        <span className="stat-value">{stats.poorCount + stats.severeCount}</span>
-                        <span className="stat-total">/{stats.totalStations}</span>
-                    </div>
-                    <div className="stat-progress">
-                        <div className="progress-bar progress-poor" style={{ width: `${((stats.poorCount + stats.severeCount) / stats.totalStations) * 100}%` }}></div>
+                    <div className="h-1.5 bg-mist rounded-full overflow-hidden">
+                        <div className="h-full bg-status-critical rounded-full transition-all duration-500" style={{ width: `${getPercentage(stats.severeCount)}%` }}></div>
                     </div>
                 </div>
             </div>

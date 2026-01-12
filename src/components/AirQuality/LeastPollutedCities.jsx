@@ -2,21 +2,28 @@ import React, { useState, useEffect } from "react";
 import { getBaseUrl } from "../Connectivity/storageHelper";
 
 /**
- * Smart City Glass & Grid Design System - Least Polluted Cities
+ * Least Polluted Cities - Clean, Minimal Design
  */
 const Component5 = () => {
   const [citiesData, setCitiesData] = useState([]);
   const [selectedOption, setSelectedOption] = useState("last-day");
   const [selectedParameter, setSelectedParameter] = useState("AQI");
   const [error, setError] = useState(null);
-  const options = ["last-day", "last-7-days", "last-month"];
-  const AqiOptions = ["CO", "NH3", "NO2", "OZONE", "PM25", "PM10", "SO2", "AQI"];
+  const [isLoading, setIsLoading] = useState(true);
+  
+  const options = [
+    { value: "last-day", label: "Last Day" },
+    { value: "last-7-days", label: "Last 7 Days" },
+    { value: "last-month", label: "Last Month" }
+  ];
+  const AqiOptions = ["AQI", "PM25", "PM10", "NO2", "SO2", "CO", "OZONE", "NH3"];
 
   useEffect(() => {
     fetchData();
   }, [selectedOption, selectedParameter]);
 
   const fetchData = async () => {
+    setIsLoading(true);
     try {
       const to_date = getDateRange(selectedOption);
       const airQualityData = await fetchAirQualityData(to_date);
@@ -24,102 +31,91 @@ const Component5 = () => {
       setError(null);
     } catch (error) {
       console.error("Error fetching data:", error);
-      setError("Failed to fetch data. Please try again.");
+      setError("Failed to load data");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const getDateRange = (interval) => {
-    let to_date = 1;
-    if (interval === "last-day") to_date = 1;
-    else if (interval === "last-7-days") to_date = 6;
-    else if (interval === "last-month") to_date = 30;
-    return String(to_date);
+    if (interval === "last-day") return "1";
+    if (interval === "last-7-days") return "6";
+    if (interval === "last-month") return "30";
+    return "1";
   };
 
   const fetchAirQualityData = async (to_date) => {
-    try {
-      const baseurl = getBaseUrl();
-      const url = `${baseurl}get-Top10LeastPollutedCities/?to_date=${to_date}`;
-      const response = await fetch(url);
-      if (!response.ok) throw new Error(`Failed to fetch data: ${response.statusText}`);
-      return await response.json();
-    } catch (error) {
-      throw new Error(`Error fetching data: ${error.message}`);
-    }
+    const baseurl = getBaseUrl();
+    const response = await fetch(`${baseurl}get-Top10LeastPollutedCities/?to_date=${to_date}`);
+    if (!response.ok) throw new Error("Failed to fetch");
+    return await response.json();
   };
 
   return (
-    <div className="p-6">
-      {/* Header */}
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold text-primary">
-          Least Polluted Cities
-        </h3>
-        <p className="text-sm text-metal mt-1">
-          Real-time best city rankings in India
-        </p>
-      </div>
-
-      {/* Filters */}
-      <div className="flex flex-wrap gap-3 mb-6">
+    <div className="space-y-4">
+      {/* Compact Filters */}
+      <div className="flex gap-2">
         <select
-          className="input-field text-sm py-2 px-3"
+          className="flex-1 text-xs bg-canvas border border-mist rounded-lg px-3 py-2 text-ink focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
           onChange={(e) => setSelectedOption(e.target.value)}
           value={selectedOption}
         >
-          {options.map((option) => (
-            <option key={option} value={option}>
-              {option.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-            </option>
+          {options.map((opt) => (
+            <option key={opt.value} value={opt.value}>{opt.label}</option>
           ))}
         </select>
         <select
-          className="input-field text-sm py-2 px-3"
+          className="w-20 text-xs bg-canvas border border-mist rounded-lg px-2 py-2 text-ink focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
           onChange={(e) => setSelectedParameter(e.target.value)}
           value={selectedParameter}
         >
-          {AqiOptions.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
+          {AqiOptions.map((opt) => (
+            <option key={opt} value={opt}>{opt}</option>
           ))}
         </select>
       </div>
 
-      {/* Table */}
+      {/* Data List */}
       {error ? (
-        <div className="alert-danger">
-          <span>⚠️</span>
-          <span>{error}</span>
+        <div className="text-center py-8 text-status-critical text-sm">{error}</div>
+      ) : isLoading ? (
+        <div className="space-y-2">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="flex items-center justify-between py-2.5 px-3 bg-canvas rounded-lg animate-pulse">
+              <div className="flex items-center gap-3">
+                <div className="w-5 h-5 bg-mist rounded"></div>
+                <div className="w-24 h-4 bg-mist rounded"></div>
+              </div>
+              <div className="w-12 h-6 bg-mist rounded-lg"></div>
+            </div>
+          ))}
         </div>
       ) : (
-        <div className="overflow-hidden rounded-xl border border-mist">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th className="w-16">#</th>
-                <th>City</th>
-                <th className="text-right">{selectedParameter}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {citiesData.map((city, index) => (
-                <tr key={index + 1}>
-                  <td>
-                    <span className="text-metal font-medium">{index + 1}</span>
-                  </td>
-                  <td>
-                    <span className="text-ink font-medium">{city.City}</span>
-                  </td>
-                  <td className="text-right">
-                    <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-status-safe/10 text-status-safe">
-                      {city[selectedParameter] !== 0 ? city[selectedParameter] : "N/A"}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="space-y-1">
+          {/* Header Row */}
+          <div className="flex items-center justify-between px-3 py-2 text-xs text-metal font-medium">
+            <span>#</span>
+            <span className="flex-1 ml-4">CITY</span>
+            <span>{selectedParameter}</span>
+          </div>
+          
+          {/* Data Rows */}
+          {citiesData.slice(0, 6).map((city, index) => (
+            <div 
+              key={index}
+              className="flex items-center justify-between py-2.5 px-3 bg-canvas/50 hover:bg-canvas rounded-lg transition-colors group"
+            >
+              <div className="flex items-center gap-3">
+                <span className="w-5 text-xs text-metal font-medium">{index + 1}</span>
+                <span className="text-sm text-ink font-medium group-hover:text-primary transition-colors">
+                  {city.City}
+                </span>
+              </div>
+              <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-status-good/10 text-status-good">
+                {city[selectedParameter] || 'N/A'}
+              </span>
+            </div>
+          ))}
         </div>
       )}
     </div>

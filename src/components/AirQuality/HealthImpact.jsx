@@ -9,70 +9,53 @@ const HealthImpact = ({ pm25, exposureHours = 24, activityMultiplier = 1, classN
   // Don't render if there's an error or invalid data
   if (impact.error || !pm25) return null;
 
-  // Enhanced color schemes with gradients
+  // Professional, muted color schemes aligned with design system
   const colorSchemes = {
     green: {
-      gradient: 'from-emerald-500 to-teal-600',
-      lightBg: 'bg-emerald-50',
-      border: 'border-emerald-200',
-      text: 'text-emerald-700',
-      badge: 'bg-emerald-100 text-emerald-700',
-      glow: 'shadow-emerald-200/50',
-      iconBg: 'bg-gradient-to-br from-emerald-100 to-teal-100',
-      ring: 'ring-emerald-500/20'
+      headerBg: 'bg-gradient-to-r from-primary-500 to-primary-600',
+      statusBg: 'bg-status-good/10',
+      statusText: 'text-status-good',
+      statusBorder: 'border-status-good/20',
+      accentDot: 'bg-status-good',
     },
     yellow: {
-      gradient: 'from-amber-400 to-orange-500',
-      lightBg: 'bg-amber-50',
-      border: 'border-amber-200',
-      text: 'text-amber-700',
-      badge: 'bg-amber-100 text-amber-700',
-      glow: 'shadow-amber-200/50',
-      iconBg: 'bg-gradient-to-br from-amber-100 to-orange-100',
-      ring: 'ring-amber-500/20'
+      headerBg: 'bg-gradient-to-r from-primary-500 to-primary-600',
+      statusBg: 'bg-status-moderate/10',
+      statusText: 'text-status-moderate',
+      statusBorder: 'border-status-moderate/20',
+      accentDot: 'bg-status-moderate',
     },
     orange: {
-      gradient: 'from-orange-500 to-red-500',
-      lightBg: 'bg-orange-50',
-      border: 'border-orange-200',
-      text: 'text-orange-700',
-      badge: 'bg-orange-100 text-orange-700',
-      glow: 'shadow-orange-200/50',
-      iconBg: 'bg-gradient-to-br from-orange-100 to-red-100',
-      ring: 'ring-orange-500/20'
+      headerBg: 'bg-gradient-to-r from-primary-500 to-primary-600',
+      statusBg: 'bg-status-moderate/10',
+      statusText: 'text-status-moderate',
+      statusBorder: 'border-status-moderate/20',
+      accentDot: 'bg-status-moderate',
     },
     red: {
-      gradient: 'from-red-500 to-rose-600',
-      lightBg: 'bg-red-50',
-      border: 'border-red-200',
-      text: 'text-red-700',
-      badge: 'bg-red-100 text-red-700',
-      glow: 'shadow-red-200/50',
-      iconBg: 'bg-gradient-to-br from-red-100 to-rose-100',
-      ring: 'ring-red-500/20'
+      headerBg: 'bg-gradient-to-r from-primary-500 to-primary-600',
+      statusBg: 'bg-status-critical/10',
+      statusText: 'text-status-critical',
+      statusBorder: 'border-status-critical/20',
+      accentDot: 'bg-status-critical',
     }
   };
 
   const colors = colorSchemes[impact.severityColor];
 
-  // Animation variants
+  // Subtle animation variants
   const containerVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 12 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.5, staggerChildren: 0.1 }
+      transition: { duration: 0.4, ease: "easeOut", staggerChildren: 0.08 }
     }
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: { opacity: 1, y: 0 }
-  };
-
-  const pulseAnimation = {
-    scale: [1, 1.02, 1],
-    transition: { duration: 2, repeat: Infinity, ease: "easeInOut" }
+    hidden: { opacity: 0, y: 8 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.3 } }
   };
 
   return (
@@ -80,146 +63,127 @@ const HealthImpact = ({ pm25, exposureHours = 24, activityMultiplier = 1, classN
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className={`bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 ${className}`}
+      className={`bg-white/70 backdrop-blur-sm rounded-2xl shadow-soft border border-mist overflow-hidden ${className}`}
     >
-      {/* Premium Header with Gradient */}
-      <div className={`bg-gradient-to-r ${colors.gradient} px-6 py-5 relative overflow-hidden`}>
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-0 w-40 h-40 bg-white rounded-full -translate-x-1/2 -translate-y-1/2"></div>
-          <div className="absolute bottom-0 right-0 w-32 h-32 bg-white rounded-full translate-x-1/3 translate-y-1/3"></div>
-        </div>
-        
-        <div className="flex items-center justify-between relative z-10">
+      {/* Clean Header - Unified Blue Theme */}
+      <div className={`${colors.headerBg} px-6 py-4`}>
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-              <span className="text-2xl">{impact.icon}</span>
+            <div className="w-9 h-9 bg-white/15 backdrop-blur-sm rounded-xl flex items-center justify-center">
+              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
             </div>
-            <h2 className="font-bold text-xl text-white tracking-tight">
-              Health Impact Analysis
-            </h2>
+            <div>
+              <h2 className="font-semibold text-white text-base">Health Impact Analysis</h2>
+              <p className="text-white/70 text-xs">Based on PM2.5 exposure data</p>
+            </div>
           </div>
-          <motion.span 
-            animate={pulseAnimation}
-            className="bg-white/25 backdrop-blur-sm px-4 py-1.5 rounded-full text-sm font-semibold text-white border border-white/30"
-          >
+          <span className={`px-3 py-1 rounded-full text-xs font-medium ${colors.statusBg} ${colors.statusText} border ${colors.statusBorder}`}>
             {impact.riskLevel}
-          </motion.span>
+          </span>
         </div>
       </div>
 
       {/* Content Area */}
-      <div className="p-6 space-y-6">
+      <div className="p-6 space-y-5">
         
-        {/* Impact Headline */}
-        <motion.div variants={itemVariants} className="text-center">
-          <h3 className="text-2xl md:text-3xl font-bold text-gray-900 leading-tight">
-            {narrative.headline}
-          </h3>
-        </motion.div>
-
-        {/* Premium Metrics Cards */}
-        <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Metrics Row */}
+        <motion.div variants={itemVariants} className="grid grid-cols-2 gap-4">
           
-          {/* Cigarettes Metric Card */}
-          <motion.div 
-            whileHover={{ scale: 1.02, y: -2 }}
-            transition={{ type: "spring", stiffness: 300 }}
-            className={`relative ${colors.lightBg} rounded-2xl p-6 border ${colors.border} overflow-hidden group`}
-          >
-            {/* Decorative Background */}
-            <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-white/60 to-transparent rounded-full -translate-y-1/2 translate-x-1/2"></div>
-            
-            <div className="relative z-10 flex flex-col items-center text-center">
-              <div className={`w-16 h-16 ${colors.iconBg} rounded-2xl flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform duration-300`}>
-                <span className="text-4xl">🚬</span>
+          {/* Cigarettes Metric */}
+          <div className="bg-canvas rounded-xl p-5 border border-mist">
+            <div className="flex flex-col items-center text-center">
+              <div className="w-12 h-12 bg-white rounded-xl border border-mist flex items-center justify-center mb-3 shadow-soft-xs">
+                <svg className="w-6 h-6 text-metal" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.5 8.5c0-1.38-1.12-2.5-2.5-2.5s-2.5 1.12-2.5 2.5M12.5 8.5V6m0 0c0-1.66-1.34-3-3-3S6.5 4.34 6.5 6v2.5m0 0h12v8a2 2 0 01-2 2h-8a2 2 0 01-2-2v-8z" />
+                </svg>
               </div>
-              <div className={`text-4xl md:text-5xl font-black text-gray-900 mb-1 tabular-nums`}>
+              <div className="text-3xl font-bold text-ink tabular-nums tracking-tight">
                 {impact.cigarettesSmoked}
               </div>
-              <div className="text-xs font-semibold text-gray-500 uppercase tracking-widest">
+              <div className="text-xs text-metal mt-1 font-medium">
                 Cigarettes Equivalent
               </div>
             </div>
-          </motion.div>
+          </div>
 
-          {/* Time Lost Metric Card */}
-          <motion.div 
-            whileHover={{ scale: 1.02, y: -2 }}
-            transition={{ type: "spring", stiffness: 300 }}
-            className={`relative ${colors.lightBg} rounded-2xl p-6 border ${colors.border} overflow-hidden group`}
-          >
-            {/* Decorative Background */}
-            <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-white/60 to-transparent rounded-full -translate-y-1/2 translate-x-1/2"></div>
-            
-            <div className="relative z-10 flex flex-col items-center text-center">
-              <div className={`w-16 h-16 ${colors.iconBg} rounded-2xl flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform duration-300`}>
-                <span className="text-4xl">⏱️</span>
+          {/* Time Lost Metric */}
+          <div className="bg-canvas rounded-xl p-5 border border-mist">
+            <div className="flex flex-col items-center text-center">
+              <div className="w-12 h-12 bg-white rounded-xl border border-mist flex items-center justify-center mb-3 shadow-soft-xs">
+                <svg className="w-6 h-6 text-metal" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
               </div>
-              <div className={`text-4xl md:text-5xl font-black text-gray-900 mb-1 tabular-nums`}>
+              <div className="text-3xl font-bold text-ink tabular-nums tracking-tight">
                 {impact.lifeLostHours > 0 
                   ? `${impact.lifeLostHours}h ${impact.lifeLostRemainingMinutes}m`
                   : `${impact.lifeLostRemainingMinutes}m`
                 }
               </div>
-              <div className="text-xs font-semibold text-gray-500 uppercase tracking-widest">
+              <div className="text-xs text-metal mt-1 font-medium">
                 Life Expectancy Lost
               </div>
             </div>
-          </motion.div>
+          </div>
         </motion.div>
 
-        {/* Impact Description Card */}
+        {/* Impact Message */}
         <motion.div 
           variants={itemVariants}
-          className={`relative ${colors.lightBg} rounded-xl p-5 border-l-4 ${colors.border} overflow-hidden`}
-        >
-          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/40 to-transparent rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
-          <p className="text-gray-700 leading-relaxed relative z-10">
-            {narrative.subtext}
-          </p>
-        </motion.div>
-
-        {/* Recommendation Card */}
-        <motion.div 
-          variants={itemVariants}
-          className="bg-gradient-to-r from-primary/5 to-teal-50 rounded-xl p-5 border border-primary/20"
+          className={`rounded-xl p-4 border-l-3 ${colors.statusBg} ${colors.statusBorder} border`}
         >
           <div className="flex items-start gap-3">
-            <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-              <span className="text-lg">💡</span>
+            <div className={`w-2 h-2 ${colors.accentDot} rounded-full mt-1.5 flex-shrink-0`}></div>
+            <p className="text-sm text-ink leading-relaxed">
+              {narrative.subtext}
+            </p>
+          </div>
+        </motion.div>
+
+        {/* Recommendation */}
+        <motion.div 
+          variants={itemVariants}
+          className="bg-primary-50 rounded-xl p-4 border border-primary-100"
+        >
+          <div className="flex items-start gap-3">
+            <div className="w-8 h-8 bg-white rounded-lg border border-primary-200 flex items-center justify-center flex-shrink-0">
+              <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
             </div>
             <div>
-              <span className="font-bold text-primary text-sm uppercase tracking-wide">Recommendation</span>
-              <p className="text-gray-700 mt-1 leading-relaxed">
+              <span className="font-semibold text-primary text-xs uppercase tracking-wider">Recommendation</span>
+              <p className="text-sm text-ink mt-1 leading-relaxed">
                 {narrative.advice}
               </p>
             </div>
           </div>
         </motion.div>
 
-        {/* Scientific Reference - Refined */}
+        {/* Scientific Reference - Compact Footer */}
         <motion.div 
           variants={itemVariants}
-          className="bg-gray-50 rounded-xl p-5 border border-gray-100"
+          className="pt-4 border-t border-mist"
         >
           <div className="flex items-center gap-2 mb-3">
-            <div className="w-6 h-6 bg-blue-100 rounded-md flex items-center justify-center">
-              <span className="text-sm">📊</span>
-            </div>
-            <span className="font-semibold text-gray-800 text-sm">Scientific Basis</span>
-            <span className="text-gray-400 text-xs">• Berkeley Earth Study</span>
+            <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <span className="font-medium text-ink text-xs">Scientific Basis</span>
+            <span className="text-muted text-xs">• Berkeley Earth Study</span>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <div className="flex items-center gap-2 text-xs text-gray-600">
+          <div className="flex flex-wrap gap-x-6 gap-y-2">
+            <div className="flex items-center gap-2 text-xs text-metal">
               <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
               <span>22 µg/m³ PM2.5 (24h) = 1 cigarette</span>
             </div>
-            <div className="flex items-center gap-2 text-xs text-gray-600">
+            <div className="flex items-center gap-2 text-xs text-metal">
               <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
               <span>1 cigarette = 11 min life lost</span>
             </div>
-            <div className="flex items-center gap-2 text-xs text-gray-600">
+            <div className="flex items-center gap-2 text-xs text-metal">
               <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
               <span>Current: {impact.pm25Input} µg/m³ ({exposureHours}h)</span>
             </div>

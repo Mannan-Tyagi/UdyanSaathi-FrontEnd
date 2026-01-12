@@ -152,13 +152,22 @@ function AirQualityPage() {
           )}
 
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-            <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-white/60 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden">
-              <div className="p-4 border-b border-gray-100/80 bg-gradient-to-r from-primary/5 to-transparent">
+            <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-white/60 shadow-sm hover:shadow-lg transition-all duration-300 p-5">
+              <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 bg-primary/10 rounded-xl flex items-center justify-center">
-                    <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" /></svg>
+                  <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
+                    <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" /></svg>
                   </div>
-                  <div><h3 className="font-semibold text-ink">Interactive Pollution Map</h3><p className="text-sm text-metal">Click on markers to view station details</p></div>
+                  <div>
+                    <h3 className="font-semibold text-ink">Interactive Pollution Map</h3>
+                    <p className="text-xs text-metal">Real-time AQI monitoring across India</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="flex items-center gap-1.5 text-xs text-metal bg-canvas px-3 py-1.5 rounded-full border border-mist">
+                    <span className="w-1.5 h-1.5 bg-status-good rounded-full animate-pulse"></span>
+                    Live
+                  </span>
                 </div>
               </div>
               <Map selectedSearch={selectedSearch} />
@@ -175,47 +184,65 @@ function AirQualityPage() {
             <p className="text-metal ml-4">Comparative analysis and ML-powered predictions</p>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-5 mb-6">
-            <div className="lg:col-span-4">
-              <div className="h-full bg-white/70 backdrop-blur-sm rounded-2xl border border-white/60 shadow-sm hover:shadow-lg transition-all duration-300 p-6">
+          {/* Two-column layout: Cities on left, Health & ML on right */}
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="grid grid-cols-1 lg:grid-cols-12 gap-5 mb-6">
+            
+            {/* Left Column - Polluted Cities (stacked) */}
+            <div className="lg:col-span-4 flex flex-col gap-5">
+              {/* Most Polluted */}
+              <div className="flex-1 bg-white/70 backdrop-blur-sm rounded-2xl border border-white/60 shadow-sm hover:shadow-lg transition-all duration-300 p-5">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-gradient-to-br from-red-500/15 to-red-500/5 rounded-xl flex items-center justify-center">
-                    <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" /></svg>
+                  <div className="w-9 h-9 bg-status-critical/10 rounded-xl flex items-center justify-center">
+                    <svg className="w-4 h-4 text-status-critical" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" /></svg>
                   </div>
-                  <div><span className="font-semibold text-ink block">Most Polluted</span><span className="text-xs text-metal">Top affected areas</span></div>
+                  <div>
+                    <span className="font-semibold text-ink text-sm block">Most Polluted</span>
+                    <span className="text-[10px] text-metal">Highest AQI cities</span>
+                  </div>
                 </div>
                 <Component3 />
               </div>
-            </div>
-            <div className="lg:col-span-5">
-              <div className="h-full bg-white/70 backdrop-blur-sm rounded-2xl border border-white/60 shadow-sm hover:shadow-lg transition-all duration-300 p-6">
+              
+              {/* Least Polluted */}
+              <div className="flex-1 bg-white/70 backdrop-blur-sm rounded-2xl border border-white/60 shadow-sm hover:shadow-lg transition-all duration-300 p-5">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-gradient-to-br from-primary/15 to-primary/5 rounded-xl flex items-center justify-center">
-                    <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                  <div className="w-9 h-9 bg-status-good/10 rounded-xl flex items-center justify-center">
+                    <svg className="w-4 h-4 text-status-good" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
                   </div>
-                  <div><span className="font-semibold text-ink block">Health & ML Predictions</span><span className="text-xs text-metal">AI-powered insights</span></div>
-                </div>
-                <Component4 />
-              </div>
-            </div>
-            <div className="lg:col-span-3">
-              <div className="h-full bg-white/70 backdrop-blur-sm rounded-2xl border border-white/60 shadow-sm hover:shadow-lg transition-all duration-300 p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-gradient-to-br from-green-500/15 to-green-500/5 rounded-xl flex items-center justify-center">
-                    <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+                  <div>
+                    <span className="font-semibold text-ink text-sm block">Least Polluted</span>
+                    <span className="text-[10px] text-metal">Cleanest cities</span>
                   </div>
-                  <div><span className="font-semibold text-ink block">Least Polluted</span><span className="text-xs text-metal">Cleanest areas</span></div>
                 </div>
                 <Component5 />
+              </div>
+            </div>
+
+            {/* Right Column - Health & ML Predictions (larger) */}
+            <div className="lg:col-span-8">
+              <div className="h-full bg-white/70 backdrop-blur-sm rounded-2xl border border-white/60 shadow-sm hover:shadow-lg transition-all duration-300 p-5">
+                <div className="flex items-center justify-between mb-5">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 bg-primary/10 rounded-xl flex items-center justify-center">
+                      <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                    </div>
+                    <div>
+                      <span className="font-semibold text-ink text-sm block">Health & ML Predictions</span>
+                      <span className="text-[10px] text-metal">AI-powered insights & forecasts</span>
+                    </div>
+                  </div>
+                  <span className="text-[10px] text-primary bg-primary/10 px-2.5 py-1 rounded-full font-medium">Live</span>
+                </div>
+                <Component4 />
               </div>
             </div>
           </motion.div>
 
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-            <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-white/60 shadow-sm hover:shadow-lg transition-all duration-300 p-6">
+            <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-white/60 shadow-sm hover:shadow-lg transition-all duration-300 p-5">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500/15 to-blue-500/5 rounded-xl flex items-center justify-center">
-                  <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                <div className="w-9 h-9 bg-blue-500/10 rounded-xl flex items-center justify-center">
+                  <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
                 </div>
                 <div><span className="font-semibold text-ink block">Historical Comparison</span><span className="text-xs text-metal">Trend analysis over time</span></div>
               </div>
