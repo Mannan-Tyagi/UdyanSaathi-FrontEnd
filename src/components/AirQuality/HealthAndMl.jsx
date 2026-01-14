@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getBaseUrl, getStationName, getTodayDate } from "../Connectivity/storageHelper";
 
 /**
- * Health Advice & ML Forecast - Full Height Design
+ * Health Advice & ML Forecast - Compact Design
  */
 const Component4 = (selectedSearch) => {
   const [aqiData, setAqiData] = useState(null);
@@ -75,31 +75,31 @@ const Component4 = (selectedSearch) => {
   };
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="space-y-5">
       {/* Health Precautions Section */}
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-4">
+      <div>
+        <div className="flex items-center justify-between mb-3">
           <h4 className="text-sm font-semibold text-ink">Health Precautions</h4>
           <span className="text-[10px] text-metal bg-canvas px-2 py-1 rounded-full border border-mist">Based on current AQI</span>
         </div>
         
-        <div className="grid grid-cols-5 gap-3">
+        <div className="grid grid-cols-5 gap-2">
           {precautions.map((item, index) => (
             <div 
               key={index}
-              className="flex flex-col items-center p-3 rounded-xl bg-canvas/50 border border-mist hover:border-primary/30 hover:bg-white transition-all group"
+              className="flex flex-col items-center p-2.5 rounded-xl bg-canvas/50 border border-mist hover:border-primary/30 hover:bg-white transition-all group"
             >
-              <div className="w-12 h-12 bg-white rounded-xl border border-mist flex items-center justify-center mb-2 group-hover:shadow-soft transition-shadow">
+              <div className="w-10 h-10 bg-white rounded-lg border border-mist flex items-center justify-center mb-1.5 group-hover:shadow-soft-xs transition-shadow">
                 <img
                   src={item.icon}
                   alt={item.label}
-                  className="w-7 h-7 object-contain opacity-80 group-hover:opacity-100 transition-opacity"
+                  className="w-6 h-6 object-contain opacity-75 group-hover:opacity-100 transition-opacity"
                 />
               </div>
-              <span className="text-xs text-ink font-medium text-center leading-tight">
+              <span className="text-[11px] text-ink font-medium text-center leading-tight">
                 {item.label}
               </span>
-              <span className={`text-[10px] mt-1 font-medium ${item.color}`}>
+              <span className={`text-[9px] mt-0.5 font-medium ${item.color}`}>
                 {item.status}
               </span>
             </div>
@@ -107,9 +107,9 @@ const Component4 = (selectedSearch) => {
         </div>
       </div>
 
-      {/* ML Forecast Section - Takes remaining space */}
-      <div className="flex-1 flex flex-col">
-        <div className="bg-gradient-to-r from-primary to-primary-600 text-white py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 mb-4">
+      {/* ML Forecast Section */}
+      <div>
+        <div className="bg-gradient-to-r from-primary to-primary-600 text-white py-2 px-4 rounded-xl flex items-center justify-center gap-2 mb-3">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
           </svg>
@@ -117,31 +117,31 @@ const Component4 = (selectedSearch) => {
         </div>
 
         {isLoading ? (
-          <div className="flex-1 grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-3">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="animate-pulse flex flex-col">
-                <div className="h-4 w-16 bg-mist rounded mb-3 mx-auto"></div>
-                <div className="flex-1 bg-mist rounded-xl min-h-[120px]"></div>
+              <div key={i} className="animate-pulse">
+                <div className="h-3 w-12 bg-mist rounded mb-2 mx-auto"></div>
+                <div className="h-24 bg-mist rounded-xl"></div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="flex-1 grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-3">
             {next3Dates.map((date, index) => (
-              <div key={index} className="flex flex-col">
-                <span className="text-xs text-metal font-medium text-center mb-3">{date}</span>
+              <div key={index} className="text-center">
+                <span className="text-[11px] text-metal font-medium block mb-2">{date}</span>
                 {aqiData && aqiData.map((day, dataIndex) => {
                   const aqiValue = day[`Day${index + 1}`];
                   return (
                     <div 
                       key={dataIndex} 
-                      className={`flex-1 min-h-[120px] flex flex-col items-center justify-center rounded-xl border-2 ${getAqiColor(aqiValue)}`}
+                      className={`py-5 px-3 rounded-xl border-2 ${getAqiColor(aqiValue)}`}
                     >
-                      <div className="text-4xl font-bold tabular-nums">
+                      <div className="text-3xl font-bold tabular-nums leading-none">
                         {Math.round(aqiValue)}
                       </div>
-                      <span className="text-xs opacity-70 mt-1">AQI</span>
-                      <span className="text-[10px] font-semibold mt-2 px-2 py-0.5 rounded-full bg-white/50">
+                      <span className="text-[10px] opacity-60 block mt-1">AQI</span>
+                      <span className="text-[9px] font-semibold mt-1.5 inline-block px-2 py-0.5 rounded-full bg-white/60">
                         {getAqiLabel(aqiValue)}
                       </span>
                     </div>
@@ -151,31 +151,29 @@ const Component4 = (selectedSearch) => {
             ))}
           </div>
         )}
+      </div>
 
-        {/* Additional Info Row */}
-        <div className="mt-4 pt-4 border-t border-mist">
-          <div className="flex items-center justify-between text-xs text-metal">
-            <div className="flex items-center gap-4">
-              <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-status-good"></span>
-                Good (0-50)
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-aqi-moderate"></span>
-                Moderate (51-100)
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-status-moderate"></span>
-                Poor (101-200)
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-status-critical"></span>
-                Severe (200+)
-              </span>
-            </div>
-            <span className="text-[10px] text-muted">Updated hourly</span>
-          </div>
+      {/* Legend Row - Compact */}
+      <div className="flex items-center justify-between pt-3 border-t border-mist">
+        <div className="flex items-center gap-3 text-[10px] text-metal">
+          <span className="flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-status-good"></span>
+            Good
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-aqi-moderate"></span>
+            Moderate
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-status-moderate"></span>
+            Poor
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-status-critical"></span>
+            Severe
+          </span>
         </div>
+        <span className="text-[9px] text-muted">Updated hourly</span>
       </div>
     </div>
   );
