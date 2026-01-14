@@ -352,7 +352,7 @@ const WardComparison = () => {
       setLoading(true);
       setError(null);
       
-      const response = await axios.get('https://apiudyansaathi2-fscmg2hxd8euf0bs.eastus-01.azurewebsites.net/api/delhi/wards/pollution/', {
+      const response = await axios.get('http://127.0.0.1:8000/api/delhi/wards/pollution/', {
         timeout: 15000,
         signal: abortControllerRef.current.signal
       });
@@ -440,7 +440,7 @@ const WardComparison = () => {
     
     try {
       // Try to fetch detailed health data from backend
-      const response = await axios.get(`https://apiudyansaathi2-fscmg2hxd8euf0bs.eastus-01.azurewebsites.net/api/delhi/ward/health/`, {
+      const response = await axios.get(`http://127.0.0.1:8000/api/delhi/ward/health/`, {
         params: { ward_id: ward.ward_id || ward.id },
         timeout: 10000
       });

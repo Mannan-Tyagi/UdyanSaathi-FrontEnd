@@ -13,11 +13,13 @@ import Component7 from "../components/AirQuality/MetroCitiesDetails";
 import Component8 from "../components/AirQuality/AqiHeatMap";
 import Map from "../components/AirQuality/Map";
 import HealthImpact from "../components/AirQuality/HealthImpact";
+import PollutantAlertModal from "../components/AirQuality/PollutantAlertModal";
 import { setStationName } from '../components/Connectivity/storageHelper';
 
 function AirQualityPage() {
   const [selectedSearch, setSelectedSearch] = useState('');
   const [dangerAlert, setDangerAlert] = useState(null);
+  const [showAlertModal, setShowAlertModal] = useState(false);
   const [childData, setChildData] = useState(null);
 
   const handleSearchSelected = (search) => {
@@ -34,14 +36,16 @@ function AirQualityPage() {
     const { OZONE, CO, PM10, PM25, NO2, SO2 } = data[0];
     let maxPollutant = null;
     if (OZONE > 168) {
-      maxPollutant = { level: "Danger", message: "Ozone levels unhealthy.", chemical: "Ozone", amount: OZONE };
+      maxPollutant = { level: "Danger", message: "Ozone levels unhealthy.", chemical: "OZONE", amount: OZONE };
     }
     if (CO > 10) {
       maxPollutant = { level: "Danger", message: "CO dangerously high.", chemical: "CO", amount: CO };
     }
-    if (PM10 > 250 || PM25 > 90) {
-      const maxPM = PM10 > PM25 ? PM10 : PM25;
-      maxPollutant = { level: "Danger", message: "PM hazardous.", chemical: "PM", amount: maxPM };
+    if (PM10 > 250) {
+      maxPollutant = { level: "Danger", message: "PM10 hazardous.", chemical: "PM10", amount: PM10 };
+    }
+    if (PM25 > 90) {
+      maxPollutant = { level: "Danger", message: "PM2.5 hazardous.", chemical: "PM25", amount: PM25 };
     }
     if (NO2 > 180) {
       maxPollutant = { level: "Danger", message: "NO2 very high.", chemical: "NO2", amount: NO2 };
@@ -84,7 +88,7 @@ function AirQualityPage() {
               <div className="w-10 h-10 bg-orange-500/10 rounded-xl flex items-center justify-center">
                 <svg className="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
               </div>
-              <div className="text-left"><p className="text-xs text-metal">Updates</p><p className="text-base font-bold text-ink">Every 15 min</p></div>
+              <div className="text-left"><p className="text-xs text-metal">Updates</p><p className="text-base font-bold text-ink">Every 1 Hour</p></div>
             </div>
             <div className="flex items-center gap-3 px-5 py-3 bg-white/70 backdrop-blur-sm border border-white/50 rounded-2xl shadow-sm">
               <div className="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center">
@@ -106,14 +110,21 @@ function AirQualityPage() {
       <AnimatePresence>
         {dangerAlert && (
           <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 50 }} className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-lg">
-            <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-red-200 overflow-hidden">
+            <div 
+              onClick={() => setShowAlertModal(true)}
+              className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-red-200 overflow-hidden cursor-pointer hover:shadow-red-200/50 transition-all duration-300"
+            >
               <div className="flex items-center gap-4 p-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-rose-500 rounded-xl flex items-center justify-center"><span className="text-white text-xl">⚠️</span></div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-0.5"><span className="text-red-600 font-bold text-sm">{dangerAlert.level} Alert</span><span className="text-red-500 font-black text-lg">{dangerAlert.amount}</span></div>
                   <p className="text-gray-600 text-xs truncate">{dangerAlert.message}</p>
+                  <p className="text-primary text-xs font-medium mt-1 flex items-center gap-1">
+                    <span>Tap to see why</span>
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                  </p>
                 </div>
-                <button onClick={() => setDangerAlert(null)} className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200">
+                <button onClick={(e) => { e.stopPropagation(); setDangerAlert(null); }} className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200">
                   <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
               </div>
@@ -121,6 +132,13 @@ function AirQualityPage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Pollutant Alert Modal */}
+      <PollutantAlertModal 
+        isOpen={showAlertModal} 
+        onClose={() => setShowAlertModal(false)} 
+        pollutant={dangerAlert}
+      />
 
       <main className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         <section className="mb-16">
